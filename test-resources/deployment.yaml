@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    admission-policy-test: abc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment
+  template:
+    metadata:
+      labels:
+        app: test-deployment
+    spec:
+      containers:
+      - name: sleep
+        image: alpine
+        command: ["sh"]
+        args: ["-c", "while true; do sleep 60; done"]
