@@ -1,10 +1,18 @@
 [
     {
-        "name": "Deployement whith is allowedPrivilegeEscalation on is blocked",
+        "name": "Deployment with allowedPrivilegeEscalation on is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
             "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"    
+        ]
+    },
+    {
+        "name": "Deployment without allowedPrivilegeEscalation on is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"    
         ]
     }
 ]

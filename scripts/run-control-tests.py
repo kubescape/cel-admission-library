@@ -9,7 +9,7 @@ TEST_RESOURCES_DIR = os.path.join('..', '..', 'test-resources')
 # Get the name of the python executable
 python_executable = 'python3'
 try:
-    subprocess.check_call([python_executable, '--version'])
+    subprocess.check_call([python_executable, '--version'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 except:
     python_executable = 'python'
 
@@ -31,9 +31,13 @@ with open(os.path.join('policy.yaml'), 'r') as f:
 
 # Loop through the tests
 for test in tests:
+    name = test['name']
     template = test['template']
     field_change_list = test['field_change_list']
     expected = test['expected']
+
+    print('-'*120)
+    print('Running test: ' + name)
 
     # Generate temporary file name for the output file with tempfile
     with tempfile.NamedTemporaryFile() as temp_file:
@@ -64,24 +68,28 @@ for test in tests:
     except subprocess.CalledProcessError as e:
         result = e.returncode
 
-    input('Press enter to continue...')
-
     # Check if the result is as expected
     if expected == 'pass' and result != 0:
-        print('Test failed: ' + test['name'] + ' expected to pass but failed')
+        print('Test failed: expected to pass but failed')
     elif expected == 'fail' and result == 0:
-        print('Test failed: ' + test['name'] + ' expected to fail but passed')
+        print('Test failed: expected to fail but passed')
     else:
-        print('Test passed: ' + test['name'])
+        print('Test passed!')
     
+
+    os.remove(policy_bind_temp_file_name)
+    os.remove(test_object_yaml)
 
     # Run kubectl delete on the policy and policy binding
     try:
-        subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'])
-        subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name])
-        subprocess.check_call(['kubectl', 'delete', '-f', test_object_yaml])
+        subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.check_call(['kubectl', 'delete', '-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
         pass
+        
+    print('-'*120)
+    print('')
     
     
 
