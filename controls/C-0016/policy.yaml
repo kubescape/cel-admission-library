@@ -13,15 +13,15 @@ spec:
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["Deployment","ReplicaSet","DaemonSet","StatefulSet"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
     - apiGroups:   ["batch"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["Job","CronJob"]
+      resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, container.securityContext.allowPrivilegeEscalation == false)"
       message: "Pods with privileged containers are not allowed!"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, container.securityContext.allowPrivilegeEscalation == false)"
       message: "Workloads with privileged containers are not allowed!"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, container.securityContext.allowPrivilegeEscalation == false)"
-      message: "Pods with privileged containers are not allowed!"
+      message: "CronJob with privileged containers are not allowed!"
