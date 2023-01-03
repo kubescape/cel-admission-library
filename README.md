@@ -4,11 +4,11 @@ This is a library of polcies based on [Kubescape controls](https://hub.armosec.i
 
 ## Using the library
 
-{% note %}
-
-**Note:** Kubernetes Validating Admission Policies is still it is early phase. It has been released as a alphav1 feature in Kubernetes 1.26 and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready.
-
-{% endnote %}
+```markdown
+Note: Kubernetes Validating Admission Policies is still it is early phase. 
+It has been released as a alphav1 feature in Kubernetes 1.26,
+and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready.
+```
 
 
 
