@@ -1,0 +1,15 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: deny-pods-without-app-label
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+  validations:
+    - expression: "has(object.metadata.labels) && has(object.metadata.labels.app)"
+      message: "Pods must have app label!"
