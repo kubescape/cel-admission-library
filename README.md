@@ -29,6 +29,11 @@ python ../../scripts/run-control-tests.py
 
 This script reads the `tests.json` file in the directory, build the policy bindings and test objects and tests the policy with the binding against the test object.
 
+The `tests.json` contains test cases where each case has a
+* template object: a yaml in the [test-resources](/test-resources/) directory
+* field changes: what changes to be done to the template object before applying it
+* expected field: what should be happen when applying the object after field changes
+
 ### Learning about Validating Admission Policies
 
 Check [this out](docs/validating-admission-policies/REAMDE.md)
