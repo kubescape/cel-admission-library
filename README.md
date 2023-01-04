@@ -29,3 +29,6 @@ python ../../scripts/run-control-tests.py
 
 This script reads the `tests.json` file in the directory, build the policy bindings and test objects and tests the policy with the binding against the test object.
 
+### Learning about Validating Admission Policies
+
+Check [this out](docs/validating-admission-policies/REAMDE.md)
