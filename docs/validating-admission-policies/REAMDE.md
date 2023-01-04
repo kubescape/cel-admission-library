@@ -49,7 +49,7 @@ Note the `matchConstraints`. This definition means that this policy is only appl
 
 You can apply this directly with:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/slashben/cel-admission-library/main/docs/validating-admission-policies/deny-pods-without-app-label-policy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-library/main/docs/validating-admission-policies/deny-pods-without-app-label-policy.yaml
 ```
 
 In order to apply this policy on a namespace, you have to create a binding. Here is a binding to namespaces with the label `vap: enabled`
@@ -71,7 +71,7 @@ Note that using `policyName` this binding object points to `deny-pods-without-ap
 
 You can apply this directly with:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/slashben/cel-admission-library/main/docs/validating-admission-policies/deny-pods-without-app-label-policy-binding.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-library/main/docs/validating-admission-policies/deny-pods-without-app-label-policy-binding.yaml
 ```
 
 If you now trying to create a pod inside this namespace without a label, you should be denied. 
