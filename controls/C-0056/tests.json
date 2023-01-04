@@ -1,0 +1,15 @@
+[
+    {
+        "name": "Pod with livenessProbe is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].livenessProbe.httpGet.port=8080"
+        ]
+    },
+    {
+        "name": "Pod without liveinessProbe is not allowed",
+        "template": "pod.yaml",
+        "expected": "fail"    
+    }
+]

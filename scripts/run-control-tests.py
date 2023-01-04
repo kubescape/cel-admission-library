@@ -2,6 +2,8 @@ import json, yaml
 import subprocess
 import os
 import tempfile
+from termcolor import colored
+
 
 SCRIPTS_DIR = os.path.join('..', '..', 'scripts')
 TEST_RESOURCES_DIR = os.path.join('..', '..', 'test-resources')
@@ -33,7 +35,7 @@ with open(os.path.join('policy.yaml'), 'r') as f:
 for test in tests:
     name = test['name']
     template = test['template']
-    field_change_list = test['field_change_list']
+    field_change_list = test['field_change_list'] if 'field_change_list' in test else []
     expected = test['expected']
 
     print('-'*120)
@@ -44,7 +46,11 @@ for test in tests:
         test_object_yaml = temp_file.name
 
     # Run the change yaml field script
-    subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, template), '-o', test_object_yaml] + field_change_list)
+    if len(field_change_list) > 0:
+        print('Changing fields: ' + str(field_change_list))
+        subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, template), '-o', test_object_yaml] + field_change_list)
+    else:
+        subprocess.check_call(['cp', os.path.join(TEST_RESOURCES_DIR, template), test_object_yaml])
     print('Generated test object: ' + test_object_yaml)
 
     # Generate temporary file name for the binding file with tempfile
@@ -68,18 +74,17 @@ for test in tests:
     except subprocess.CalledProcessError as e:
         result = e.returncode
 
+    test_passed = False
     # Check if the result is as expected
     if expected == 'pass' and result != 0:
-        print('Test failed: expected to pass but failed')
+        print(colored('Test failed: expected to pass but failed','red'))
     elif expected == 'fail' and result == 0:
-        print('Test failed: expected to fail but passed')
+        print(colored('Test failed: expected to fail but passed','red'))
     else:
-        print('Test passed!')
-    
-
-    os.remove(policy_bind_temp_file_name)
-    os.remove(test_object_yaml)
-
+        test_passed = True
+        print(colored('Test passed!','green'))
+   
+    print(colored('Cleaning up...', 'yellow'))
     # Run kubectl delete on the policy and policy binding
     try:
         subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -87,7 +92,19 @@ for test in tests:
         subprocess.check_call(['kubectl', 'delete', '-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
         pass
-        
+    
+    # Call kubectl wait --for=delete pod -l app=test-pod  --timeout=360s
+    subprocess.check_call(['kubectl', 'wait', '--for=delete', 'pod', '-l', 'app=test-pod', '--timeout=360s'])
+
+    if not test_passed:
+        os.remove(policy_bind_temp_file_name)
+        os.remove(test_object_yaml)
+        print(colored('Done (left generated object in place)', 'yellow'))
+    else:
+        print(colored('Done', 'yellow'))
+
+
+
     print('-'*120)
     print('')
     

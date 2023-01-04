@@ -8,11 +8,32 @@
         ]
     },
     {
+        "name": "Deployment allowedPrivilegeEscalation is not defined is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail"
+    },
+    {
         "name": "Deployment without allowedPrivilegeEscalation on is allowed",
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
             "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"    
+        ]
+    },
+    {
+        "name": "Pod with allowedPrivilegeEscalation on is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"    
+        ]
+    },
+    {
+        "name": "Pod without allowedPrivilegeEscalation on is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"    
         ]
     }
 ]
