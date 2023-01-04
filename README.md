@@ -11,7 +11,7 @@ and you need to enable its feature gate to be able to use it. Therefore it is no
 
 You can apply policies directly from GitHub, for example to apply control [C-0016](https://hub.armosec.io/docs/c-0016) (deny `allowPrivilegeEscalation` on containers) just run this:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/slashben/cel-admission-library/main/controls/C-0016/policy.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-library/main/controls/C-0016/policy.yaml
 ```
 ## Testing policies
 
