@@ -7,6 +7,7 @@ from termcolor import colored
 
 SCRIPTS_DIR = os.path.join('..', '..', 'scripts')
 TEST_RESOURCES_DIR = os.path.join('..', '..', 'test-resources')
+CONFIGURATION_DIR = os.path.join('..', '..', 'configuration')
 
 # Get the name of the python executable
 python_executable = 'python3'
@@ -28,7 +29,7 @@ with open('tests.json', 'r') as f:
     tests = json.load(f)
 
 # Apply the configuraton CRD
-subprocess.check_call(['kubectl', 'apply', '-f', os.path.join(TEST_RESOURCES_DIR, 'default-control-configuration.yaml')])
+subprocess.check_call(['kubectl', 'apply', '-f', os.path.join(CONFIGURATION_DIR, 'policy-configuration-definition.yaml')])
 
 # Open policy yaml
 with open(os.path.join('policy.yaml'), 'r') as f:
