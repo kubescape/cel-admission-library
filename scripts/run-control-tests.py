@@ -27,6 +27,9 @@ if not os.path.exists(TEST_RESOURCES_DIR):
 with open('tests.json', 'r') as f:
     tests = json.load(f)
 
+# Apply the configuraton CRD
+subprocess.check_call(['kubectl', 'apply', '-f', os.path.join(TEST_RESOURCES_DIR, 'default-control-configuration.yaml')])
+
 # Open policy yaml
 with open(os.path.join('policy.yaml'), 'r') as f:
     policy = yaml.load(f, Loader=yaml.FullLoader)
