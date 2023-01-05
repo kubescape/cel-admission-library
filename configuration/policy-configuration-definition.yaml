@@ -1,0 +1,114 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: controlconfigurations.kubescape.io
+spec:
+  group: kubescape.io
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            settings:
+              type: object
+              properties:
+                cpuLimitMax:
+                  items:
+                    type: integer
+                  type: array
+                cpuLimitMin:
+                  items:
+                    type: integer
+                  type: array
+                cpuRequestMax:
+                  items:
+                    type: integer
+                  type: array
+                cpuRequestMin:
+                  items:
+                    type: integer
+                  type: array
+                imageRepositoryAllowList:
+                  items:
+                    type: string
+                  type: array
+                insecureCapabilities:
+                  items:
+                    type: string
+                  type: array
+                k8sRecommendedLabels:
+                  items:
+                    type: string
+                  type: array
+                listOfDangerousArtifacts:
+                  items:
+                    type: string
+                  type: array
+                maxCriticalVulnerabilities:
+                  items:
+                    type: integer
+                  type: array
+                maxHighVulnerabilities:
+                  items:
+                    type: integer
+                  type: array
+                memoryLimitMax:
+                  items:
+                    type: integer
+                  type: array
+                memoryLimitMin:
+                  items:
+                    type: integer
+                  type: array
+                memoryRequestMax:
+                  items:
+                    type: integer
+                  type: array
+                memoryRequestMin:
+                  items:
+                    type: integer
+                  type: array
+                publicRegistries:
+                  items:
+                    type: string
+                  type: array
+                recommendedLabels:
+                  items:
+                    type: string
+                  type: array
+                sensitiveInterfaces:
+                  items:
+                    type: string
+                  type: array
+                sensitiveKeyNames:
+                  items:
+                    type: string
+                  type: array
+                sensitiveValues:
+                  items:
+                    type: string
+                  type: array
+                sensitiveValuesAllowed:
+                  items:
+                    type: string
+                  type: array
+                servicesNames:
+                  items:
+                    type: string
+                  type: array
+                untrustedRegistries:
+                  items:
+                    type: string
+                  type: array
+                wlKnownNames:
+                  items:
+                    type: string
+                  type: array
+  scope: Cluster
+  names:
+    plural: controlconfigurations
+    singular: controlconfiguration
+    kind: ControlConfiguration
