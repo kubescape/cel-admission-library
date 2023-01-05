@@ -4,6 +4,8 @@ metadata:
   name: placeholder
 spec:
   policyName: placeholder
+  paramRef:
+    name: placeholder
   matchResources:
     objectSelector:
       matchLabels:

@@ -1,7 +1,7 @@
 apiVersion: "kubescape.io/v1"
 kind: ControlConfiguration
 metadata:
-  name: configutation1
+  name: placeholder
 settings:
   cpuLimitMax:
   - 0

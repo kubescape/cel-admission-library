@@ -58,11 +58,20 @@ for test in tests:
         policy_bind_temp_file_name = temp_file.name
     # Create the policy binding file
     policy_name = policy['metadata']['name']
-    policy_bind_change_list = ['spec.policyName=' + policy_name, 'metadata.name=' + policy_name + '-binding']
+    policy_bind_change_list = ['spec.policyName=' + policy_name, 'metadata.name=' + policy_name + '-binding', 'spec.paramRef.name=' + policy_name + '-params']
     subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, 'policy-binding.yaml'), '-o', policy_bind_temp_file_name] + policy_bind_change_list)
     print('Generated policy binding: ' + policy_bind_temp_file_name)
 
+    # Create parameter file
+    with tempfile.NamedTemporaryFile() as temp_file:
+        param_file_name = temp_file.name
+    param_file_change_list = ['metadata.name=' + policy_name + '-params']
+    subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, 'default-control-configuration.yaml'), '-o', param_file_name] + param_file_change_list)
+    print('Generated parameter file: ' + param_file_name)
+
+
     # Run kubectl apply on the policy and policy binding
+    subprocess.check_call(['kubectl', 'apply', '-f', param_file_name])
     subprocess.check_call(['kubectl', 'apply', '-f', policy_bind_temp_file_name])
     subprocess.check_call(['kubectl', 'apply', '-f', 'policy.yaml'])
 
@@ -90,6 +99,7 @@ for test in tests:
         subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.check_call(['kubectl', 'delete', '-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.check_call(['kubectl', 'delete', '-f', param_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except:
         pass
     
@@ -99,6 +109,7 @@ for test in tests:
     if not test_passed:
         os.remove(policy_bind_temp_file_name)
         os.remove(test_object_yaml)
+        os.remove(param_file_name)
         print(colored('Done (left generated object in place)', 'yellow'))
     else:
         print(colored('Done', 'yellow'))
