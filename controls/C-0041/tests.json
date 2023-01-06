@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Deployment with hostNetwork set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostNetwork=true"    
+        ]
+    },
+    {
+        "name": "Deployment without hostNetwork is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with hostNetwork set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.hostNetwork=false"  
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostNetwork=false" 
+        ]
+    }
+]
