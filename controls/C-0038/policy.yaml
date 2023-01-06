@@ -1,0 +1,29 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0016-allow-privilege-escalation"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || ((!(has(object.spec.hostPID)) || object.spec.hostPID == false) && (!(has(object.spec.hostIPC)) || object.spec.hostIPC == false))"
+      message: "Pods with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
+
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || ((!(has(object.spec.template.spec.hostPID)) || object.spec.template.spec.hostPID == false) && (!(has(object.spec.template.spec.hostIPC)) || object.spec.template.spec.hostPID == false))"
+      message: "Workloads with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
+
+    - expression: "object.kind != 'CronJob' || ((!(has(object.spec.jobTemplate.spec.template.spec.hostPID)) || object.spec.jobTemplate.spec.template.spec.hostPID == false) && (!(has(object.spec.jobTemplate.spec.template.spec.hostIPC)) || object.spec.jobTemplate.spec.template.spec.hostIPC == false))"
+      message: "CronJob with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
