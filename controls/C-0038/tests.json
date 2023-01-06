@@ -1,0 +1,66 @@
+[
+    {
+        "name": "Deployment with both hostIPC and hostPID set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true",
+            "spec.template.spec.hostPID=true"    
+        ]
+    },
+    {
+        "name": "Deployment with hostIPC set true and hostPID set to false is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true",
+            "spec.template.spec.hostPID=false"    
+        ]
+    },
+    {
+        "name": "Deployment with hostIPC set true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "Deployment without hostIPC and hostPID is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+
+
+    {
+        "name": "Pod with both hostIPC and hostPID set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostIPC=true",
+            "spec.hostPID=true"    
+        ]
+    },
+    {
+        "name": "Pod with hostIPC set true and hostPID set to false is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostIPC=true",
+            "spec.hostPID=false"  
+        ]
+    },
+    {
+        "name": "Pod with hostIPC set true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "Pod without hostIPC or hostPID is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    }
+]
