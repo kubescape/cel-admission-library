@@ -31,7 +31,7 @@ result=0
 for control in $(ls controls); do
     echo "Running test $control"
     pushd controls/$control
-    $PYTHON_EXECUTABLE ../../scripts/run-control-test.py
+    $PYTHON_EXECUTABLE ../../scripts/run-control-tests.py
     # Check if test failed
     if [ $? -ne 0 ]; then
         echo "Test $control failed"
@@ -39,6 +39,7 @@ for control in $(ls controls); do
     else
         echo "Test $control passed"
     fi
+    popd
 done
 
 exit $result
