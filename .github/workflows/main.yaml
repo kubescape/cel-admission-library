@@ -27,5 +27,6 @@ jobs:
         python-version: '3.10' 
     - uses: azure/setup-kubectl@v3
     - run: |
+        pip install -r requirements.txt
         ./scripts/run-all-control-tests.sh
 
