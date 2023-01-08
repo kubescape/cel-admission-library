@@ -1,0 +1,31 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0041-host-network-access"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || !(has(object.spec.hostNetwork)) || object.spec.hostNetwork == false"
+      message: "Pods with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.hostNetwork)) || object.spec.template.spec.hostNetwork == false"
+      message: "Workloads with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+
+    - expression: "object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.template.spec.hostNetwork)) || object.spec.jobTemplate.spec.template.spec.hostNetwork == false"
+      message: "CronJob with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+
+      
