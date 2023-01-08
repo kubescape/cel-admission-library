@@ -1,6 +1,7 @@
 import json, yaml
 import subprocess
 import os
+import sys
 import tempfile
 from termcolor import colored
 
@@ -34,6 +35,9 @@ subprocess.check_call(['kubectl', 'apply', '-f', os.path.join(CONFIGURATION_DIR,
 # Open policy yaml
 with open(os.path.join('policy.yaml'), 'r') as f:
     policy = yaml.load(f, Loader=yaml.FullLoader)
+
+# Test result variable
+all_tests_passed = True
 
 # Loop through the tests
 for test in tests:
@@ -118,10 +122,16 @@ for test in tests:
     else:
         print(colored('Done', 'yellow'))
 
-
+    all_tests_passed = all_tests_passed and test_passed
 
     print('-'*120)
     print('')
     
     
+if all_tests_passed:
+    print(colored('All tests passed!','green'))
+    sys.exit(0)
+else:
+    print(colored('Some tests failed','red'))
+    sys.exit(1)
 

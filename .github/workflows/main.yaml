@@ -1,0 +1,29 @@
+name: "main-policy-automation"
+on:
+  pull_request:
+    types:
+      [ opened, synchronize, reopened ]
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  test-all-policies:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: action/checkout@v2
+    - name: start minikube
+      id: minikube
+      uses: slashben/setup-minikube@latest
+      with:
+          feature-gates: 'ValidatingAdmissionPolicy=true'
+          extra-config: 'apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1'
+          kubernetes-version: 1.26.0
+          container-runtime: containerd
+    - uses: azure/setup-kubectl@v3
+    - run: |
+        apt install -y python3 python3-pip
+        ./scripts/run-all-control-tests.sh
+
