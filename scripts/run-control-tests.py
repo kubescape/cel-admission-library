@@ -129,9 +129,9 @@ for test in tests:
     
     
 if all_tests_passed:
-    print(colored('All tests passed!','green'))
+    print(colored('Control tests passed!','green'))
     sys.exit(0)
 else:
-    print(colored('Some tests failed','red'))
+    print(colored('Some control tests failed','red'))
     sys.exit(1)
 
