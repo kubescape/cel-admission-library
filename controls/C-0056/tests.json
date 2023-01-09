@@ -8,8 +8,21 @@
         ]
     },
     {
-        "name": "Pod without liveinessProbe is not allowed",
+        "name": "Pod without livenessProbe is not allowed",
         "template": "pod.yaml",
+        "expected": "fail"    
+    },
+    {
+        "name": "Deployment with livenessProbe is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].livenessProbe.httpGet.port=8080"
+        ]
+    },
+    {
+        "name": "Deployment without livenessProbe is not allowed",
+        "template": "deployment.yaml",
         "expected": "fail"    
     }
 ]

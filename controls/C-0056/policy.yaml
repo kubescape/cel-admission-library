@@ -14,8 +14,14 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, has(container.livenessProbe))"
       message: "Pods must have livenessProbe set up (see more at https://hub.armosec.io/docs/c-0056)"
-    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, has(container.livenessProbe))"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, has(container.livenessProbe))"
       message: "Workloads must have livenessProbe set up (see more at https://hub.armosec.io/docs/c-0056)"
+    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.livenessProbe))"
+      message: "CronJob must have livenessProbe set up (see more at https://hub.armosec.io/docs/c-0056)"
