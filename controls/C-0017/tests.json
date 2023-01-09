@@ -1,0 +1,39 @@
+[
+    {
+        "name": "Deployment with readOnlyRootFilesystem set to false is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=false"    
+        ]
+    },
+    {
+        "name": "Deployment readOnlyRootFilesystem is not defined is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment with readOnlyRootFilesystem set to true is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true"    
+        ]
+    },
+    {
+        "name": "Pod with readOnlyRootFilesystem set to false is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=false"    
+        ]
+    },
+    {
+        "name": "Pod with readOnlyRootFilesystem set to true is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=true"    
+        ]
+    }
+]
