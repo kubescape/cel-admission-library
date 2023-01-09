@@ -8,7 +8,7 @@
         ]
     },
     {
-        "name": "Pod without image from quay.io is blocked",
+        "name": "Pod without image from quay.io is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
