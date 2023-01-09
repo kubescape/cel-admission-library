@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Pod with container having hostPort blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].ports.[0].hostPort=2023"    
+        ]
+    },
+    {
+        "name": "Pod with container not having hostPort allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with container having hostPort blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports.[0].hostPort=2023"    
+        ]
+    },
+    {
+        "name": "Deployment with container not having hostPort allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    }
+]
