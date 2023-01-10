@@ -50,13 +50,13 @@ settings:
   maxHighVulnerabilities:
   - 10
   memoryLimitMax:
-  - 0
+  - 256
   memoryLimitMin:
-  - 0
+  - 32
   memoryRequestMax:
-  - 0
+  - 256
   memoryRequestMin:
-  - 0
+  - 32
   publicRegistries:
   - docker.io
   - gcr.io
