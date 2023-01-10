@@ -1,0 +1,51 @@
+[
+    {
+        "name": "Pod with container having memory-request and limits not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Pod with container having memory request set and limits not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=128"
+        ]
+    },
+    {
+        "name": "Pod with container having memory request and limits set and both values in the limit is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=128",
+            "spec.containers.[0].resources.limits.memory=128"
+        ]
+    },
+    {
+        "name": "Pod with container having memory request and limits set and values not in the limit is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=16",
+            "spec.containers.[0].resources.limits.memory=512"
+        ]
+    },
+    {
+        "name": "Deployment with container having memory-request and limits not set is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Deployment with container having memory request and limits set and both values in the limit is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].resources.requests.memory=128",
+            "spec.template.spec.containers.[0].resources.limits.memory=128"
+        ]
+    }
+]
