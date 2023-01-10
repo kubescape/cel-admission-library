@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Pod with name containing \"kube-apiserver\" and \"--insecure-port=1\" in commands is blocked",
+        "template": "apiserver-pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with name containing \"kube-apiserver\" and not having \"--insecure-port=1\" in commands is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=kube-apiserver-test"
+        ]
+    },
+    {
+        "name": "Pod with name not containing \"kube-apiserver\" and \"--insecure-port=1\" in commands is allowed",
+        "template": "apiserver-pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=not"
+        ]
+    },
+    {
+        "name": "Pod with name not containing \"kube-apiserver\" and not having \"--insecure-port=1\" in commands is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    }
+]

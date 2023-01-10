@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    component: kube-apiserver
+    tier: control-plane
+    admission-policy-test: abc
+  name: kube-apiserver
+  namespace: kube-system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -c
+    - --insecure-port=1
+    image: k8s.gcr.io/kube-apiserver:v1.9.7
+    livenessProbe:
+      httpGet:
+        host: 127.0.0.1
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 15
+      timeoutSeconds: 15
+    name: kube-apiserver
+    ports:
+    - containerPort: 443
+      hostPort: 443
+      name: https
+    - containerPort: 8080
+      hostPort: 8080
+      name: local
+    resources:
+      requests:
+        cpu: 250m
+    volumeMounts:
+    - mountPath: /etc/gce.conf
+      name: cloudconfigmount
+      readOnly: true
+    - mountPath: /etc/gcp_authz.config
+      name: webhookconfigmount
+      readOnly: false
+    - mountPath: /etc/gcp_authn.config
+      name: webhookauthnconfigmount
+      readOnly: false
+    - mountPath: /etc/audit_policy.config
+      name: auditpolicyconfigmount
+      readOnly: true
+    - mountPath: /etc/audit_webhook.config
+      name: auditwebhookconfigmount
+      readOnly: true
+    - mountPath: /etc/srv/kubernetes
+      name: srvkube
+      readOnly: true
+    - mountPath: /var/log/kube-apiserver.log
+      name: logfile
+      readOnly: false
+    - mountPath: /var/log/kube-apiserver-audit.log
+      name: auditlogfile
+      readOnly: false
+    - mountPath: /etc/ssl
+      name: etcssl
+      readOnly: true
+    - mountPath: /usr/share/ca-certificates
+      name: usrsharecacerts
+      readOnly: true
+    - mountPath: /var/ssl
+      name: varssl
+      readOnly: true
+    - mountPath: /etc/openssl
+      name: etcopenssl
+      readOnly: true
+    - mountPath: /etc/srv/pki
+      name: etcpki
+      readOnly: true
+    - mountPath: /etc/srv/sshproxy
+      name: srvsshproxy
+      readOnly: false
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: /etc/gce.conf
+      type: FileOrCreate
+    name: cloudconfigmount
+  - hostPath:
+      path: /etc/gcp_authz.config
+      type: FileOrCreate
+    name: webhookconfigmount
+  - hostPath:
+      path: /etc/gcp_authn.config
+      type: FileOrCreate
+    name: webhookauthnconfigmount
+  - hostPath:
+      path: /etc/audit_policy.config
+      type: FileOrCreate
+    name: auditpolicyconfigmount
+  - hostPath:
+      path: /etc/audit_webhook.config
+      type: FileOrCreate
+    name: auditwebhookconfigmount
+  - hostPath:
+      path: /etc/srv/kubernetes
+    name: srvkube
+  - hostPath:
+      path: /var/log/kube-apiserver.log
+      type: FileOrCreate
+    name: logfile
+  - hostPath:
+      path: /var/log/kube-apiserver-audit.log
+      type: FileOrCreate
+    name: auditlogfile
+  - hostPath:
+      path: /etc/ssl
+    name: etcssl
+  - hostPath:
+      path: /usr/share/ca-certificates
+    name: usrsharecacerts
+  - hostPath:
+      path: /var/ssl
+    name: varssl
+  - hostPath:
+      path: /etc/openssl
+    name: etcopenssl
+  - hostPath:
+      path: /etc/srv/pki
+    name: etcpki
+  - hostPath:
+      path: /etc/srv/sshproxy
+    name: srvsshproxy

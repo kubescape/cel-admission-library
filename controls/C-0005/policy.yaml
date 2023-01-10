@@ -1,0 +1,15 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0005-deny-apiserver-pod-with-insecure-port-enabled"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+  validations:
+    - expression: "object.kind != 'Pod' || !(object.metadata.name.contains('kube-apiserver')) || object.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != '--insecure-port=1'))"
+      message: "The apiserver pod has insecure-port enabled! (see more at https://hub.armosec.io/docs/c-0005)"
