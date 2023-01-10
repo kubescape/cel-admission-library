@@ -30,7 +30,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: "${{ env.GITHUB_REF_NAME }}"
-          release_name: "Release ${{ env.GITHUB_REF_NAME }}""
+          release_name: "Release ${{ env.GITHUB_REF_NAME }}"
           draft: false
           prerelease: false
       - name: Publish release artifacts
