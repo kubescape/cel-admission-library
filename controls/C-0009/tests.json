@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Pod having containers without memory limit and cpu limit is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Pod having containers with memory limit set and cpu limit not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.limits.memory=256Mi"
+        ]
+    },
+    {
+        "name": "Pod having containers with memory limit not set and cpu limit set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.containers.[0].resources.limits.cpu=2"
+        ]
+    },
+    {
+        "name": "Pod having containers with memory limit set and cpu limit set is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.limits.cpu=2",
+            "spec.containers.[0].resources.limits.memory=256Mi"
+        ]
+    },
+    {
+        "name": "Deployment having containers without memory limit and cpu limit is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment having containers with memory limit set and cpu limit set is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].resources.limits.cpu=2",
+            "spec.template.spec.containers.[0].resources.limits.memory=256Mi"
+        ]
+    }
+]
