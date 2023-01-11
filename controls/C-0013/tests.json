@@ -1,0 +1,86 @@
+[
+    {
+        "name": "Pod with runAsUser and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation not set in every ContainerSecurityContext is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with runAsUser set to non-zero value and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation not set in every ContainerSecurityContext is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.securityContext.runAsUser=1"
+        ]
+    },
+    {
+        "name": "Pod with runAsUser not set and runAsNonRoot set to true in PodSecurityContext and allowPreviligeEscalation not set in every ContainerSecurityContext is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "Pod with runAsUser and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with runAsUser set to non-zero value and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation set to in every ContainerSecurityContext is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.runAsUser=1",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },  
+    {
+        "name": "Pod with runAsUser not set and runAsNonRoot set to true in PodSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with runAsUser set to non-zero value and runAsNonRoot not set in every ContainerSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsUser=1",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },  
+    {
+        "name": "Pod with runAsUser not set and runAsNonRoot set to true in every ContainerSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with runAsUser and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with runAsUser set to non-zero value and runAsNonRoot not set in PodSecurityContext and allowPreviligeEscalation set to false in every ContainerSecurityContext is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.runAsUser=1",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    }
+]
