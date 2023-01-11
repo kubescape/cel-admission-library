@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0045-deny-workloads-with-hostpath-volumes-readonly-not-false"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || object.spec.volumes.all(vol, !(has(vol.hostPath)))"
+      message: "One or more hostPath Volumes in the Pod has readOnly not set to false! (see more at https://hub.armosec.io/docs/c-0045)"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
+      message: "One or more hostPath Volumes in the Workload has readOnly not set to false! (see more at https://hub.armosec.io/docs/c-0045)"
+    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)))"
+      message: "One or more hostPath Volumes in the CronJob has readOnly not set to false! (see more at https://hub.armosec.io/docs/c-0045)"

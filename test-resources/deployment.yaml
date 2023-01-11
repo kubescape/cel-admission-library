@@ -21,3 +21,8 @@ spec:
         args: ["-c", "while true; do sleep 1; done"]
         ports:
         - containerPort: 8086
+        volumeMounts :
+        - mountPath : /test-pd
+          name : test-volume
+      volumes :
+        - name : test-volume
