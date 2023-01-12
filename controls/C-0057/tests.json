@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Pod having container having securityContext.privileged set to true is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod having container with \"SYS_ADM\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having container having securityContext.privileged set to true and with \"SYS_ADM\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod having container not having securityContext.privileged set to true and without \"SYS_ADM\" capability is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment having container having securityContext.privileged set to true and with \"SYS_ADM\" capability is denied",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Deployment having container not having securityContext.privileged set to true and without \"SYS_ADM\" capability is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    }
+]
