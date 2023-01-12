@@ -3,14 +3,10 @@ kind: ControlConfiguration
 metadata:
   name: placeholder
 settings:
-  cpuLimitMax:
-  - 0
-  cpuLimitMin:
-  - 0
-  cpuRequestMax:
-  - 0
-  cpuRequestMin:
-  - 0
+  cpuLimitMax: 5
+  cpuLimitMin: 1
+  cpuRequestMax: 5
+  cpuRequestMin: 1
   imageRepositoryAllowList:
   - gcr.io
   insecureCapabilities:
