@@ -14,7 +14,7 @@ RELEASE_DIR=$1
 RELEASE_POLICY_YAML_FILE_NAME=$RELEASE_DIR/kubescape-validating-admission-policies.yaml
 
 echo "Creating release policy YAML file $RELEASE_POLICY_YAML_FILE_NAME"
-touch $RELEASE_POLICY_YAML_FILE_NAME
+echo "" > $RELEASE_POLICY_YAML_FILE_NAME
 
 # Loop through all policies and add them to the release YAML file
 for control in $(ls controls); do
@@ -24,8 +24,9 @@ for control in $(ls controls); do
         continue
     fi
     # Copy policy file contents to release YAML file
+    echo controls/$control/policy.yaml
     cat controls/$control/policy.yaml >> $RELEASE_POLICY_YAML_FILE_NAME
-    echo "---" >> $RELEASE_POLICY_YAML_FILE_NAME
+    printf "\n---\n" >> $RELEASE_POLICY_YAML_FILE_NAME
 done
 
 # Delete the last line of the policy file

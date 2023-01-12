@@ -41,7 +41,7 @@ spec:
 EOT
 # Creating a namespace for running the example
 kubectl create namespace policy-example
-kubectl label namespace policy=enforced
+kubectl label namespace policy-example policy=enforced
 # The next line should fail
 kubectl -n policy-example run nginx --image=nginx --restart=Never
 ```
