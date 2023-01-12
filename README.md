@@ -31,9 +31,9 @@ kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: c0016-binding
 spec:
-  policyName: basic-control-configuration
+  policyName: kubescape-c-0016-allow-privilege-escalation
   paramRef:
-    name: settings
+    name: basic-control-configuration
   matchResources:
     namespaceSelector:
       matchLabels:
