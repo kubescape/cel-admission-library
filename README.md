@@ -12,11 +12,11 @@ and you need to enable its feature gate to be able to use it. Therefore it is no
 Install latest the release of the library:
 ```bash
 # Install configuration CRD
-kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/policy-configuration-definition.yaml
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/latest/download/policy-configuration-definition.yaml
 # Install basic configuration
-kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/basic-control-configuration.yaml
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/latest/download/basic-control-configuration.yaml
 # Install policies
-kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/kubescape-validating-admission-policies.yaml
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/latest/download/kubescape-validating-admission-policies.yaml
 ```
 
 You're good to start to use it 😎
