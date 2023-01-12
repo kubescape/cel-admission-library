@@ -1,10 +1,10 @@
 apiVersion: "kubescape.io/v1"
 kind: ControlConfiguration
 metadata:
-  name: placeholder
+  name: basic-control-configuration
 settings:
   cpuLimitMax: 5
-  cpuLimitMin: 1
+  cpuLimitMin: 0.5
   cpuRequestMax: 5
   cpuRequestMin: 0.1
   imageRepositoryAllowList:
