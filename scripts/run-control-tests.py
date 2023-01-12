@@ -89,7 +89,7 @@ for test in tests:
     # Run kubectl apply on the test object
     result = None
     try:
-        subprocess.check_call(['kubectl', 'apply', '-f', test_object_yaml])
+        subprocess.check_call(['kubectl', '--dry-run=server', 'apply', '-f' ,test_object_yaml])
         result = 0
     except subprocess.CalledProcessError as e:
         result = e.returncode
