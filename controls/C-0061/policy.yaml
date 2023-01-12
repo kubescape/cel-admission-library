@@ -1,0 +1,23 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0061-deny-workloads-in-default-namespace"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "['Pod','Deployment','ReplicaSet','DaemonSet','StatefulSet','Job', 'CronJob'].all(kind, object.kind != kind) || (has(object.metadata.namespace) && object.metadata.namespace != 'default')"
+      message: "Workloads with privileged containers are not allowed! (see more at https://hub.armosec.io/docs/c-0016)"

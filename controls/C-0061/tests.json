@@ -1,0 +1,48 @@
+[
+    {
+        "name": "Pod with namespace not set is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with namespace set to default is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Pod with namespace set to value other than default is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "Deployment with namespace not set is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with namespace set to default is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Deployment with namespace set to value other than default is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    }
+]

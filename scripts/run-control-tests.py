@@ -29,6 +29,9 @@ if not os.path.exists(TEST_RESOURCES_DIR):
 with open('tests.json', 'r') as f:
     tests = json.load(f)
 
+# Create a test namespace
+subprocess.check_call(['kubectl', 'create', 'namespace','test-namespace'])
+
 # Apply the configuraton CRD
 subprocess.check_call(['kubectl', 'apply', '-f', os.path.join(CONFIGURATION_DIR, 'policy-configuration-definition.yaml')])
 
@@ -102,7 +105,7 @@ for test in tests:
         print(colored('Test passed!','green'))
    
     print(colored('Cleaning up...', 'yellow'))
-    # Run kubectl delete on the policy and policy binding
+    # Run kubectl delete on the policy and policy binding.
     try:
         subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -127,7 +130,10 @@ for test in tests:
     print('-'*120)
     print('')
     
-    
+
+# Delete the test namespace
+subprocess.check_call(['kubectl', 'delete', 'namespaces', 'test-namespace'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  
+
 if all_tests_passed:
     print(colored('Control tests passed!','green'))
     sys.exit(0)
