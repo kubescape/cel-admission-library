@@ -1,0 +1,51 @@
+[
+    {
+        "name": "Pod with container having cpu-request and limits not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Pod with container having cpu request set and limits not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=2"
+        ]
+    },
+    {
+        "name": "Pod with container having cpu request and limits set and both values in the limit is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=3",
+            "spec.containers.[0].resources.limits.cpu=3"
+        ]
+    },
+    {
+        "name": "Pod with container having cpu request and limits set and values not in the limit is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=1",
+            "spec.containers.[0].resources.limits.cpu=6"
+        ]
+    },
+    {
+        "name": "Deployment with container having cpu-request and limits not set is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Deployment with container having cpu request and limits set and both values in the limit is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].resources.requests.cpu=3",
+            "spec.template.spec.containers.[0].resources.limits.cpu=3"
+        ]
+    }
+]
