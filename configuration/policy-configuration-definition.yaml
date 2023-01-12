@@ -16,13 +16,13 @@ spec:
               type: object
               properties:
                 cpuLimitMax:
-                  type: integer
+                  type: number
                 cpuLimitMin:
-                  type: integer
+                  type: number
                 cpuRequestMax:
-                  type: integer
+                  type: number
                 cpuRequestMin:
-                  type: integer
+                  type: number
                 imageRepositoryAllowList:
                   items:
                     type: string

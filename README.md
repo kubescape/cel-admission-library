@@ -4,15 +4,48 @@ This is a library of polcies based on [Kubescape controls](https://hub.armosec.i
 
 ## Using the library
 
-
 *Note: Kubernetes Validating Admission Policy feature is still it is early phase. 
 It has been released as a alphav1 feature in Kubernetes 1.26,
 and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready.*
 
-You can apply policies directly from GitHub, for example to apply control [C-0016](https://hub.armosec.io/docs/c-0016) (deny `allowPrivilegeEscalation` on containers) just run this:
+
+Install latest release of the library:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-library/main/controls/C-0016/policy.yaml
+# Install configuration CRD
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/policy-configuration-definition.yaml
+# Install basic configuration
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/basic-control-configuration.yaml
+# Install policies
+kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/download/latest/kubescape-validating-admission-policies.yaml
 ```
+
+You're good to start to use it 😎
+
+You can apply policies to objects, for example to apply control [C-0016](https://hub.armosec.io/docs/c-0016) (deny `allowPrivilegeEscalation` on containers) on workloads in namespace with label `policy=enforced` just run this:
+
+```bash
+# Creating a binding
+kubectl apply -f - <<EOT
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: c0016-binding
+spec:
+  policyName: kubescape-c-0016-allow-privilege-escalation
+  paramRef:
+    name: basic-control-configuration
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        policy: enforced
+EOT
+# Creating a namespace for running the example
+kubectl create namespace policy-example
+kubectl label namespace policy-example policy=enforced
+# The next line should fail
+kubectl -n policy-example run nginx --image=nginx --restart=Never
+```
+
 ## Testing policies
 
 ### Cluster
