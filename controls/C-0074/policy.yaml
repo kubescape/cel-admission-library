@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0074-containers-mounting-docker-socket-denied"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >
+        object.kind != 'Pod' || !(has(object.spec.volumes)) || 
+        object.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        !(has(vol.hostPath.path)) ||
+        (
+          vol.hostPath.path != '/var/run/docker.sock' &&
+          vol.hostPath.path != '/var/run/docker'
+        ))
+      message: "Pod has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.volumes)) || 
+        object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        !(has(vol.hostPath.path)) ||
+        (
+          vol.hostPath.path != '/var/run/docker.sock' &&
+          vol.hostPath.path != '/var/run/docker'
+        ))
+      message: "Workload has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
+    - expression: >
+        object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.volumes)) || 
+        object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        !(has(vol.hostPath.path)) ||
+        (
+          vol.hostPath.path != '/var/run/docker.sock' &&
+          vol.hostPath.path != '/var/run/docker'
+        ))
+      message: "CronJob has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
