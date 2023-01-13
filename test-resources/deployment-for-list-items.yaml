@@ -17,7 +17,7 @@ spec:
       containers:
       - name: sleep
         image: alpine
-        command: ["sh"]
+        command: ["sudo","sh"]
         args: ["-c", "while true; do sleep 1; done"]
         securityContext:
           capabilities:
