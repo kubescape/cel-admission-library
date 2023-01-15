@@ -1,0 +1,58 @@
+[
+    {
+        "name": "Pod without lables from the configured list is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Pod with label app is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.labels.app=label-test"
+        ]
+    },
+    {
+        "name": "Pod with label app and env is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.labels.app=label-test",
+            "metadata.labels.env=label-test"
+        ]
+    },
+    {
+        "name": "Deployment and its PodSpec without lables from the configured list is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Deployment with label \"tier\" and PodSpec without lables from the configured list is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.labels.tier=label-test"
+        ]
+    },
+    {
+        "name": "Deployment with label \"tier\" and PodSpec with label \"app\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.labels.tier=label-test",
+            "spec.template.metadata.labels.app=label-test"
+        ]
+    },
+    {
+        "name": "Deployment without lables from the configured list and PodSpec with \"app\" label is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.labels.tier=label-test"
+        ]
+    }
+]
