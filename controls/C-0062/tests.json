@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Pod with container having sudo in command is blocked",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Pod with container not having sudo in command is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with container having sudo in command is blocked",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Deployment with container not having sudo in command is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    }
+]

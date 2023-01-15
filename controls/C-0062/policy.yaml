@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0062-deny-resources-having-containers-with-sudo-in-entrypoint"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || object.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+      message: "Pod has a container/s having sudo in entrypoint! (see more at https://hub.armosec.io/docs/c-0062)"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+      message: "Workload has a container/s having sudo in entrypoint! (see more at https://hub.armosec.io/docs/c-0062)"
+    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+      message: "CronJob has a container/s having sudo in entrypoint! (see more at https://hub.armosec.io/docs/c-0062)"
