@@ -26,3 +26,4 @@ spec:
           name : test-volume
       volumes :
         - name : test-volume
+        - name : test-volume-2

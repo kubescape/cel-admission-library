@@ -18,3 +18,4 @@ spec:
   
   volumes :
   - name : test-volume
+  - name: test-volume-2

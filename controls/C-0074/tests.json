@@ -1,0 +1,82 @@
+[
+    {
+        "name": "Pod not having hostPath volume is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having hostPath volume and no docker socket is mounted is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var"
+        ]    
+    },
+    {
+        "name": "Pod having hostPath volume and path /var/run/docker.sock is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var/run/docker.sock"
+        ]    
+    },
+    {
+        "name": "Pod having hostPath volume and path /var/run/docker is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var/run/docker"
+        ]    
+    },
+    {
+        "name": "Pod having hostPath volume and path /var/run/docker and /var/run/docker.sock is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var/run/docker",
+            "spec.volumes.[1].hostPath.path=/var/run/docker.sock"
+        ]    
+    },
+    {
+        "name": "Deployment not having hostPath volume is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment having hostPath volume and no docker socket is mounted is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]    
+    },
+    {
+        "name": "Deployment having hostPath volume and path /var/run/docker.sock is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var/run/docker.sock"
+        ]    
+    },
+    {
+        "name": "Deployment having hostPath volume and path /var/run/docker is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var/run/docker"
+        ]    
+    },
+    {
+        "name": "Deployment having hostPath volume and path /var/run/docker and /var/run/docker.sock is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var/run/docker",
+            "spec.template.spec.volumes.[1].hostPath.path=/var/run/docker.sock"
+        ]    
+    }
+]
