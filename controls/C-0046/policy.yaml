@@ -1,0 +1,45 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0046-deny-resources-with-insecure-capabilities"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >
+        object.kind != 'Pod' || 
+        object.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
+        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
+        ))
+      message: "Pod has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        object.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
+        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
+        ))
+      message: "Workload has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
+    - expression: >
+        object.kind != 'CronJob' || 
+        object.spec.jobTemplate.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
+        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
+        ))
+      message: "CronJob has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
