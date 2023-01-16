@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Pod having container with capabilities not set is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [    
+        ]
+    },
+    {
+        "name": "Pod having container with NET_RAW capability is blocked",
+        "template": "pod-capabilities.yaml",
+        "expected": "fail",
+        "field_change_list": [    
+        ]
+    },
+    {
+        "name": "Pod having containers with capabilities set but not from insecure capabilities list is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment having container with capabilities not set is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [    
+        ]
+    },
+    {
+        "name": "Deployment having container with NET_RAW capability is blocked",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [    
+        ]
+    }
+]
