@@ -74,5 +74,60 @@
         "expected": "pass",
         "field_change_list": [    
         ]
+    },
+    {
+        "name": "ConfigMap without data having sensitiveKey and not matching sensitiveValues is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [    
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey and empty value is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "data.password=\"\""
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey and value not from sensitiveValuesAllowed is denied",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [  
+            "data.password=password123"  
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey and value from sensitiveValuesAllowed is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [  
+            "data.password=encrypted-password"  
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey matching sensitiveValues and empty value is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "data.topsecret=\"\""
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey matching sensitiveValues and value not from sensitiveValuesAllowed is denied",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [  
+            "data.topsecret=password123"  
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey matching sensitiveValues and value from sensitiveValuesAllowed is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [  
+            "data.topsecret=encrypted-password"  
+        ]
     }
 ]

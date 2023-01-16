@@ -21,6 +21,10 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["configmaps"]
   validations:
     - expression: > 
         object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
@@ -43,3 +47,14 @@ spec:
         params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
         ))
       message: "CronJob has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
+    - expression: > 
+        object.kind != 'ConfigMap' || object.data.all(key,
+        (
+          (
+            !params.settings.sensitiveKeyNames.exists(sensitiveKey, key.lowerAscii().contains(sensitiveKey)) &&
+            !params.settings.sensitiveValues.exists(sensitiveVal, key.lowerAscii().matches(sensitiveVal))
+          ) ||
+          object.data.key == "" ||
+          params.settings.sensitiveValuesAllowed.exists(allowedVal, object.data.key == allowedVal)
+        ))
+      message: "ConfigMap contains sensitive information in its data! (see more at https://hub.armosec.io/docs/c-0012)"

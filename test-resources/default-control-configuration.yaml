@@ -95,6 +95,7 @@ settings:
   - _secret_
   sensitiveValuesAllowed:
   - test-value
+  - encrypted-password
   servicesNames:
   - nifi-service
   - argo-server
