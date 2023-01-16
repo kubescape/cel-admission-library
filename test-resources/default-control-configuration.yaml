@@ -9,6 +9,7 @@ settings:
   cpuRequestMin: 0.1
   imageRepositoryAllowList:
   - gcr.io
+  - docker.io # Not in Kubescape's initial configuration but added to test as this is an edge case.
   insecureCapabilities:
   - SETPCAP
   - NET_ADMIN
