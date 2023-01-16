@@ -1,0 +1,15 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0073-deny-naked-pods"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+  validations:
+    - expression: "object.kind != 'Pod' || has(object.metadata.ownerReferences)"
+      message: "Pods doesn't have a parent! (see more at https://hub.armosec.io/docs/c-0073)"
