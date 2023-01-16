@@ -28,3 +28,5 @@ spec:
             add:
             - SYS_ADM
             - NET_RAW
+        env :
+        - name : azure_batch_key
