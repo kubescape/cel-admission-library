@@ -4,7 +4,6 @@ metadata:
   name: test-deployment
   labels:
     admission-policy-test: abc
-    app.kubernetes.io/name: myApp
 spec:
   replicas: 1
   selector:
@@ -25,4 +24,3 @@ spec:
           capabilities:
             add:
             - SYS_ADM
-            - NET_RAW

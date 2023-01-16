@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: test-deployment
-        app.kubernetes.io/name: myApp
     spec:
       containers:
       - name: sleep
@@ -25,4 +24,3 @@ spec:
           capabilities:
             add:
             - SYS_ADM
-            - NET_RAW

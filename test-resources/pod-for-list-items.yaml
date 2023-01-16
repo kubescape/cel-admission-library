@@ -4,6 +4,7 @@ metadata:
   name: test-pod
   labels:
     admission-policy-test: abc
+    app.kubernetes.io/name: myApp
 spec:
   containers:
   - name: sleep

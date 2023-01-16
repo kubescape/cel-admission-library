@@ -1,0 +1,61 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0077-deny-resources-without-configured-list-of-k8s-common-labels-not-set"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: > 
+        object.kind != 'Pod' ||
+        (
+          has(object.metadata.labels) &&
+          !(object.metadata.labels.all(label, params.settings.k8sRecommendedLabels.all(
+            labelInList, labelInList != label
+          )))
+        )
+      message: "Pod doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        (
+          has(object.metadata.labels) &&
+          !(object.metadata.labels.all(label, params.settings.k8sRecommendedLabels.all(
+            labelInList, labelInList != label
+          ))) &&
+          has(object.spec.template.metadata) &&
+          has(object.spec.template.metadata.labels) &&
+          !(object.spec.template.metadata.labels.all(label, params.settings.k8sRecommendedLabels.all(
+            labelInList, labelInList != label
+          )))
+        )
+      message: "Workload or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
+    - expression: >
+        object.kind != 'CronJob' ||
+        (
+          has(object.metadata.labels) &&
+          !(object.metadata.labels.all(label, params.settings.k8sRecommendedLabels.all(
+            labelInList, labelInList != label
+          ))) &&
+          has(object.spec.jobTemplate.metadata) &&
+          has(object.spec.jobTemplate.metadata.labels) &&
+          !(object.spec.jobTemplate.metadata.labels.all(label, params.settings.k8sRecommendedLabels.all(
+            labelInList, labelInList != label
+          )))
+        )
+      message: "CronJob or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
