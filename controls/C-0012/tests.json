@@ -1,0 +1,78 @@
+[
+    {
+        "name": "Pod with container having env with sensitive key name and non-empty value and not from sensitiveVlauesAllowed is blocked",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].env.[0].value=randomValue"    
+        ]
+    },
+    {
+        "name": "Pod with container having env with sensitive key name and value not set is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Pod with container having env with sensitive key name and value set to empty string is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env.[0].value=\"\""    
+        ]
+    },
+    {
+        "name": "Pod with container having env with sensitive key name and non-empty value and from sensitiveVlauesAllowed is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env.[0].value=test-value"    
+        ]
+    },
+    {
+        "name": "Pod with container having env without sensitive key name is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Deployment with container having env with sensitive key name and non-empty value and not from sensitiveVlauesAllowed is blocked",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env.[0].value=randomValue"    
+        ]
+    },
+    {
+        "name": "Deployment with container having env with sensitive key name and value not set is allowed",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [   
+        ]
+    },
+    {
+        "name": "Deployment with container having env with sensitive key name and value set to empty string is allowed",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env.[0].value=\"\""    
+        ]
+    },
+    {
+        "name": "Deployment with container having env with sensitive key name and non-empty value and from sensitiveVlauesAllowed is allowed",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env.[0].value=test-value"    
+        ]
+    },
+    {
+        "name": "Deployment with container having env without sensitive key name is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [    
+        ]
+    }
+]
