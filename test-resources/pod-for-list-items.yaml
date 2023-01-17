@@ -5,6 +5,8 @@ metadata:
   labels:
     admission-policy-test: abc
     app.kubernetes.io/name: myApp
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/sleep: runtime/default
 spec:
   containers:
   - name: sleep
@@ -15,3 +17,5 @@ spec:
       capabilities:
         add:
         - SYS_ADM
+        drop:
+        - NET_RAW
