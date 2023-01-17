@@ -15,3 +15,5 @@ spec:
       capabilities:
         add:
         - SYS_ADM
+    env :
+      - name : azure_batch_key
