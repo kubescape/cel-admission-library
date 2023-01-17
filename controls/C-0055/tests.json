@@ -1,0 +1,108 @@
+[
+    {
+        "name": "Pod without apparmor annotations or seccompProfile or seLinuxOptions in PodSecurityContext or atleast one container not having seccompProfile, seLinuxOptions or capabilities.drop is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with metadata.annotations having \"container.apparmor.security.beta.kubernetes.io/sleep\" key is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext having seccompProfile allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.seccompProfile.type=RuntimeDefault"
+        ]   
+    },
+    {
+        "name": "Pod with PodSecurityContext having seLinuxOptions allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.seLinuxOptions.level=\"s0:c123,c456\""
+        ]   
+    },
+    {
+        "name": "Pod with every container securityContext having seccompProfile is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.seccompProfile.type=RuntimeDefault"
+        ]   
+    },
+    {
+        "name": "Pod with every container securityContext having seLinuxOptions is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.seLinuxOptions.level=\"s0:c123,c456\""
+        ]   
+    },
+    {
+        "name": "Pod with every container securityContext having capabilities.drop is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]   
+    },
+    {
+        "name": "Deployment without apparmor annotations or seccompProfile or seLinuxOptions in PodSecurityContext or atleast one container not having seccompProfile, seLinuxOptions or capabilities.drop is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with metadata.annotations having \"container.apparmor.security.beta.kubernetes.io/sleep\" key is allowed",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext having seccompProfile allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.seccompProfile.type=RuntimeDefault"
+        ]   
+    },
+    {
+        "name": "Deployment with PodSecurityContext having seLinuxOptions allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.seLinuxOptions.level=\"s0:c123,c456\""
+        ]   
+    },
+    {
+        "name": "Deployment with every container securityContext having seccompProfile is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.seccompProfile.type=RuntimeDefault"
+        ]   
+    },
+    {
+        "name": "Deployment with every container securityContext having seLinuxOptions is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.seLinuxOptions.level=\"s0:c123,c456\""
+        ]   
+    },
+    {
+        "name": "Deployment with every container securityContext having capabilities.drop is allowed",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]   
+    }
+]
