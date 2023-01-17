@@ -2,7 +2,10 @@ module celcli
 
 go 1.19
 
-require github.com/google/cel-go v0.13.0
+require (
+	github.com/google/cel-go v0.13.0
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/antlr/antlr4/runtime/Go/antlr v1.4.10 // indirect

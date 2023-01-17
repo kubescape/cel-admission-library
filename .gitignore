@@ -1,3 +1,4 @@
 .vscode
 tmp
 release
+tools/celcli/celcli
