@@ -12,3 +12,10 @@ go build .
 $ echo "{\"field\":0}" | go run main.go "object.field < 1"
 true
 ```
+
+or you can directly use the test-resource
+
+```bash
+$ cat ../../test-resources/deployment.yaml | ./celcli --input yaml "object.kind == \"Deployment\""
+true
+```
