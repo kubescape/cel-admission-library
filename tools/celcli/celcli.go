@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/cel-go/cel"
 	"gopkg.in/yaml.v3"
+	"k8s.io/apiserver/pkg/cel/library"
 )
 
 func main() {
@@ -16,6 +17,8 @@ func main() {
 	// Add input format flag
 	var inputFormat string
 	flag.StringVar(&inputFormat, "input", "json", "Input format (json, yaml, etc.)")
+	var paramsFile string
+	flag.StringVar(&paramsFile, "params", "", "File containing parameters")
 	flag.Parse()
 	// Check that we have argument to evaluate.
 	if flag.NArg() != 1 {
@@ -27,10 +30,24 @@ func main() {
 	// Take the first argument as the expression to evaluate.
 	cel_expr := flag.Arg(0)
 
+	var params map[string]interface{}
+	if paramsFile != "" {
+		// Read the parameters from the file as a YAML object.
+		f, err := os.Open(paramsFile)
+		if err != nil {
+			log.Fatalf("error opening params file: %s", err)
+		}
+		if err := yaml.NewDecoder(f).Decode(&params); err != nil {
+			log.Fatalf("error reading params file: %s", err)
+		}
+	}
+
 	// Create the environment and parse the expression.
-	env, err := cel.NewEnv(
-		cel.Variable("object", cel.DynType),
-	)
+	var opts []cel.EnvOption
+	opts = append(opts, cel.Variable("object", cel.DynType))
+	opts = append(opts, cel.Variable("params", cel.DynType))
+	opts = append(opts, library.ExtensionLibs...)
+	env, err := cel.NewEnv(opts...)
 	if err != nil {
 		log.Fatalf("environment creation error: %s", err)
 	}
@@ -55,7 +72,7 @@ func main() {
 	}
 
 	out, _, err := prg.Eval(map[string]interface{}{
-		"object": data})
+		"object": data, "params": params})
 	if err != nil {
 		log.Fatalf("runtime error: %s", err)
 	}
