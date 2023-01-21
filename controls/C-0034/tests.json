@@ -1,0 +1,71 @@
+[
+    {
+        "name": "ServiceAccount with automountServiceAccountToken not set is blocked",
+        "template": "service-account.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "ServiceAccount with automountServiceAccountToken set to true is blocked",
+        "template": "service-account.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "automountServiceAccountToken=true"
+        ]
+    },
+    {
+        "name": "ServiceAccount with automountServiceAccountToken set to false is allowed",
+        "template": "service-account.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "automountServiceAccountToken=false"
+        ]
+    },
+    {
+        "name": "Pod with automountServiceAccountToken not set is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Pod with automountServiceAccountToken set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.automountServiceAccountToken=true"
+        ]
+    },
+    {
+        "name": "Pod with automountServiceAccountToken set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.automountServiceAccountToken=false"
+        ]
+    },
+    {
+        "name": "Deployment with automountServiceAccountToken not set is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+        ]
+    },
+    {
+        "name": "Deployment with automountServiceAccountToken set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.template.spec.automountServiceAccountToken=true"
+        ]
+    },
+    {
+        "name": "Deployment with automountServiceAccountToken set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.automountServiceAccountToken=false"
+        ]
+    }
+]

@@ -1,0 +1,52 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0034-deny-resources-with-automount-service-account-token-enabled"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "serviceaccounts"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: > 
+        object.kind != 'ServiceAccount' ||
+        (
+          has(object.automountServiceAccountToken) &&
+          object.automountServiceAccountToken == false
+        )
+      message: "ServiceAccount has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+
+    - expression: > 
+        object.kind != 'Pod' ||
+        (
+          has(object.spec.automountServiceAccountToken) &&
+          object.spec.automountServiceAccountToken == false
+        )
+      message: "Pod has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        (
+          has(object.spec.template.spec.automountServiceAccountToken) &&
+          object.spec.template.spec.automountServiceAccountToken == false
+        )
+      message: "Workload has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+
+    - expression: >
+        object.kind != 'CronJob' ||
+        (
+          has(object.spec.jobTemplate.spec.automountServiceAccountToken) &&
+          object.spec.jobTemplate.spec.automountServiceAccountToken == false
+        )
+      message: "CronJob has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
