@@ -1,0 +1,149 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0020-deny-resources-having-volumes-with-potential-access-to-known-cloud-credentials"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: > 
+        object.kind != 'Pod' || !has(object.spec.volumes) || object.spec.volumes.all(vol, 
+        !has(vol.hostPath) || !has(vol.hostPath.path) ||
+        (
+          (params.settings.cloudProvider != 'eks' ||
+          ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'aks' ||
+          ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'gke' ||
+          ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            ))))
+        ))
+      message: "Pod contains volumes with potential access to known cloud credentials! (see more at https://hub.armosec.io/docs/c-0020)"
+
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(vol, 
+        !has(vol.hostPath) || !has(vol.hostPath.path) ||
+        (
+          (params.settings.cloudProvider != 'eks' ||
+          ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'aks' ||
+          ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'gke' ||
+          ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            ))))
+        ))
+      message: "Workload contains volumes with potential access to known cloud credentials! (see more at https://hub.armosec.io/docs/c-0020)"
+
+    - expression: >
+        object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.volumes) || object.spec.jobTemplate.spec.volumes.all(vol, 
+        !has(vol.hostPath) || !has(vol.hostPath.path) ||
+        (
+          (params.settings.cloudProvider != 'eks' ||
+          ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'aks' ||
+          ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            )))) &&
+          
+          (params.settings.cloudProvider != 'gke' ||
+          ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
+          (
+            (
+              vol.hostPath.path.matches("[\\w-]+\\.") ||
+              vol.hostPath.path.endsWith("/") ||
+              unsafePath != (vol.hostPath.path+"/")
+            ) &&
+            (
+              unsafePath != vol.hostPath.path
+            ))))
+        ))
+      message: "CronJob contains volumes with potential access to known cloud credentials! (see more at https://hub.armosec.io/docs/c-0020)"
