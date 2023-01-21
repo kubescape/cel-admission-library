@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+  namespace: default
+  labels:
+    admission-policy-test: abc
+spec:
+  selector:
+    app: audit-pod
+  ports:
+    - protocol: TCP
+      port: 23
+      targetPort: 23
