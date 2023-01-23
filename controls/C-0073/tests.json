@@ -1,0 +1,9 @@
+[
+    {
+        "name": "Pod with no \"metadata.ownerReferences\" is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    }
+]
