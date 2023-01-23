@@ -91,6 +91,8 @@ spec:
                   items:
                     type: string
                   type: array
+                cloudProvider:
+                  type: string
   scope: Cluster
   names:
     plural: controlconfigurations

@@ -1,0 +1,65 @@
+[
+    {
+        "name": "Pod having volumes without hostPath is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Pod having volume with hostPath /internal is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/internal" 
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Pod having volume with hostPath \"/etc/kubernetes\" is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/etc/kubernetes"
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Pod having volume with hostPath \"/etc/kubernetes/azure.json\" is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/etc/kubernetes/azure.json"
+        ]
+    },
+    
+    {
+        "name": "Deployment having volumes without hostPath is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Deployment having volume with hostPath /internal is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/internal" 
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Deployment having volume with hostPath \"/etc/kubernetes\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/etc/kubernetes"
+        ]
+    },
+    {
+        "name": "Cloud Provider is aks and Deployment having volume with hostPath \"/etc/kubernetes/azure.json\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/etc/kubernetes/azure.json"
+        ]
+    }
+]

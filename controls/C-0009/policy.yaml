@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0004-deny-resources-with-memory-limit-or-request-not-set"
+  name: "kubescape-c-0009-deny-resources-with-memory-limit-or-request-not-set"
 spec:
   failurePolicy: Fail
   paramKind:

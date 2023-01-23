@@ -127,3 +127,4 @@ settings:
   - ca-websocket
   - clair-clair
 
+  cloudProvider: aks
