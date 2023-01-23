@@ -1,0 +1,69 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0042-deny-resources-with-ssh-server-running"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "services"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >  
+        object.kind != 'Service' ||
+        object.spec.ports.all(currentPort, currentPort.port != 22 && currentPort.port != 2222 && currentPort.targetPort != 22 && currentPort.targetPort != 2222)
+      message: "Services with ssh server(Port 22 and 2222) are denied! (see more at https://hub.armosec.io/docs/c-0042)"
+    - expression: >
+        object.kind != 'Pod' || 
+        object.spec.containers.all(container, !has(container.ports) || container.ports.all(port,
+        ((
+        !has(port.containerPort) ||
+        (
+          port.containerPort != 22 &&
+          port.containerPort != 2222
+        )) && (
+        !has(port.hostPort) ||
+        (
+          port.hostPort != 22 &&
+          port.hostPort != 2222
+        )))))
+      message: "Pods having containers running ssh server are not allowed! (see more at https://hub.armosec.io/docs/c-0042)"
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        object.spec.template.spec.containers.all(container, !has(container.ports) || container.ports.all(port,
+        ((
+        !has(port.containerPort) ||
+        (
+          port.containerPort != 22 &&
+          port.containerPort != 2222
+        )) && (
+        !has(port.hostPort) ||
+        (
+          port.hostPort != 22 &&
+          port.hostPort != 2222
+        )))))
+      message: "Workloads having containers running ssh server are not allowed! (see more at https://hub.armosec.io/docs/c-0042)"
+    - expression: > 
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !has(container.ports) || container.ports.all(port,
+        ((
+        !has(port.containerPort) ||
+        (
+          port.containerPort != 22 &&
+          port.containerPort != 2222
+        )) && (
+        !has(port.hostPort) ||
+        (
+          port.hostPort != 22 &&
+          port.hostPort != 2222
+        )))))
+      message: "CronJob having containers running ssh server are not allowed! (see more at https://hub.armosec.io/docs/c-0042)"

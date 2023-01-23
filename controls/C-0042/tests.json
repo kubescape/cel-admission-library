@@ -1,0 +1,148 @@
+[
+    {
+        "name": "Service having port 22 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].port=22"
+        ]
+    },
+    {
+        "name": "Service having targetPort 22 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].targetPort=22"
+        ]
+    },
+    {
+        "name": "Service having port 2222 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].port=2222"
+        ]
+    },
+    {
+        "name": "Service having targetPort 2222 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].targetPort=2222"
+        ]
+    },
+    {
+        "name": "Service having port and targetPort 22 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].targetPort=22",
+            "spec.ports.[0].port=22"
+        ]
+    },
+    {
+        "name": "Service having port 22 and targetPort 2222 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].targetPort=2222",
+            "spec.ports.[0].port=22"
+        ]
+    },
+    {
+        "name": "Service having port and targetPort 2222 is denied",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.ports.[0].targetPort=2222",
+            "spec.ports.[0].port=2222"
+        ]
+    },
+    {
+        "name": "Service having port 23 and targetPort 2223 is allowed",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having containers with containerPort 22 is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.containers.[0].ports.[0].containerPort=22"
+        ]
+    },
+    {
+        "name": "Pod having containers with containerPort 2222 is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.containers.[0].ports.[0].containerPort=2222"
+        ]
+    },
+    {
+        "name": "Pod having containers with hostPort 22 is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.containers.[0].ports.[0].hostPort=22"
+        ]
+    },
+    {
+        "name": "Pod having containers with hostPort 2222 is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.containers.[0].ports.[0].hostPort=2222"
+        ]
+    },
+    {
+        "name": "Pod having containers with containerPort 223 is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [ 
+            "spec.containers.[0].ports.[0].containerPort=223"
+        ]
+    },
+    {
+        "name": "Deployment having containers with containerPort 22 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.template.spec.containers.[0].ports.[0].containerPort=22"
+        ]
+    },
+    {
+        "name": "Deployment having containers with containerPort 2222 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.template.spec.containers.[0].ports.[0].containerPort=2222"
+        ]
+    },
+    {
+        "name": "Deployment having containers with hostPort 22 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.template.spec.containers.[0].ports.[0].hostPort=22"
+        ]
+    },
+    {
+        "name": "Deployment having containers with hostPort 2222 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [ 
+            "spec.template.spec.containers.[0].ports.[0].hostPort=2222"
+        ]
+    },
+    {
+        "name": "Deployment having containers with containerPort 223 is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [ 
+            "spec.template.spec.containers.[0].ports.[0].containerPort=223"
+        ]
+    }
+]
