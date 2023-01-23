@@ -1,0 +1,56 @@
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0075-deny-resources-with-image-pull-policy-not-set-to-always-for-latest-tag"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: > 
+        object.kind != 'Pod' || object.spec.containers.all(container,
+        !(
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+        ) ||
+        (
+          has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
+        ))
+      message: "Pods contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
+
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
+        !(
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+        ) ||
+        (
+          has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
+        ))
+      message: "Workloads contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
+
+    - expression: >
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        !(
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+        ) ||
+        (
+          has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
+        ))
+      message: "CronJob contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
