@@ -25,8 +25,8 @@ spec:
     - expression: > 
         object.kind != 'Pod' || object.spec.containers.all(container,
         !(
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
         ) ||
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
@@ -36,8 +36,8 @@ spec:
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
         !(
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
         ) ||
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
@@ -47,8 +47,8 @@ spec:
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
         !(
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)?").all(substring, substring.endsWith("/")) ||
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\/)").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
+          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
         ) ||
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
