@@ -20,43 +20,175 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: > 
-        object.kind != 'Pod' || (object.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) && container.securityContext.allowPrivilegeEscalation == false)) && (
-          (has(object.spec.securityContext) && (
-            (has(object.spec.securityContext.runAsNonRoot) && object.spec.securityContext.runAsNonRoot == true) ||
-            (has(object.spec.securityContext.runAsUser) && object.spec.securityContext.runAsUser != 0)
-          )) || (
-            object.spec.containers.all(container, has(container.securityContext) && (
-              (has(container.securityContext.runAsNonRoot) && container.securityContext.runAsNonRoot == true) ||
-              (has(container.securityContext.runAsUser) && container.securityContext.runAsUser != 0)
-            ))
+        object.kind != 'Pod' || object.spec.containers.all(container,
+          (
+            (
+              has(container.securityContext) && 
+              has(container.securityContext.allowPrivilegeEscalation) && 
+              container.securityContext.allowPrivilegeEscalation == false
+            ) ||
+            (
+              (
+                !has(container.securityContext) || !has(container.securityContext.allowPrivilegeEscalation)
+              ) &&
+              (
+                has(object.spec.securityContext) && 
+                has(object.spec.securityContext.allowPrivilegeEscalation) && 
+                object.spec.securityContext.allowPrivilegeEscalation == false
+              )
+            )
+          ) &&
+          (
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsNonRoot) && 
+                container.securityContext.runAsNonRoot == true
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsNonRoot)
+                ) &&
+                (
+                  has(object.spec.securityContext) && 
+                  has(object.spec.securityContext.runAsNonRoot) && 
+                  object.spec.securityContext.runAsNonRoot == true
+                )
+              )  
+            ) ||
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsUser) && 
+                container.securityContext.runAsUser != 0
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsUser)
+                ) &&
+                (
+                  has(object.spec.securityContext) && 
+                  has(object.spec.securityContext.runAsUser) && 
+                  object.spec.securityContext.runAsUser != 0
+                )
+              )  
+            )
           )
         )
       message: "Pods contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
 
     - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || (object.spec.template.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) && container.securityContext.allowPrivilegeEscalation == false)) && (
-          (has(object.spec.template.spec.securityContext) && (
-            (has(object.spec.template.spec.securityContext.runAsNonRoot) && object.spec.template.spec.securityContext.runAsNonRoot == true) ||
-            (has(object.spec.template.spec.securityContext.runAsUser) && object.spec.template.spec.securityContext.runAsUser != 0)
-          )) || (
-            object.spec.template.spec.containers.all(container, has(container.securityContext) && (
-              (has(container.securityContext.runAsNonRoot) && container.securityContext.runAsNonRoot == true) ||
-              (has(container.securityContext.runAsUser) && container.securityContext.runAsUser != 0)
-            ))
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
+          (
+            (
+              has(container.securityContext) && 
+              has(container.securityContext.allowPrivilegeEscalation) && 
+              container.securityContext.allowPrivilegeEscalation == false
+            ) ||
+            (
+              (
+                !has(container.securityContext) || !has(container.securityContext.allowPrivilegeEscalation)
+              ) &&
+              (
+                has(object.spec.template.spec.securityContext) && 
+                has(object.spec.template.spec.securityContext.allowPrivilegeEscalation) && 
+                object.spec.template.spec.securityContext.allowPrivilegeEscalation == false
+              )
+            )
+          ) &&
+          (
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsNonRoot) && 
+                container.securityContext.runAsNonRoot == true
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsNonRoot)
+                ) &&
+                (
+                  has(object.spec.template.spec.securityContext) && 
+                  has(object.spec.template.spec.securityContext.runAsNonRoot) && 
+                  object.spec.template.spec.securityContext.runAsNonRoot == true
+                )
+              )  
+            ) ||
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsUser) && 
+                container.securityContext.runAsUser != 0
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsUser)
+                ) &&
+                (
+                  has(object.spec.template.spec.securityContext) && 
+                  has(object.spec.template.spec.securityContext.runAsUser) && 
+                  object.spec.template.spec.securityContext.runAsUser != 0
+                )
+              )  
+            )
           )
         )
       message: "Workloads contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
 
     - expression: >
-        object.kind != 'CronJob' || (object.spec.jobTemplate.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) && container.securityContext.allowPrivilegeEscalation == false)) && (
-          (has(object.spec.jobTemplate.spec.securityContext) && (
-            (has(object.spec.jobTemplate.spec.securityContext.runAsNonRoot) && object.spec.jobTemplate.spec.securityContext.runAsNonRoot == true) ||
-            (has(object.spec.jobTemplate.spec.securityContext.runAsUser) && object.spec.jobTemplate.spec.securityContext.runAsUser != 0)
-          )) || (
-            object.spec.jobTemplate.spec.containers.all(container, has(container.securityContext) && (
-              (has(container.securityContext.runAsNonRoot) && container.securityContext.runAsNonRoot == true) ||
-              (has(container.securityContext.runAsUser) && container.securityContext.runAsUser != 0)
-            ))
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+          (
+            (
+              has(container.securityContext) && 
+              has(container.securityContext.allowPrivilegeEscalation) && 
+              container.securityContext.allowPrivilegeEscalation == false
+            ) ||
+            (
+              (
+                !has(container.securityContext) || !has(container.securityContext.allowPrivilegeEscalation)
+              ) &&
+              (
+                has(object.spec.jobTemplate.spec.securityContext) && 
+                has(object.spec.jobTemplate.spec.securityContext.allowPrivilegeEscalation) && 
+                object.spec.jobTemplate.spec.securityContext.allowPrivilegeEscalation == false
+              )
+            )
+          ) &&
+          (
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsNonRoot) && 
+                container.securityContext.runAsNonRoot == true
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsNonRoot)
+                ) &&
+                (
+                  has(object.spec.jobTemplate.spec.securityContext) && 
+                  has(object.spec.jobTemplate.spec.securityContext.runAsNonRoot) && 
+                  object.spec.jobTemplate.spec.securityContext.runAsNonRoot == true
+                )
+              )  
+            ) ||
+            (
+              (
+                has(container.securityContext) && 
+                has(container.securityContext.runAsUser) && 
+                container.securityContext.runAsUser != 0
+              ) ||
+              (
+                (
+                  !has(container.securityContext) || !has(container.securityContext.runAsUser)
+                ) &&
+                (
+                  has(object.spec.jobTemplate.spec.securityContext) && 
+                  has(object.spec.jobTemplate.spec.securityContext.runAsUser) && 
+                  object.spec.jobTemplate.spec.securityContext.runAsUser != 0
+                )
+              )  
+            )
           )
         )
       message: "CronJob contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
