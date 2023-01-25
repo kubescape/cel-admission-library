@@ -8,11 +8,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: test-deployment
+      label: test-deployment
   template:
     metadata:
       labels:
-        app: test-deployment
+        label: test-deployment
     spec:
       containers:
       - name: sleep
