@@ -1,0 +1,128 @@
+[
+    {
+        "name": "Pod having containers with image \"test\"(no tag) and \"ImagePullPolicy\" set to \"Never\" is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=test",
+            "spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test:latest\" and \"ImagePullPolicy\" set to \"Never\" is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=test:latest",
+            "spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test:onlyletters\" and \"ImagePullPolicy\" set to \"IfNotPresent\" is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=test:onlyletters",
+            "spec.containers.[0].imagePullPolicy=IfNotPresent"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test:v1\"(tag with numbers) and \"ImagePullPolicy\" set to \"Never\" is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=test:v1",
+            "spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test\"(no tag) and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=test",
+            "spec.containers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test:latest\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=test:latest",
+            "spec.containers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Pod having containers with image \"test:onlyletters\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=test:onlyletters",
+            "spec.containers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test\"(no tag) and \"ImagePullPolicy\" set to \"Never\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test",
+            "spec.template.spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test:latest\" and \"ImagePullPolicy\" set to \"Never\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test:latest",
+            "spec.template.spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test:onlyletters\" and \"ImagePullPolicy\" set to \"IfNotPresent\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test:onlyletters",
+            "spec.template.spec.containers.[0].imagePullPolicy=IfNotPresent"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test:v1\"(tag with numbers) and \"ImagePullPolicy\" set to \"Never\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test:v1",
+            "spec.template.spec.containers.[0].imagePullPolicy=Never"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test\"(no tag) and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test",
+            "spec.template.spec.containers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test:latest\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test:latest",
+            "spec.template.spec.containers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Deployment having containers with image \"test:onlyletters\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=test:onlyletters",
+            "spec.template.spec.containers.[0].imagePullPolicy=Always"
+        ]
+    }
+]
