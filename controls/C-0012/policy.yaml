@@ -26,6 +26,7 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["configmaps"]
   validations:
+    # Note that if the value is mounted using a secret or a configMap, this policy will allow the resource to be deployed in the cluster.
     - expression: > 
         object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
         !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
