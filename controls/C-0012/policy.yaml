@@ -54,7 +54,7 @@ spec:
             !params.settings.sensitiveKeyNames.exists(sensitiveKey, key.lowerAscii().contains(sensitiveKey)) &&
             !params.settings.sensitiveValues.exists(sensitiveVal, key.lowerAscii().matches(sensitiveVal))
           ) ||
-          object.data.key == "" ||
-          params.settings.sensitiveValuesAllowed.exists(allowedVal, object.data.key == allowedVal)
+          object.data[key] == "" ||
+          params.settings.sensitiveValuesAllowed.exists(allowedVal, object.data[key] == allowedVal)
         ))
       message: "ConfigMap contains sensitive information in its data! (see more at https://hub.armosec.io/docs/c-0012)"
