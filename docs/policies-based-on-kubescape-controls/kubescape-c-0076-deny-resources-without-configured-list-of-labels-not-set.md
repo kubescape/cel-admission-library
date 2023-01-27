@@ -18,7 +18,7 @@ It is recommended to set labels that identify semantic attributes of your applic
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks if resource sets the labels defined in the configurable [recommendedLabels](https://hub.armosec.io/docs/configuration_parameter_recommendedlabels. If not set, the resource is denied from being deployed in the cluster.
+This Policy checks if resource sets the labels defined in the configurable [recommendedLabels](https://hub.armosec.io/docs/configuration_parameter_recommendedlabels). If not set, the resource is denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
