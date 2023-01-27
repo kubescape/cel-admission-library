@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0074-containers-mounting-docker-socket-denied"
+  name: "kubescape-c-0074-resources-mounting-docker-socket-denied"
 spec:
   failurePolicy: Fail
   matchConstraints:
