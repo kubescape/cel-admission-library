@@ -20,4 +20,4 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "['Pod','Deployment','ReplicaSet','DaemonSet','StatefulSet','Job', 'CronJob'].all(kind, object.kind != kind) || (has(object.metadata.namespace) && object.metadata.namespace != 'default')"
-      message: "Workloads with privileged containers are not allowed! (see more at https://hub.armosec.io/docs/c-0016)"
+      message: "Workloads in default namespace are not allowed! (see more at https://hub.armosec.io/docs/c-0061)"
