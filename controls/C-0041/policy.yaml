@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0041-host-network-access"
+  name: "kubescape-c-0041-deny-resources-with-host-network-access"
 spec:
   failurePolicy: Fail
   matchConstraints:

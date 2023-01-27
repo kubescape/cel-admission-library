@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0038-host-ipd-pid-previleges"
+  name: "kubescape-c-0038-deny-resources-with-host-ipc-or-pid-privileges"
 spec:
   failurePolicy: Fail
   matchConstraints:
