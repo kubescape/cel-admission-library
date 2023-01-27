@@ -1,4 +1,3 @@
-kubescape-c-0048-deny-workloads-with-hostpath-mounts
 # Kubescape C-0048: Deny resources with hostPath mounts
 
 ## Why this policy is required:
