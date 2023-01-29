@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0017-deny-mutable-container-filesystem"
+  name: "kubescape-c-0017-deny-resources-with-mutable-container-filesystem"
 spec:
   failurePolicy: Fail
   matchConstraints:

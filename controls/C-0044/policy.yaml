@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0044-deny-container-with-host-port"
+  name: "kubescape-c-0044-deny-resources-with-host-port"
 spec:
   failurePolicy: Fail
   matchConstraints:
