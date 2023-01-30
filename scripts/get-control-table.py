@@ -56,10 +56,10 @@ lines.sort(key=lambda line: line[0])
 for line in lines:
     doc_url = f'https://hub.armosec.io/docs/{line[0].lower()}'
     if line[4] == 'not configurable':
-        print(f'| [{line[0]}]({doc_url}) | {line[1]} | {line[2]} | {line[4]} |')
+        print(f'| [{line[0]}]({doc_url}) | {line[1]} | [{line[2]}](/docs/policies-based-on-kubescape-controls/{line[2]}.md) | {line[4]} |')
     else:
         configparam_url = f'https://hub.armosec.io/docs/configuration_parameter_{line[4].lower()}'
-        print(f'| [{line[0]}]({doc_url}) | {line[1]} | {line[2]} | [{line[4]}]({configparam_url}) |')
+        print(f'| [{line[0]}]({doc_url}) | {line[1]} | [{line[2]}](/docs/policies-based-on-kubescape-controls/{line[2]}.md) | [{line[4]}]({configparam_url}) |')
 
 #print(json.dumps(control_table[0], indent=4))
 
