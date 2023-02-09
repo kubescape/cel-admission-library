@@ -100,4 +100,4 @@ The `tests.json` contains test cases where each case has a
 
 ### Learning about Validating Admission Policies
 
-Check [this out](docs/validating-admission-policies/REAMDE.md)
+Check [this out](docs/validating-admission-policies/README.md)
