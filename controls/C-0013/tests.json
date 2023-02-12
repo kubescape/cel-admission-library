@@ -1,0 +1,184 @@
+[
+    {
+        "name": "Pod with PodSecurityContext not set and allowPreviligeEscalation not set in atleast one ContainerSecurityContext is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero and allowPreviligeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsUser=100",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsNonRoot set to true and allowPreviligeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero, runAsNonRoot set to true and allowPreviligeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.runAsUser=100",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero and allowPreviligeEscalation set to true is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsUser=100",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsNonRoot set to true and allowPreviligeEscalation set to true is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero, runAsNonRoot set to true and allowPreviligeEscalation set to true is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.runAsUser=100",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod with runAsNonRoot set true in PodSecurityContext and runAsNonRoot not set in ContainerSecurityContext and allowPreviligeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with runAsUser set to non-zero value in PodSecurityContext and runAsUser not set in ContainerSecurityContext and allowPreviligeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with runAsNonRoot set true in PodSecurityContext and runAsNonRoot set to false and runAsUser not set in ContainerSecurityContext and allowPreviligeEscalation set to false is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.runAsNonRoot=false",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and allowPreviligeEscalation not set in atleast one ContainerSecurityContext is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero and allowPreviligeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsUser=100",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsNonRoot set to true and allowPreviligeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero, runAsNonRoot set to true and allowPreviligeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.runAsUser=100",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero and allowPreviligeEscalation set to true is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsUser=100",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsNonRoot set to true and allowPreviligeEscalation set to true is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext not set and ContainerSecurityContext runAsUser is non-zero, runAsNonRoot set to true and allowPreviligeEscalation set to true is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.runAsUser=100",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Deployment with runAsNonRoot set true in PodSecurityContext and runAsNonRoot not set in ContainerSecurityContext and allowPreviligeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with runAsUser set to non-zero value in PodSecurityContext and runAsUser not set in ContainerSecurityContext and allowPreviligeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with runAsNonRoot set true in PodSecurityContext and runAsNonRoot set to false and runAsUser not set in ContainerSecurityContext and allowPreviligeEscalation set to false is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.securityContext.runAsNonRoot=true",
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=false",
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    }
+]
