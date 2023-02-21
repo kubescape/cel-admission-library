@@ -1,4 +1,6 @@
 # Kubescape Validating Admission Policy library
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkubescape%2Fcel-admission-library.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkubescape%2Fcel-admission-library?ref=badge_shield)
+
 
 This is a library of policies based on [Kubescape controls](https://hub.armosec.io/docs/controls) ready for use with [Kubernetes Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/). In this library, Kubescape controls have been re-implemented in [CEL](https://github.com/google/cel-spec/) for your convenience. 
 
@@ -101,3 +103,7 @@ The `tests.json` contains test cases where each case has a
 ### Learning about Validating Admission Policies
 
 Check [this out](docs/validating-admission-policies/README.md)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkubescape%2Fcel-admission-library.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkubescape%2Fcel-admission-library?ref=badge_large)
