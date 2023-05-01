@@ -27,5 +27,4 @@ spec:
           capabilities:
             add:
             - SYS_ADM
-            drop:
             - NET_RAW
