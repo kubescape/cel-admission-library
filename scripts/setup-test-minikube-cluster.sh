@@ -21,5 +21,5 @@ if minikube status | grep -q "host: Running"; then
     exit
 fi
 
-minikube start --driver=docker --kubernetes-version=1.26.0 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1  --feature-gates='ValidatingAdmissionPolicy=true' --container-runtime=containerd || exit 1
+minikube start --driver=docker --kubernetes-version=1.27.0 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1  --feature-gates='ValidatingAdmissionPolicy=true' --container-runtime=containerd || exit 1
 

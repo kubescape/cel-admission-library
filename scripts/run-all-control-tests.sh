@@ -34,9 +34,10 @@ for control in $(ls controls); do
     echo "--------------------------------------------------"
     pushd controls/$control
     $PYTHON_EXECUTABLE ../../scripts/run-control-tests.py
+    TEST_RESULT=$?
     # Check if test failed
     echo "--------------------------------------------------"
-    if [ $? -ne 0 ]; then
+    if [ $TEST_RESULT -ne 0 ]; then
         echo "Test $control failed"
         result=1
     else
