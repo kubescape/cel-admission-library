@@ -4,6 +4,7 @@ metadata:
   name: placeholder
 spec:
   policyName: placeholder
+  validationActions: [Deny]
   paramRef:
     name: placeholder
   matchResources:
