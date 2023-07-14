@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0061-deny-workloads-in-default-namespace"
+  labels:
+    controlId: "C-0061"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0061"
 spec:
   failurePolicy: Fail
   matchConstraints:

@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0048-deny-workloads-with-hostpath-mounts"
+  labels:
+    controlId: "C-0048"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0048"
 spec:
   failurePolicy: Fail
   matchConstraints:

@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0057-privileged-container-denied"
+  labels:
+    controlId: "C-0057"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0057"
 spec:
   failurePolicy: Fail
   matchConstraints:

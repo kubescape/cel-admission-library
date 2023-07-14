@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0073-deny-naked-pods"
+  labels:
+    controlId: "C-0073"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0073"
 spec:
   failurePolicy: Fail
   matchConstraints:

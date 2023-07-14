@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0045-deny-workloads-with-hostpath-volumes-readonly-not-false"
+  labels:
+    controlId: "C-0045"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0045"
 spec:
   failurePolicy: Fail
   matchConstraints:

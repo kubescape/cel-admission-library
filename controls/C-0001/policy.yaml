@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0001-deny-forbidden-container-registries"
+  labels:
+    controlId: "C-0001"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0001"
 spec:
   failurePolicy: Fail
   paramKind:

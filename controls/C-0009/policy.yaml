@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0009-deny-resources-with-memory-or-cpu-limit-not-set"
+  labels:
+    controlId: "C-0009"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0009"
 spec:
   failurePolicy: Fail
   paramKind:

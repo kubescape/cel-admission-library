@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0062-deny-resources-having-containers-with-sudo-in-entrypoint"
+  labels:
+    controlId: "C-0062"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0062"
 spec:
   failurePolicy: Fail
   matchConstraints:
