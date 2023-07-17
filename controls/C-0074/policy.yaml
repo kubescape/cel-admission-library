@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0074-resources-mounting-docker-socket-denied"
+  labels:
+    controlId: "C-0074"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0074"
 spec:
   failurePolicy: Fail
   matchConstraints:

@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0046-deny-resources-with-insecure-capabilities"
+  labels:
+    controlId: "C-0046"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0046"
 spec:
   failurePolicy: Fail
   paramKind:

@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0017-deny-resources-with-mutable-container-filesystem"
+  labels:
+    controlId: "C-0017"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0017"
 spec:
   failurePolicy: Fail
   matchConstraints:

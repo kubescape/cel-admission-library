@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0042-deny-resources-with-ssh-server-running"
+  labels:
+    controlId: "C-0042"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0042"
 spec:
   failurePolicy: Fail
   matchConstraints:

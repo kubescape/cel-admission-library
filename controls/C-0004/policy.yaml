@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0004-deny-resources-with-memory-limit-or-request-not-set"
+  labels:
+    controlId: "C-0004"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0004"
 spec:
   failurePolicy: Fail
   paramKind:

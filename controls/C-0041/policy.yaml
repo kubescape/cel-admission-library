@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0041-deny-resources-with-host-network-access"
+  labels:
+    controlId: "C-0041"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0041"
 spec:
   failurePolicy: Fail
   matchConstraints:

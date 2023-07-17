@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0020-deny-resources-having-volumes-with-potential-access-to-known-cloud-credentials"
+  labels:
+    controlId: "C-0020"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0020"
 spec:
   failurePolicy: Fail
   paramKind:

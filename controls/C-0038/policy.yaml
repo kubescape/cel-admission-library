@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0038-deny-resources-with-host-ipc-or-pid-privileges"
+  labels:
+    controlId: "C-0038"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0038"
 spec:
   failurePolicy: Fail
   matchConstraints:

@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0018-deny-resources-without-configured-readiness-probes"
+  labels:
+    controlId: "C-0018"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0018"
 spec:
   failurePolicy: Fail
   matchConstraints:

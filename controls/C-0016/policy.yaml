@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0016-allow-privilege-escalation"
+  labels:
+    controlId: "C-0016"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0016"
 spec:
   failurePolicy: Fail
   matchConstraints:
