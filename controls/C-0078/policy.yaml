@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0078-only-allow-images-from-allowed-registry"
@@ -27,14 +27,14 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: >
-        object.kind != 'Pod' || 
+        object.kind != 'Pod' ||
         object.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
         (
           (registry == 'docker.io' && !container.image.contains('/')) ||
           (container.image.startsWith(registry))
         )))
       message: "Pods uses an image from a registry that is not in the allow list! (see more at https://hub.armosec.io/docs/c-0078)"
-    - expression: > 
+    - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         object.spec.template.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
         (

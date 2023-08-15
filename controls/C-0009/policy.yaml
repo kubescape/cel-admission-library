@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0009-deny-resources-with-memory-or-cpu-limit-not-set"
@@ -26,7 +26,7 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: > 
+    - expression: >
         object.kind != 'Pod' || object.spec.containers.all(container,
         has(container.resources) &&
         has(container.resources.limits) &&

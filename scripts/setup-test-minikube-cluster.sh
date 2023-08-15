@@ -1,6 +1,6 @@
 #!/bin/bash
 # Setup a Kubernetes cluster with Kyverno and a signed image policy for the attack POC
-# Usage: setup-cluster.sh 
+# Usage: setup-cluster.sh
 
 # Check if minikube is available
 if ! command -v minikube &> /dev/null
@@ -21,5 +21,4 @@ if minikube status | grep -q "host: Running"; then
     exit
 fi
 
-minikube start --driver=docker --kubernetes-version=1.27.0 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1  --feature-gates='ValidatingAdmissionPolicy=true' --container-runtime=containerd || exit 1
-
+minikube start --driver=docker --kubernetes-version=v1.28.0-rc.1 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1beta1 --feature-gates='ValidatingAdmissionPolicy=true' || exit 1

@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0041-deny-resources-with-host-network-access"
@@ -32,4 +32,3 @@ spec:
     - expression: "object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.template.spec.hostNetwork)) || object.spec.jobTemplate.spec.template.spec.hostNetwork == false"
       message: "CronJob with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
 
-      

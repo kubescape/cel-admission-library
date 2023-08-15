@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0042-deny-resources-with-ssh-server-running"
@@ -23,12 +23,12 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: >  
+    - expression: >
         object.kind != 'Service' ||
         object.spec.ports.all(currentPort, currentPort.port != 22 && currentPort.port != 2222 && currentPort.targetPort != 22 && currentPort.targetPort != 2222)
       message: "Services with ssh server(Port 22 and 2222) are denied! (see more at https://hub.armosec.io/docs/c-0042)"
     - expression: >
-        object.kind != 'Pod' || 
+        object.kind != 'Pod' ||
         object.spec.containers.all(container, !has(container.ports) || container.ports.all(port,
         ((
         !has(port.containerPort) ||
@@ -57,7 +57,7 @@ spec:
           port.hostPort != 2222
         )))))
       message: "Workloads having containers running ssh server are not allowed! (see more at https://hub.armosec.io/docs/c-0042)"
-    - expression: > 
+    - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !has(container.ports) || container.ports.all(port,
         ((
         !has(port.containerPort) ||

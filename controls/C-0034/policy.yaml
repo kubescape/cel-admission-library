@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0034-deny-resources-with-automount-service-account-token-enabled"
@@ -23,7 +23,7 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: > 
+    - expression: >
         object.kind != 'ServiceAccount' ||
         (
           has(object.automountServiceAccountToken) &&
@@ -31,7 +31,7 @@ spec:
         )
       message: "ServiceAccount has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
 
-    - expression: > 
+    - expression: >
         object.kind != 'Pod' ||
         (
           has(object.spec.automountServiceAccountToken) &&

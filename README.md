@@ -1,11 +1,11 @@
 # Kubescape Validating Admission Policy library
 
-This is a library of policies based on [Kubescape controls](https://hub.armosec.io/docs/controls) ready for use with [Kubernetes Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/). In this library, Kubescape controls have been re-implemented in [CEL](https://github.com/google/cel-spec/) for your convenience. 
+This is a library of policies based on [Kubescape controls](https://hub.armosec.io/docs/controls) ready for use with [Kubernetes Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/). In this library, Kubescape controls have been re-implemented in [CEL](https://github.com/google/cel-spec/) for your convenience.
 
 ## Using the library
 
-*Note: Kubernetes Validating Admission Policy feature _is _still in _its_ early phase_. 
-It has been released as an alphav1 feature in Kubernetes 1.26,
+*Note: Kubernetes Validating Admission Policy feature _is _still in _its_ early phase_.
+It has been released as an betav1 feature in Kubernetes 1.28,
 and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
 
 
@@ -26,7 +26,7 @@ You can apply policies to objects, for example, to apply control [C-0016](https:
 ```bash
 # Creating a binding
 kubectl apply -f - <<EOT
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: c0016-binding
