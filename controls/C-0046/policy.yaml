@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0046-deny-resources-with-insecure-capabilities"
@@ -27,7 +27,7 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: >
-        object.kind != 'Pod' || 
+        object.kind != 'Pod' ||
         object.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
@@ -41,7 +41,7 @@ spec:
         ))
       message: "Workload has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
     - expression: >
-        object.kind != 'CronJob' || 
+        object.kind != 'CronJob' ||
         object.spec.jobTemplate.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)

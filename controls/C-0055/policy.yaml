@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0055-linux-hardening"
@@ -23,11 +23,11 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: > 
+    - expression: >
         object.kind != 'Pod' ||
         (has(object.metadata.annotations) && object.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
         (has(object.spec.securityContext) && (has(object.spec.securityContext.seccompProfile) || has(object.spec.securityContext.seLinuxOptions))) ||
-        object.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) || 
+        object.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Pods could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"
@@ -35,7 +35,7 @@ spec:
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         (has(object.spec.template.metadata.annotations) && object.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
         (has(object.spec.template.spec.securityContext) && (has(object.spec.template.spec.securityContext.seccompProfile) || has(object.spec.template.spec.securityContext.seLinuxOptions))) ||
-        object.spec.template.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) || 
+        object.spec.template.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Workloads could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"
@@ -43,7 +43,7 @@ spec:
         object.kind != 'CronJob' ||
         (has(object.spec.jobTemplate.metadata.annotations) && object.spec.jobTemplate.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
         (has(object.spec.jobTemplate.spec.securityContext) && (has(object.spec.jobTemplate.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.securityContext.seLinuxOptions))) ||
-        object.spec.jobTemplate.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) || 
+        object.spec.jobTemplate.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "CronJob could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"

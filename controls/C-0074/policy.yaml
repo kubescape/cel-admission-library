@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0074-resources-mounting-docker-socket-denied"
@@ -24,8 +24,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: >
-        object.kind != 'Pod' || !(has(object.spec.volumes)) || 
-        object.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        object.kind != 'Pod' || !(has(object.spec.volumes)) ||
+        object.spec.volumes.all(vol, !(has(vol.hostPath)) ||
         !(has(vol.hostPath.path)) ||
         (
           vol.hostPath.path != '/var/run/docker.sock' &&
@@ -33,8 +33,8 @@ spec:
         ))
       message: "Pod has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
     - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.volumes)) || 
-        object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.volumes)) ||
+        object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
         !(has(vol.hostPath.path)) ||
         (
           vol.hostPath.path != '/var/run/docker.sock' &&
@@ -42,8 +42,8 @@ spec:
         ))
       message: "Workload has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
     - expression: >
-        object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.volumes)) || 
-        object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)) || 
+        object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.volumes)) ||
+        object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)) ||
         !(has(vol.hostPath.path)) ||
         (
           vol.hostPath.path != '/var/run/docker.sock' &&

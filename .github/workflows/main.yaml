@@ -20,12 +20,12 @@ jobs:
       uses: slashben/setup-minikube@master
       with:
           feature-gates: 'ValidatingAdmissionPolicy=true'
-          extra-config: 'apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1'
-          kubernetes-version: 1.27.0
+          extra-config: 'apiserver.runtime-config=admissionregistration.k8s.io/v1beta1'
+          kubernetes-version: v1.28.0-rc.1
           container-runtime: containerd
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.10' 
+        python-version: '3.10'
     - uses: azure/setup-kubectl@v3
     - name: Running all control policy tests
       run: |

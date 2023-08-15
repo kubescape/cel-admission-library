@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: placeholder
@@ -7,6 +7,7 @@ spec:
   validationActions: [Deny]
   paramRef:
     name: placeholder
+    parameterNotFoundAction: Deny
   matchResources:
     objectSelector:
       matchLabels:

@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0075-deny-resources-with-image-pull-policy-not-set-to-always-for-latest-tag"
@@ -23,7 +23,7 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: > 
+    - expression: >
         object.kind != 'Pod' || object.spec.containers.all(container,
         !(
           container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||

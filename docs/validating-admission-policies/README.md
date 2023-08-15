@@ -29,7 +29,7 @@ kubectl label namespace vap-playground vap=enabled
 
 Here is an example policy for denying Pods without `app` label:
 ```yaml
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: deny-pods-without-app-label
@@ -45,7 +45,7 @@ spec:
     - expression: "has(object.metadata.labels) && has(object.metadata.labels.app)"
       message: "Pods must have app label!"
 ```
-Note the `matchConstraints`. This definition means that this policy is only applicable to Pod objects. The `validation` part contains the CEL expression which is a boolean query on the object which is subject of this admission policy. 
+Note the `matchConstraints`. This definition means that this policy is only applicable to Pod objects. The `validation` part contains the CEL expression which is a boolean query on the object which is subject of this admission policy.
 
 You can apply this directly with:
 ```bash
@@ -55,7 +55,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-libra
 In order to apply this policy on a namespace, you have to create a binding. Here is a binding to namespaces with the label `vap: enabled`
 
 ```yaml
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: deny-pods-without-app-label-binding
@@ -74,7 +74,7 @@ You can apply this directly with:
 kubectl apply -f https://raw.githubusercontent.com/kubescape/cel-admission-library/main/docs/validating-admission-policies/deny-pods-without-app-label-policy-binding.yaml
 ```
 
-If you now trying to create a pod inside this namespace without a label, you should be denied. 
+If you now trying to create a pod inside this namespace without a label, you should be denied.
 
 Check this out:
 ```bash
@@ -85,7 +85,7 @@ It should be denied with:
 The pods "nginx" is invalid: : ValidatingAdmissionPolicy 'deny-pods-without-app-label' with binding 'deny-pods-without-app-label-binding' denied request: Pods must have app label!
 ```
 
-On the other hand, if you create it with `app` label 
+On the other hand, if you create it with `app` label
 ```
 kubectl -n vap-playground  run nginx --image=nginx --labels="app=nginx"
 ```
