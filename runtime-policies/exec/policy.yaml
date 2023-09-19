@@ -1,0 +1,26 @@
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cluster-policy-deny-exec
+spec:
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CONNECT"]
+      resources:   ["pods/exec"]
+  failurePolicy: Fail
+  validations:
+  - expression: "false"
+    message: "exec is not allowed"
+    reason: "High"
+---
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cluster-policy-deny-exec-binding
+spec:
+  policyName: cluster-policy-deny-exec
+  validationActions:
+  - Deny
+  - Audit

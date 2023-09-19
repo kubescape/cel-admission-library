@@ -1,0 +1,58 @@
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cluster-policy-deny-priviliged-flag
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >
+        object.kind != 'Pod' || object.spec.containers.all(container,
+        !(has(container.securityContext)) ||
+        (
+          (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
+          (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+        )
+      message: "Pod has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
+        !(has(container.securityContext)) ||
+        (
+          (!(has(container.securityContext.priviliged)) || container.securityContext.privileged != true) &&
+          (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+        )
+      message: "Workloads has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+    - expression: >
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
+        !(has(container.securityContext)) ||
+        (
+          (!(has(container.securityContext.priviliged)) || container.securityContext.privileged != true) &&
+          (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+        )
+      message: "CronJob has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+---
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cluster-policy-deny-privileged-flag-binding
+spec:
+  policyName: cluster-policy-deny-priviliged-flag
+  validationActions:
+  - Deny
+  - Audit
