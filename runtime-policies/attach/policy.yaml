@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.x-k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: cluster-policy-attach
+  name: cluster-policy-deny-attach
 spec:
   matchConstraints:
     resourceRules:
@@ -18,8 +18,9 @@ spec:
 apiVersion: admissionregistration.x-k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: cluster-policy-attach-binding
+  name: cluster-policy-deny-attach-binding
 spec:
-  policyName: cluster-policy-attach
+  policyName: cluster-policy-deny-attach
   validationActions:
+  - Deny
   - Audit

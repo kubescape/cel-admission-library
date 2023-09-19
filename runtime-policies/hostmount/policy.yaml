@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.x-k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: cluster-policy-hostMount
+  name: cluster-policy-deny-hostMount
 spec:
   matchConstraints:
     resourceRules:
@@ -32,8 +32,9 @@ spec:
 apiVersion: admissionregistration.x-k8s.io/v1alpha1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
-  name: cluster-policy-hostMount-binding
+  name: cluster-policy-deny-hostMount-binding
 spec:
-  policyName: cluster-policy-hostMount
+  policyName: cluster-policy-deny-hostMount
   validationActions:
+  - Deny
   - Audit
