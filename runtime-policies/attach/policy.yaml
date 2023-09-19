@@ -1,0 +1,26 @@
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cluster-policy-deny-attach
+spec:
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CONNECT"]
+      resources:   ["pods/attach"]
+  failurePolicy: Fail
+  validations:
+  - expression: "false"
+    message: "attach is not allowed"
+    reason: "Medium"
+---
+apiVersion: admissionregistration.x-k8s.io/v1alpha1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cluster-policy-deny-attach-binding
+spec:
+  policyName: cluster-policy-deny-attach
+  validationActions:
+  - Deny
+  - Audit
