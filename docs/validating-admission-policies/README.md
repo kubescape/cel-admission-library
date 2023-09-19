@@ -4,12 +4,12 @@
 
 [Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/) have been introduced in Kubernetes 1.26 and they are under feature gate. In order to enable them:
 * turn on `ValidatingAdmissionPolicy` feature gate
-* turn on `admissionregistration.k8s.io/v1alpha1`
+* turn on `admissionregistration.k8s.io/v1alpha1` or `admissionregistration.k8s.io/v1beta1` depending on whether you are using 1.26/1.27 (alpha) or 1.28 (beta)
 
 For minikube users, this is an example of how to enable:
 
 ```bash
-minikube start --kubernetes-version=1.26.0 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1alpha1  --feature-gates='ValidatingAdmissionPolicy=true'
+minikube start --kubernetes-version=v1.28.0-rc.1 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1beta1  --feature-gates='ValidatingAdmissionPolicy=true'
 ```
 
 ## Overview
