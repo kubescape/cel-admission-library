@@ -1,0 +1,7 @@
+resources:
+- hostmount/policy.yaml
+- exec/policy.yaml
+- portforward/policy.yaml
+- insecure-capabilities/policy.yaml
+- privileged/policy.yaml
+- attach/policy.yaml

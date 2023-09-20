@@ -1,0 +1,41 @@
+resources:
+- ../../controls/C-0017/policy.yaml
+- ../../controls/C-0073/policy.yaml
+- ../../controls/C-0020/policy.yaml
+- ../../controls/C-0001/policy.yaml
+- ../../controls/C-0045/policy.yaml
+- ../../controls/C-0078/policy.yaml
+- ../../controls/C-0016/policy.yaml
+- ../../controls/C-0076/policy.yaml
+- ../../controls/C-0056/policy.yaml
+- ../../controls/C-0004/policy.yaml
+- ../../controls/C-0018/policy.yaml
+- ../../controls/C-0077/policy.yaml
+- ../../controls/C-0048/policy.yaml
+- ../../controls/C-0041/policy.yaml
+- ../../controls/C-0009/policy.yaml
+- ../../controls/C-0061/policy.yaml
+- ../../controls/C-0042/policy.yaml
+- ../../controls/C-0046/policy.yaml
+- ../../controls/C-0062/policy.yaml
+- ../../controls/C-0038/policy.yaml
+- ../../controls/C-0055/policy.yaml
+- ../../controls/C-0074/policy.yaml
+- ../../controls/C-0034/policy.yaml
+- ../../controls/C-0075/policy.yaml
+- ../../controls/C-0044/policy.yaml
+- ../../controls/C-0057/policy.yaml
+- ../../controls/C-0050/policy.yaml
+- ../../runtime-policies/hostmount/policy.yaml
+- ../../runtime-policies/exec/policy.yaml
+- ../../runtime-policies/portforward/policy.yaml
+- ../../runtime-policies/insecure-capabilities/policy.yaml
+- ../../runtime-policies/privileged/policy.yaml
+- ../../runtime-policies/attach/policy.yaml
+patches:
+  - target:
+      group: admissionregistration.k8s.io
+      version: v1beta1
+      kind: ValidatingAdmissionPolicy
+      name: ""
+    path: patch.json

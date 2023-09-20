@@ -29,22 +29,24 @@ fi
 result=0
 # Run all control tests
 for control in $(ls controls); do
-    echo "=================================================="
-    echo "Running test $control"
-    echo "--------------------------------------------------"
-    pushd controls/$control
-    $PYTHON_EXECUTABLE ../../scripts/run-control-tests.py
-    TEST_RESULT=$?
-    # Check if test failed
-    echo "--------------------------------------------------"
-    if [ $TEST_RESULT -ne 0 ]; then
-        echo "Test $control failed"
-        result=1
-    else
-        echo "Test $control passed"
+    if [[ -d $control ]]; then
+        echo "=================================================="
+        echo "Running test $control"
+        echo "--------------------------------------------------"
+        pushd controls/$control
+        $PYTHON_EXECUTABLE ../../scripts/run-control-tests.py
+        TEST_RESULT=$?
+        # Check if test failed
+        echo "--------------------------------------------------"
+        if [ $TEST_RESULT -ne 0 ]; then
+            echo "Test $control failed"
+            result=1
+        else
+            echo "Test $control passed"
+        fi
+        popd
+        echo "=================================================="
     fi
-    popd
-    echo "=================================================="
 done
 
 exit $result
