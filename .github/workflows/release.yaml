@@ -44,7 +44,7 @@ jobs:
           git fetch origin main
           git merge-base --is-ancestor ${GITHUB_REF##*/} origin/main && echo "${GITHUB_REF##*/} is a commit on main!"
 
-      - uses: tale/kubectl-action@v1
+      - uses: azure/setup-kubectl@v3
 
       - name: Create release artifacts
         run: |
