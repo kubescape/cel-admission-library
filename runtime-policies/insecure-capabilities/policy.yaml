@@ -6,7 +6,7 @@ spec:
   failurePolicy: Fail
   paramKind:
     apiVersion: kubescape.io/v1
-    kind: PolicyConfiguration
+    kind: ControlConfiguration
   matchConstraints:
     resourceRules:
     - apiGroups:   [""]
