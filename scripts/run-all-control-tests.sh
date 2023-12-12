@@ -29,7 +29,7 @@ fi
 result=0
 # Run all control tests
 for control in $(ls controls); do
-    if [[ -d $control ]]; then
+    if [[ -d controls/$control ]]; then
         echo "=================================================="
         echo "Running test $control"
         echo "--------------------------------------------------"
