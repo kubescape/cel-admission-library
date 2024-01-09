@@ -1,7 +1,7 @@
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: cluster-policy-deny-insecure-capabilities
+  name: cluster-policy-insecure-capabilities
 spec:
   failurePolicy: Fail
   paramKind:
