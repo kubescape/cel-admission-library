@@ -5,8 +5,7 @@ This is a library of policies based on [Kubescape controls](https://hub.armosec.
 ## Using the library
 
 *Note: Kubernetes Validating Admission Policy feature _is _still in _its_ early phase_.
-It has been released as an betav1 feature in Kubernetes 1.28,
-and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
+It has been released as an betav1 feature in Kubernetes 1.28, and is stable from kubernetes 1.30. Therefore if you are not using kubernetes version 1.30+ you need to enable its feature gate to be able to use it. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
 
 
 Install latest the release of the library:
@@ -34,6 +33,9 @@ spec:
   policyName: kubescape-c-0016-allow-privilege-escalation
   paramRef:
     name: basic-control-configuration
+    parameterNotFoundAction: Deny
+  validationActions:
+  - Deny
   matchResources:
     namespaceSelector:
       matchLabels:
