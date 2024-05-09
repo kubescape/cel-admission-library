@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: cluster-policy-deny-host-mount
@@ -21,10 +21,7 @@ spec:
   validations:
     - expression: "object.kind != 'Pod' || object.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the Pod! (see more at https://hub.armosec.io/docs/c-0048)"
-      reason: "Medium"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the Workload! (see more at https://hub.armosec.io/docs/c-0048)"
-      reason: "Medium"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the CronJob! (see more at https://hub.armosec.io/docs/c-0048)"
-      reason: "Medium"
