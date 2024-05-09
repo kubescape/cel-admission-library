@@ -4,8 +4,7 @@ This is a library of policies based on [Kubescape controls](https://hub.armosec.
 
 ## Using the library
 
-Kubernetes Validating Admission Policy (or *VAP*) feature was released as a GA feature in version 1.30 and it is a releatively new feature (this library supports alpha and beta versions as well). Before you start playing with it, make sure you have a cluster that supports this feature. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
-
+Kubernetes Validating Admission Policy (or *VAP*) feature was released as a GA feature in version 1.30 and it is a releatively new feature (this library supports alpha and beta versions as well). Before you start playing with it, make sure you have a cluster that supports this feature. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_ even for pre-1.30 versions.*
 
 Install latest the release of the library (`v1` version of *VAP*):
 ```bash
@@ -32,6 +31,9 @@ spec:
   policyName: kubescape-c-0016-allow-privilege-escalation
   paramRef:
     name: basic-control-configuration
+    parameterNotFoundAction: Deny
+  validationActions:
+  - Deny
   matchResources:
     namespaceSelector:
       matchLabels:
