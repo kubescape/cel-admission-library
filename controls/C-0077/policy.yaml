@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0077-deny-resources-without-configured-list-of-k8s-common-labels-not-set"

@@ -1,4 +1,4 @@
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: cluster-policy-deny-insecure-capabilities
@@ -29,7 +29,6 @@ spec:
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
       message: "Pod has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
-      reason: "High"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         object.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
@@ -37,7 +36,6 @@ spec:
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
       message: "Workload has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
-      reason: "High"
     - expression: >
         object.kind != 'CronJob' ||
         object.spec.jobTemplate.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
@@ -45,4 +43,3 @@ spec:
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
       message: "CronJob has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
-      reason: "High"

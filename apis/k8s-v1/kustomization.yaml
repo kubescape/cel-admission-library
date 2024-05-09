@@ -1,0 +1,10 @@
+bases:
+- ../../controls
+- ../../runtime-policies
+patches:
+  - target:
+      group: admissionregistration.k8s.io
+      version: v1beta1
+      kind: ValidatingAdmissionPolicy
+      name: ""
+    path: patch.json
