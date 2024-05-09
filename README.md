@@ -4,12 +4,10 @@ This is a library of policies based on [Kubescape controls](https://hub.armosec.
 
 ## Using the library
 
-*Note: Kubernetes Validating Admission Policy feature _is _still in _its_ early phase_.
-It has been released as an betav1 feature in Kubernetes 1.28,
-and you need to enable its feature gate to be able to use it. Therefore it is not yet production ready. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
+Kubernetes Validating Admission Policy (or *VAP*) feature was released as a GA feature in version 1.30 and it is a releatively new feature (this library supports alpha and beta versions as well). Before you start playing with it, make sure you have a cluster that supports this feature. Look [here](docs/validating-admission-policies/README.md) for _how to _set up_ a playground_.*
 
 
-Install latest the release of the library:
+Install latest the release of the library (`v1` version of *VAP*):
 ```bash
 # Install configuration CRD
 kubectl apply -f https://github.com/kubescape/cel-admission-library/releases/latest/download/policy-configuration-definition.yaml
@@ -26,7 +24,7 @@ You can apply policies to objects, for example, to apply control [C-0016](https:
 ```bash
 # Creating a binding
 kubectl apply -f - <<EOT
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicyBinding
 metadata:
   name: c0016-binding

@@ -2,7 +2,11 @@
 
 ## Cluster
 
-[Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/) have been introduced in Kubernetes 1.26 and they are under feature gate. In order to enable them:
+[Validating Admission Policies](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/) have been introduced in Kubernetes 1.26 and they are under feature-gate. This feature was released for GA in Kubernetes 1.30 (without feature-gate).
+
+### Older Kubernetes versions (1.26 throughout 1.29)
+
+You need to enable the feature-gate in the API Server. In order to enable them:
 * turn on `ValidatingAdmissionPolicy` feature gate
 * turn on `admissionregistration.k8s.io/v1alpha1` or `admissionregistration.k8s.io/v1beta1` depending on whether you are using 1.26/1.27 (alpha) or 1.28 (beta)
 
@@ -11,6 +15,10 @@ For minikube users, this is an example of how to enable:
 ```bash
 minikube start --kubernetes-version=v1.28.0-rc.1 --extra-config=apiserver.runtime-config=admissionregistration.k8s.io/v1beta1  --feature-gates='ValidatingAdmissionPolicy=true'
 ```
+
+### Newer versions (1.30 and above)
+
+You don't need to do anything, *VAP* is available out of the box 😉
 
 ## Overview
 
@@ -29,7 +37,7 @@ kubectl label namespace vap-playground vap=enabled
 
 Here is an example policy for denying Pods without `app` label:
 ```yaml
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: deny-pods-without-app-label
