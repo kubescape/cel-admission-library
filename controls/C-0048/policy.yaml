@@ -23,9 +23,9 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: "object.kind != 'Pod' || object.spec.volumes.all(vol, !(has(vol.hostPath)))"
+    - expression: "object.kind != 'Pod' || !has(object.spec.volumes) || object.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the Pod! (see more at https://hub.armosec.io/docs/c-0048)"
-    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the Workload! (see more at https://hub.armosec.io/docs/c-0048)"
-    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)))"
+    - expression: "object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.volumes) || object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)))"
       message: "There are one or more hostPath mounts in the CronJob! (see more at https://hub.armosec.io/docs/c-0048)"

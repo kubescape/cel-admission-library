@@ -20,6 +20,8 @@ jobs:
           git merge-base --is-ancestor ${GITHUB_REF##*/} origin/main && echo "${GITHUB_REF##*/} is a commit on main!"
 
       - uses: azure/setup-kubectl@v3
+        with:
+          kubernetes-version: v1.31.1
 
       - name: Create release artifacts
         run: |

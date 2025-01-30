@@ -9,7 +9,6 @@ import (
 
 	"github.com/google/cel-go/cel"
 	"gopkg.in/yaml.v3"
-	"k8s.io/apiserver/pkg/cel/library"
 )
 
 func main() {
@@ -46,7 +45,6 @@ func main() {
 	var opts []cel.EnvOption
 	opts = append(opts, cel.Variable("object", cel.DynType))
 	opts = append(opts, cel.Variable("params", cel.DynType))
-	opts = append(opts, library.ExtensionLibs...)
 	env, err := cel.NewEnv(opts...)
 	if err != nil {
 		log.Fatalf("environment creation error: %s", err)
