@@ -19,12 +19,14 @@ jobs:
       id: minikube
       uses: slashben/setup-minikube@master
       with:
-          kubernetes-version: v1.30.0
+          kubernetes-version: v1.31.1
           container-runtime: containerd
     - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - uses: azure/setup-kubectl@v3
+      with:
+        kubernetes-version: v1.31.1
     - name: Running all control policy tests
       run: |
         pip install --upgrade pip
