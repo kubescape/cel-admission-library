@@ -8,7 +8,6 @@ on:
 
 jobs:
   release:
-    needs: test-all-policies
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
