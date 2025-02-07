@@ -1,0 +1,61 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0012-deny-resources-with-sensitive-information-in-environment-variables"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["configmaps"]
+  validations:
+    # Note that if the value is mounted using a secret or a configMap, this policy will allow the resource to be deployed in the cluster.
+    - expression: > 
+        object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
+        !has(envVariable.value) || (envVariable.value == "") ||
+        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
+        ))
+      message: "Pods has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
+    - expression: > 
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
+        !has(envVariable.value) || (envVariable.value == "") ||
+        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
+        ))
+      message: "Workloads has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
+    - expression: > 
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
+        !has(envVariable.value) || (envVariable.value == "") ||
+        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
+        ))
+      message: "CronJob has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
+    - expression: > 
+        object.kind != 'ConfigMap' || object.data.all(key,
+        (
+          (
+            !params.settings.sensitiveKeyNames.exists(sensitiveKey, key.lowerAscii().contains(sensitiveKey)) &&
+            !params.settings.sensitiveValues.exists(sensitiveVal, key.lowerAscii().matches(sensitiveVal))
+          ) ||
+          object.data[key] == "" ||
+          params.settings.sensitiveValuesAllowed.exists(allowedVal, object.data[key] == allowedVal)
+        ))
+      message: "ConfigMap contains sensitive information in its data! (see more at https://hub.armosec.io/docs/c-0012)"

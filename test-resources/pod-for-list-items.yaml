@@ -19,3 +19,5 @@ spec:
         - SYS_ADM
         drop:
         - NET_RAW
+    env :
+      - name : azure_batch_key
