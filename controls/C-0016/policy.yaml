@@ -1,7 +1,7 @@
-apiVersion: admissionregistration.k8s.io/v1alpha1
+apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0016-deny-if-allow-privilege-escalation-not-set"
+  name: "kubescape-c-0016-allow-privilege-escalation"
   labels:
     controlId: "C-0016"
   annotations:
