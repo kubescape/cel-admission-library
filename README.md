@@ -79,6 +79,7 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0268](https://hub.armosec.io/docs/c-0268) | Ensure CPU requests are set | [kubescape-c-0268-deny-resources-with-cpu-request-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0268-deny-resources-with-cpu-request-not-set.md) | [cpuRequestMin](https://hub.armosec.io/docs/configuration_parameter_cpurequestmin) |
 | [C-0269](https://hub.armosec.io/docs/c-0269) | Ensure memory requests are set | [kubescape-c-0269-deny-resources-with-memory-request-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0269-deny-resources-with-memory-request-not-set.md) | [memoryRequestMin](https://hub.armosec.io/docs/configuration_parameter_memoryrequestmin) |
 | [C-0270](https://hub.armosec.io/docs/c-0270) | Ensure CPU limits are set | [kubescape-c-0270-deny-resources-with-cpu-limit-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0270-deny-resources-with-cpu-limit-not-set.md) | [cpuLimitMin](https://hub.armosec.io/docs/configuration_parameter_cpulimitmin) |
+| [C-0271](https://hub.armosec.io/docs/c-0271) | Ensure memory limits are set | [kubescape-c-0271-deny-resources-with-memory-limit-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0271-deny-resources-with-memory-limit-not-set.md) | [memoryLimitMin](https://hub.armosec.io/docs/configuration_parameter_memorylimitmin) |
 
 ## Testing Policies
 
