@@ -28,8 +28,8 @@ spec:
   validations:
     - expression: >
         object.kind != 'Pod' || object.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
-        params.settings.cpuLimitMin <= int(container.resources.requests.cpu) &&
-        params.settings.cpuLimitMax >= int(container.resources.requests.cpu)) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
@@ -37,8 +37,8 @@ spec:
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
-        params.settings.cpuLimitMin <= int(container.resources.requests.cpu) &&
-        params.settings.cpuLimitMax >= int(container.resources.requests.cpu)) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
@@ -46,8 +46,8 @@ spec:
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
-        params.settings.cpuLimitMin <= int(container.resources.requests.cpu) &&
-        params.settings.cpuLimitMax >= int(container.resources.requests.cpu)) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
