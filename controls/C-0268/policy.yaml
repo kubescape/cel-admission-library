@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0268-deny-resources-with-cpu-request-not-set"
+  labels:
+    controlId: "C-0268"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0268"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >
+        object.kind != 'Pod' || object.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)))
+      message: "Pods contains container/s with cpu request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0268)"
+
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)))
+      message: "Workloads contains container/s with cpu request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0268)"
+
+    - expression: >
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
+        params.settings.cpuRequestMin <= int(container.resources.requests.cpu) &&
+        params.settings.cpuRequestMax >= int(container.resources.requests.cpu)))
+      message: "CronJob contains container/s with cpu request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0268)"

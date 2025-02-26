@@ -76,6 +76,7 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0076](https://hub.armosec.io/docs/c-0076) | Label usage for resources | [kubescape-c-0076-deny-resources-without-configured-list-of-labels-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0076-deny-resources-without-configured-list-of-labels-not-set.md) | [recommendedLabels](https://hub.armosec.io/docs/configuration_parameter_recommendedlabels) |
 | [C-0077](https://hub.armosec.io/docs/c-0077) | K8s common labels usage | [kubescape-c-0077-deny-resources-without-configured-list-of-k8s-common-labels-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0077-deny-resources-without-configured-list-of-k8s-common-labels-not-set.md) | [k8sRecommendedLabels](https://hub.armosec.io/docs/configuration_parameter_k8srecommendedlabels) |
 | [C-0078](https://hub.armosec.io/docs/c-0078) | Images from allowed registry | [kubescape-c-0078-only-allow-images-from-allowed-registry](/docs/policies-based-on-kubescape-controls/kubescape-c-0078-only-allow-images-from-allowed-registry.md) | [imageRepositoryAllowList](https://hub.armosec.io/docs/configuration_parameter_imagerepositoryallowlist) |
+| [C-0268](https://hub.armosec.io/docs/c-0268) | Ensure CPU requests are set | [kubescape-c-0268-deny-resources-with-cpu-request-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0268-deny-resources-with-cpu-request-not-set.md) | [cpuRequestMin](https://hub.armosec.io/docs/configuration_parameter_cpurequestmin) |
 
 ## Testing Policies
 
