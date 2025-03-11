@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0271-deny-resources-with-memory-limit-not-set"
+  labels:
+    controlId: "C-0271"
+  annotations:
+    controlUrl: "https://hub.armosec.io/docs/c-0271"
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: >
+        object.kind != 'Pod' || object.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
+        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
+        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+      message: "Pods contains container/s with memory limit not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0271)"
+
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
+        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
+        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+      message: "Workloads contains container/s with memory limit not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0271)"
+
+    - expression: >
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        (!(!(has(container.resources)) || !(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
+        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
+        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+      message: "CronJob contains container/s with memory limit not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0271)"
