@@ -2,6 +2,8 @@ resources:
 - C-0001/policy.yaml
 - C-0004/policy.yaml
 - C-0009/policy.yaml
+- C-0012/policy.yaml
+- C-0013/policy.yaml
 - C-0016/policy.yaml
 - C-0017/policy.yaml
 - C-0018/policy.yaml
