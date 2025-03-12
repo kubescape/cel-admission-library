@@ -27,5 +27,5 @@ spec:
       message: "One or more containers in the Pod has Host-port! (see more at https://hub.armosec.io/docs/c-0044)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !object.spec.template.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort)))"
       message: "One or more containers in the Workload has Host-port! (see more at https://hub.armosec.io/docs/c-0044)"
-    - expression: "object.kind != 'CronJob' || !object.spec.jobTemplate.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort)))"
+    - expression: "object.kind != 'CronJob' || !object.spec.jobTemplate.spec.template.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort)))"
       message: "One or more containers in the CronJob has Host-port! (see more at https://hub.armosec.io/docs/c-0044)"

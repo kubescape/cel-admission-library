@@ -44,7 +44,7 @@ spec:
       message: "Workloads uses an image from a registry that is not in the allow list! (see more at https://hub.armosec.io/docs/c-0078)"
     - expression: >
         object.kind != 'CronJob' ||
-        object.spec.jobTemplate.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
+        object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
         (
           (registry == 'docker.io' && !container.image.contains('/')) ||
           (container.image.startsWith(registry))

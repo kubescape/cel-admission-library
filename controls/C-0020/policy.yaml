@@ -111,7 +111,7 @@ spec:
       message: "Workload contains volumes with potential access to known cloud credentials! (see more at https://hub.armosec.io/docs/c-0020)"
 
     - expression: >
-        object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.volumes) || object.spec.jobTemplate.spec.volumes.all(vol,
+        object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.volumes) || object.spec.jobTemplate.spec.template.spec.volumes.all(vol,
         !has(vol.hostPath) || !has(vol.hostPath.path) ||
         (
           (params.settings.cloudProvider != 'eks' ||

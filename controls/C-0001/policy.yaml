@@ -30,5 +30,5 @@ spec:
       message: "Pods uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
       message: "Workloads uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"
-    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
+    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
       message: "CronJob uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"

@@ -43,7 +43,7 @@ spec:
         object.kind != 'CronJob' ||
         (has(object.spec.jobTemplate.metadata.annotations) && object.spec.jobTemplate.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
         (has(object.spec.jobTemplate.spec.securityContext) && (has(object.spec.jobTemplate.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.securityContext.seLinuxOptions))) ||
-        object.spec.jobTemplate.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
+        object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "CronJob could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"

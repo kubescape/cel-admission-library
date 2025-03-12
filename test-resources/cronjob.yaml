@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-cronjob
+  labels:
+    admission-policy-test: abc
+spec:
+  schedule: "*/5 * * * *"  # Run every 5 minutes (cron syntax)
+  timeZone: "America/New_York"  # Optional: specify timezone
+  concurrencyPolicy: Forbid  # Forbid, Allow, or Replace
+  successfulJobsHistoryLimit: 3  # How many completed jobs to keep
+  failedJobsHistoryLimit: 1  # How many failed jobs to keep
+  startingDeadlineSeconds: 180  # Optional: deadline in seconds for starting if scheduled time is missed
+  suspend: false  # When true, no new jobs are scheduled
+  jobTemplate:
+    spec:
+      backoffLimit: 3  # Number of retries before considering a Job as failed
+      activeDeadlineSeconds: 300  # Timeout for the job (5 minutes)
+      template:
+        spec:
+          restartPolicy: OnFailure  # OnFailure or Never
+          containers:
+          - name: test-container
+            image: busybox:1.35
+            imagePullPolicy: IfNotPresent
+            ports:
+            - containerPort: 8086
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "100m"
+              limits:
+                memory: "128Mi"
+                cpu: "200m"
+            command:
+            - /bin/sh
+            - -c
+            - date; echo "Hello from the Kubernetes cluster"; sleep 5
+            volumeMounts:
+            - name: test-volume
+              mountPath: /data
+          volumes:
+          - name: test-volume
+            emptyDir: {}
+          terminationGracePeriodSeconds: 30

@@ -112,7 +112,7 @@ try:
         else:
             test_passed = True
             print(colored('Test passed!','green'))
-    
+
         print(colored('Cleaning up...', 'yellow'))
         # Run kubectl delete on the policy and policy binding.
         try:
@@ -122,7 +122,7 @@ try:
             subprocess.check_call(['kubectl', 'delete', '-f', param_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except:
             pass
-        
+
         # Call kubectl wait --for=delete pod -l app=test-pod  --timeout=360s
         subprocess.check_call(['kubectl', 'wait', '--for=delete', 'pod', '-l', 'app=test-pod', '--timeout=360s'])
 
@@ -131,9 +131,9 @@ try:
                 os.remove(policy_bind_temp_file_name)
                 os.remove(test_object_yaml)
                 os.remove(param_file_name)
-                print(colored('Done (left generated object in place)', 'yellow'))
+                print(colored('Done ', 'yellow'))
             else:
-                print(colored('Done', 'yellow'))
+                print(colored('Done (left generated object in place)', 'yellow'))
         else:
             print(colored('Done', 'yellow'))
 
@@ -146,10 +146,10 @@ except Exception as e:
     all_tests_passed = False
 
 
-    
+
 
 # Delete the test namespace
-subprocess.check_call(['kubectl', 'delete', 'namespaces', 'test-namespace'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)  
+subprocess.check_call(['kubectl', 'delete', 'namespaces', 'test-namespace'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 if all_tests_passed:
     print(colored('Control tests passed!','green'))

@@ -13,7 +13,7 @@ def apply_field(data, field, value):
         value = json.loads(value)
     except ValueError:
         pass
-    
+
     # Parse the field name into a list
     fields = field.split('.')
     root = data
@@ -38,11 +38,21 @@ def apply_field(data, field, value):
                 root[f] = []
             except ValueError:
                 root[f] = {}
-                            
+
         root = root[f]
 
     # Set the value
-    root[fields[-1]] = value
+    try:
+        f = fields[-1]
+        if re.match(r'\[\d+\]', f):
+            f = int(f[1:-1])
+        root[f] = value
+    except KeyError:
+        print(f"Key {fields[-1]} not found in {root}")
+        raise
+    except TypeError:
+        print(f"Type error: {fields[-1]} is not a valid key for {root}")
+        raise
 
 
 def main():
@@ -65,20 +75,20 @@ def main():
         raise ValueError('Output file directory does not exist: ' + os.path.dirname(args.output))
     output_file = open(args.output, 'w') if args.output != '-' else sys.stdout
 
-    
+
     # Read the YAML file from stdin
     data = yaml.load(input_file, Loader=yaml.FullLoader)
 
     # Get the field name and value from the command line
-    for arg in args.fields:    
+    for arg in args.fields:
         if arg.count('=') != 1:
             raise ValueError('Invalid argument: missing \'=\' in ' + arg)
         field, value = arg.split('=')
         apply_field(data, field, value)
-   
+
     # Write the YAML file to stdout
     yaml.dump(data, output_file, default_flow_style=False)
 
 if __name__ == '__main__':
-    main()     
+    main()
 

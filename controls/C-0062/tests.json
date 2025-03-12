@@ -3,7 +3,7 @@
         "name": "Pod with container having sudo in command is blocked",
         "template": "pod-for-list-items.yaml",
         "expected": "fail",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
@@ -17,12 +17,27 @@
         "name": "Deployment with container having sudo in command is blocked",
         "template": "deployment-for-list-items.yaml",
         "expected": "fail",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
         "name": "Deployment with container not having sudo in command is allowed",
         "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob with container having sudo in command is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].command.[0]=sudo"
+        ]
+    },
+    {
+        "name": "CronJob with container not having sudo in command is allowed",
+        "template": "cronjob.yaml",
         "expected": "pass",
         "field_change_list": [
         ]
