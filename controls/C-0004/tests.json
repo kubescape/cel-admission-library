@@ -11,7 +11,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=128"
+            "spec.containers.[0].resources.requests.memory=128Mi"
         ]
     },
     {
@@ -19,17 +19,17 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=128",
-            "spec.containers.[0].resources.limits.memory=128"
+            "spec.containers.[0].resources.requests.memory=128Mi",
+            "spec.containers.[0].resources.limits.memory=128Mi"
         ]
     },
     {
-        "name": "Pod with container having memory request and limits set and values not in the limit is blocked",
+        "name": "Pod with container having memory request and limits set and values out of the range is blocked",
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=16",
-            "spec.containers.[0].resources.limits.memory=512"
+            "spec.containers.[0].resources.requests.memory=16Mi",
+            "spec.containers.[0].resources.limits.memory=512Gi"
         ]
     },
     {
@@ -44,8 +44,8 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].resources.requests.memory=128",
-            "spec.template.spec.containers.[0].resources.limits.memory=128"
+            "spec.template.spec.containers.[0].resources.requests.memory=128Mi",
+            "spec.template.spec.containers.[0].resources.limits.memory=128Mi"
         ]
     },
     {
@@ -53,6 +53,8 @@
         "template": "cronjob.yaml",
         "expected": "pass",
         "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.memory=128Ki",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.memory=128Ki"
         ]
     }
 ]
