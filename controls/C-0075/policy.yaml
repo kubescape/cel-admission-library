@@ -46,7 +46,7 @@ spec:
       message: "Workloads contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
 
     - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         !(
           container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
           container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))

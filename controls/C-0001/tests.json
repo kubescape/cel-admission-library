@@ -4,12 +4,27 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].image=quay.io/openshift/origin-cli:latest"    
+            "spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
         ]
     },
     {
         "name": "Pod without image from quay.io is allowed",
         "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob with image from quay.io is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
+        ]
+    },
+    {
+        "name": "CronJob without image from quay.io is allowed",
+        "template": "cronjob.yaml",
         "expected": "pass",
         "field_change_list": [
         ]

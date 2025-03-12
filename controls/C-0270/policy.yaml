@@ -41,7 +41,7 @@ spec:
       message: "Workloads contains container/s with cpu limit not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0270)"
 
     - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         (!(!(has(container.resources)) || !(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))

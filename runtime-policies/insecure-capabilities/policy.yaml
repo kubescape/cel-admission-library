@@ -38,7 +38,7 @@ spec:
       message: "Workload has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
     - expression: >
         object.kind != 'CronJob' ||
-        object.spec.jobTemplate.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))

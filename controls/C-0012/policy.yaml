@@ -27,28 +27,28 @@ spec:
       resources:   ["configmaps"]
   validations:
     # Note that if the value is mounted using a secret or a configMap, this policy will allow the resource to be deployed in the cluster.
-    - expression: > 
-        object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+    - expression: >
+        object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
         !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
         !has(envVariable.value) || (envVariable.value == "") ||
         params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
         ))
       message: "Pods has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: > 
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
         !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
         !has(envVariable.value) || (envVariable.value == "") ||
         params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
         ))
       message: "Workloads has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: > 
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, !has(container.env) || container.env.all(envVariable, 
+    - expression: >
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
         !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
         !has(envVariable.value) || (envVariable.value == "") ||
         params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
         ))
       message: "CronJob has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: > 
+    - expression: >
         object.kind != 'ConfigMap' || object.data.all(key,
         (
           (

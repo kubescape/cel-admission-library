@@ -38,8 +38,8 @@ spec:
         )))
       message: "One or more hostPath Volumes in the Workload has readOnly not set to false! (see more at https://hub.armosec.io/docs/c-0045)"
     - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.volumes.all(vol, !(has(vol.hostPath)) ||
-        object.spec.jobTemplate.spec.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
+        object.spec.jobTemplate.spec.template.spec.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
           containerVol, containerVol.name != vol.name ||
           (has(containerVol.readOnly) && containerVol.readOnly == true)
         )))

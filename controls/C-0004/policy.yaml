@@ -28,27 +28,27 @@ spec:
   validations:
     - expression: >
         object.kind != 'Pod' || object.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
-        params.settings.memoryRequestMin <= int(container.resources.requests.memory) &&
-        params.settings.memoryRequestMax >= int(container.resources.requests.memory)) &&
+        params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
+        params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
-        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
-        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+        params.settings.memoryLimitMin <= quantity(container.resources.limits.memory).asInteger()&&
+        params.settings.memoryLimitMax >= quantity(container.resources.limits.memory).asInteger()))
       message: "Pods contains container/s with memory limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0004)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
-        params.settings.memoryRequestMin <= int(container.resources.requests.memory) &&
-        params.settings.memoryRequestMax >= int(container.resources.requests.memory)) &&
+        params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
+        params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
-        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
-        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+        params.settings.memoryLimitMin <= quantity(container.resources.limits.memory).asInteger() &&
+        params.settings.memoryLimitMax >= quantity(container.resources.limits.memory).asInteger()))
       message: "Workloads contains container/s with memory limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0004)"
 
     - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
-        params.settings.memoryRequestMin <= int(container.resources.requests.memory) &&
-        params.settings.memoryRequestMax >= int(container.resources.requests.memory)) &&
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
+        params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
+        params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
-        params.settings.memoryLimitMin <= int(container.resources.limits.memory) &&
-        params.settings.memoryLimitMax >= int(container.resources.limits.memory)))
+        params.settings.memoryLimitMin <= quantity(container.resources.limits.memory).asInteger() &&
+        params.settings.memoryLimitMax >= quantity(container.resources.limits.memory).asInteger()))
       message: "CronJob contains container/s with memory limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0004)"

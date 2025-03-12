@@ -11,7 +11,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=128"
+            "spec.containers.[0].resources.requests.memory=128Mi"
         ]
     },
     {
@@ -19,14 +19,14 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=512"
+            "spec.containers.[0].resources.requests.memory=512Gi"
         ]
     },
     {
         "name": "Deployment with container having memory request not set is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {
@@ -34,7 +34,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].resources.requests.memory=128"
+            "spec.template.spec.containers.[0].resources.requests.memory=128Mi"
         ]
     }
 ]

@@ -4,7 +4,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].ports.[0].hostPort=2023"    
+            "spec.containers.[0].ports.[0].hostPort=2023"
         ]
     },
     {
@@ -19,7 +19,7 @@
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.containers.[0].ports.[0].hostPort=2023"    
+            "spec.template.spec.containers.[0].ports.[0].hostPort=2023"
         ]
     },
     {
@@ -27,6 +27,21 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob with container not having hostPort allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob with container having hostPort blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].ports.[0].hostPort=2023"
         ]
     }
 ]

@@ -43,7 +43,7 @@ spec:
       message: "Workloads contains container/s with memory limit and/or cpu limit not set! (see more at https://hub.armosec.io/docs/c-0009)"
 
     - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.containers.all(container,
+        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         has(container.resources) &&
         has(container.resources.limits) &&
         has(container.resources.limits.memory) &&
