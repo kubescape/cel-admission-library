@@ -42,7 +42,7 @@ spec:
         ))
       message: "Workload has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
     - expression: >
-        object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.volumes)) ||
+        object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.template.spec.volumes)) ||
         object.spec.jobTemplate.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
         !(has(vol.hostPath.path)) ||
         (
