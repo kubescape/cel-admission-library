@@ -1,7 +1,7 @@
 # Kubescape C-0062: Deny resources having containers with sudo in entrypoint
 
 ## Why this policy is required:
-Adding sudo to a container entry point command may escalate process privileges and allow access to forbidden resources. 
+Adding sudo to a container entry point command may escalate process privileges and allow access to forbidden resources.
 
 ## Severity Level: Medium
 

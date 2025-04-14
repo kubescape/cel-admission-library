@@ -3,7 +3,7 @@
         "name": "Pod with container having cpu limits not set is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {
@@ -26,7 +26,7 @@
         "name": "Deployment with container having cpu limits not set is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {

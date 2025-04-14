@@ -3,7 +3,7 @@
         "name": "Pod without lables from the configured list is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
@@ -27,7 +27,7 @@
         "name": "Deployment and its PodSpec without lables from the configured list is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {

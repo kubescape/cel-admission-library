@@ -10,7 +10,7 @@
     {
         "name": "Pod without readinessProbe is not allowed",
         "template": "pod.yaml",
-        "expected": "fail"    
+        "expected": "fail"
     },
     {
         "name": "Deployment with readinessProbe is allowed",
@@ -23,6 +23,6 @@
     {
         "name": "Deployment without readinessProbe is not allowed",
         "template": "deployment.yaml",
-        "expected": "fail"    
+        "expected": "fail"
     }
 ]

@@ -4,7 +4,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].image=quay.io/openshift/origin-cli:latest"    
+            "spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
         ]
     },
     {
@@ -35,7 +35,7 @@
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.containers.[0].image=quay.io/openshift/origin-cli:latest"    
+            "spec.template.spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
         ]
     },
     {

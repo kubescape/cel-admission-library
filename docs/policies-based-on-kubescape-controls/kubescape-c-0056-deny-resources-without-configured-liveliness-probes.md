@@ -1,7 +1,7 @@
 # Kubescape C-0056: Deny resources without configured livelinessProbe
 
 ## Why this policy is required:
-Liveness probe is intended to ensure that workload remains healthy during its entire execution lifecycle, or otherwise restrat the container. It is highly recommended to define liveness probe for every worker container. 
+Liveness probe is intended to ensure that workload remains healthy during its entire execution lifecycle, or otherwise restrat the container. It is highly recommended to define liveness probe for every worker container.
 
 ## Severity Level: Medium
 

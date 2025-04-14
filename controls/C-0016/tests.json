@@ -4,7 +4,7 @@
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"    
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
         ]
     },
     {
@@ -17,7 +17,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"    
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
     },
     {
@@ -25,7 +25,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"    
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
         ]
     },
     {
@@ -33,7 +33,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"    
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
     }
 ]

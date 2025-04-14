@@ -27,7 +27,7 @@ for control_id in os.listdir('controls'):
             configuration_parameter = 'not configurable'
             if 'paramKind' in control['spec']:
                 cel = control['spec']['validations'][0]['expression']
-                # Check if the control is configurable by a parameter with re 
+                # Check if the control is configurable by a parameter with re
                 m = re.search(r"params\.settings\.([a-zA-Z0-9]+)", cel)
                 # Check that there is a match
                 if m:

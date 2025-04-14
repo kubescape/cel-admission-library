@@ -4,7 +4,7 @@
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=false"    
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=false"
         ]
     },
     {
@@ -17,7 +17,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true"    
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true"
         ]
     },
     {
@@ -25,7 +25,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].securityContext.readOnlyRootFilesystem=false"    
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=false"
         ]
     },
     {
@@ -33,7 +33,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].securityContext.readOnlyRootFilesystem=true"    
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=true"
         ]
     }
 ]

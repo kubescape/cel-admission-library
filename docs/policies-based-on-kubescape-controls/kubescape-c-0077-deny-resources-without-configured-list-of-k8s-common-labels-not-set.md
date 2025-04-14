@@ -1,7 +1,7 @@
 # Kubescape C-0077: Deny resources without configured list of k8s common labels not set.
 
 ## Why this policy is required:
-Kubernetes common labels help manage and monitor Kubernetes cluster using different tools such as kubectl, dashboard and others in an interoperable way. Refer to [this link](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/) for more information. 
+Kubernetes common labels help manage and monitor Kubernetes cluster using different tools such as kubectl, dashboard and others in an interoperable way. Refer to [this link](https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/) for more information.
 
 ## Severity Level: Low
 

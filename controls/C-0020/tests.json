@@ -11,7 +11,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.volumes.[0].hostPath.path=/internal" 
+            "spec.volumes.[0].hostPath.path=/internal"
         ]
     },
     {
@@ -30,7 +30,7 @@
             "spec.volumes.[0].hostPath.path=/etc/kubernetes/azure.json"
         ]
     },
-    
+
     {
         "name": "Deployment having volumes without hostPath is allowed",
         "template": "deployment.yaml",
@@ -43,7 +43,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.volumes.[0].hostPath.path=/internal" 
+            "spec.template.spec.volumes.[0].hostPath.path=/internal"
         ]
     },
     {
