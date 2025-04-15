@@ -92,6 +92,7 @@ settings:
   - Bearer
   - _key_
   - _secret_
+  sensitiveKeyNamesAllowed: []
   sensitiveValuesAllowed:
   - ''
   servicesNames:

@@ -71,6 +71,10 @@ spec:
                   items:
                     type: string
                   type: array
+                sensitiveKeyNamesAllowed:
+                  items:
+                    type: string
+                  type: array
                 sensitiveValues:
                   items:
                     type: string

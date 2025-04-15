@@ -85,6 +85,8 @@ settings:
   - jwt
   - bearer
   - credential
+  sensitiveKeyNamesAllowed:
+  - top-secret-allowed
   sensitiveValues:
   - BEGIN \w+ PRIVATE KEY
   - PRIVATE KEY

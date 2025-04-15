@@ -4,14 +4,14 @@
         "template": "pod-for-list-items.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].env.[0].value=randomValue"    
+            "spec.containers.[0].env.[0].value=randomValue"
         ]
     },
     {
         "name": "Pod with container having env with sensitive key name and value not set is allowed",
         "template": "pod-for-list-items.yaml",
         "expected": "pass",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
@@ -19,7 +19,7 @@
         "template": "pod-for-list-items.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].env.[0].value=\"\""    
+            "spec.containers.[0].env.[0].value=\"\""
         ]
     },
     {
@@ -27,14 +27,14 @@
         "template": "pod-for-list-items.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].env.[0].value=test-value"    
+            "spec.containers.[0].env.[0].value=test-value"
         ]
     },
     {
         "name": "Pod with container having env without sensitive key name is allowed",
         "template": "pod.yaml",
         "expected": "pass",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
@@ -42,14 +42,14 @@
         "template": "deployment-for-list-items.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.containers.[0].env.[0].value=randomValue"    
+            "spec.template.spec.containers.[0].env.[0].value=randomValue"
         ]
     },
     {
         "name": "Deployment with container having env with sensitive key name and value not set is allowed",
         "template": "deployment-for-list-items.yaml",
         "expected": "pass",
-        "field_change_list": [   
+        "field_change_list": [
         ]
     },
     {
@@ -57,7 +57,7 @@
         "template": "deployment-for-list-items.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].env.[0].value=\"\""    
+            "spec.template.spec.containers.[0].env.[0].value=\"\""
         ]
     },
     {
@@ -65,21 +65,21 @@
         "template": "deployment-for-list-items.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].env.[0].value=test-value"    
+            "spec.template.spec.containers.[0].env.[0].value=test-value"
         ]
     },
     {
         "name": "Deployment with container having env without sensitive key name is allowed",
         "template": "deployment.yaml",
         "expected": "pass",
-        "field_change_list": [    
+        "field_change_list": [
         ]
     },
     {
         "name": "ConfigMap without data having sensitiveKey and not matching sensitiveValues is allowed",
         "template": "configmap.yaml",
         "expected": "pass",
-        "field_change_list": [    
+        "field_change_list": [
         ]
     },
     {
@@ -94,16 +94,16 @@
         "name": "ConfigMap with data having sensitiveKey and value not from sensitiveValuesAllowed is denied",
         "template": "configmap.yaml",
         "expected": "fail",
-        "field_change_list": [  
-            "data.password=password123"  
+        "field_change_list": [
+            "data.password=password123"
         ]
     },
     {
         "name": "ConfigMap with data having sensitiveKey and value from sensitiveValuesAllowed is allowed",
         "template": "configmap.yaml",
         "expected": "pass",
-        "field_change_list": [  
-            "data.password=encrypted-password"  
+        "field_change_list": [
+            "data.password=encrypted-password"
         ]
     },
     {
@@ -118,16 +118,24 @@
         "name": "ConfigMap with data having sensitiveKey matching sensitiveValues and value not from sensitiveValuesAllowed is denied",
         "template": "configmap.yaml",
         "expected": "fail",
-        "field_change_list": [  
-            "data.topsecret=password123"  
+        "field_change_list": [
+            "data.topsecret=password123"
         ]
     },
     {
         "name": "ConfigMap with data having sensitiveKey matching sensitiveValues and value from sensitiveValuesAllowed is allowed",
         "template": "configmap.yaml",
         "expected": "pass",
-        "field_change_list": [  
-            "data.topsecret=encrypted-password"  
+        "field_change_list": [
+            "data.topsecret=encrypted-password"
+        ]
+    },
+    {
+        "name": "ConfigMap with data having sensitiveKey matching sensitiveKeyNames and sensitiveKeyNamesAllowed is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "data.top-secret-allowed=password123"
         ]
     }
 ]
