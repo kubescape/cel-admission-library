@@ -19,8 +19,8 @@ SSH server that is running inside a container may be used by attackers. If attac
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks  
-* If the `port` and `targetPort` is not an `SSH port(22/2222)` if the resource is `Service`. 
+This Policy checks
+* If the `port` and `targetPort` is not an `SSH port(22/2222)` if the resource is `Service`.
 * If all the Containers in the workload does not have `hostPort` or `containerPort` set to an `SSH port(22/2222)`.
 
 If any of the above check fails, the resource is denied from being deployed in the cluster.

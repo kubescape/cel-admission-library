@@ -3,7 +3,7 @@
         "name": "Pod without one of configured common labels is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [  
+        "field_change_list": [
         ]
     },
     {
@@ -17,7 +17,7 @@
         "name": "Deployment and its PodSpec without one of configured common labels is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [  
+        "field_change_list": [
         ]
     },
     {
@@ -31,7 +31,7 @@
         "name": "Deployment without one of configured common labels and its PodSpec with label \"app.kubernetes.io/name\" is blocked",
         "template": "deployment-with-common-label-2.yaml",
         "expected": "fail",
-        "field_change_list": [  
+        "field_change_list": [
         ]
     },
     {

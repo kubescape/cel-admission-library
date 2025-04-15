@@ -5,7 +5,7 @@
         "expected": "fail",
         "field_change_list": [
             "spec.template.spec.hostIPC=true",
-            "spec.template.spec.hostPID=true"    
+            "spec.template.spec.hostPID=true"
         ]
     },
     {
@@ -14,7 +14,7 @@
         "expected": "fail",
         "field_change_list": [
             "spec.template.spec.hostIPC=true",
-            "spec.template.spec.hostPID=false"    
+            "spec.template.spec.hostPID=false"
         ]
     },
     {
@@ -38,7 +38,7 @@
         "expected": "fail",
         "field_change_list": [
             "spec.hostIPC=true",
-            "spec.hostPID=true"    
+            "spec.hostPID=true"
         ]
     },
     {
@@ -47,7 +47,7 @@
         "expected": "fail",
         "field_change_list": [
             "spec.hostIPC=true",
-            "spec.hostPID=false"  
+            "spec.hostPID=false"
         ]
     },
     {

@@ -26,14 +26,14 @@
         "name": "Pod with automountServiceAccountToken not set is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {
         "name": "Pod with automountServiceAccountToken set to true is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
             "spec.automountServiceAccountToken=true"
         ]
     },
@@ -49,14 +49,14 @@
         "name": "Deployment with automountServiceAccountToken not set is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {
         "name": "Deployment with automountServiceAccountToken set to true is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
             "spec.template.spec.automountServiceAccountToken=true"
         ]
     },

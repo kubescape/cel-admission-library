@@ -19,7 +19,7 @@ While usage of the latest tag is not generally recommended, in some cases this i
 * StatefulSet
 
 ## What does this policy do:
-* This Policy checks if `imagePullPolicy` is set to `Always` for images with `latest` tag. If not, the resource is denied from being deployed in the cluster. 
+* This Policy checks if `imagePullPolicy` is set to `Always` for images with `latest` tag. If not, the resource is denied from being deployed in the cluster.
 
 * Note as well that some vendors don't use the word latest in the tag. Some other word may also behave like the latest. For example, Redis uses redis:alpine to signify the latest. Therefore, this policy treats any word that does not contain digits as the latest. If no tag is specified, the image is treated as latest too.
 

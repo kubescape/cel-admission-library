@@ -4,7 +4,7 @@
         "template": "deployment.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.template.spec.hostNetwork=true"    
+            "spec.template.spec.hostNetwork=true"
         ]
     },
     {
@@ -17,7 +17,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.hostNetwork=false"  
+            "spec.template.spec.hostNetwork=false"
         ]
     },
     {
@@ -33,7 +33,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.hostNetwork=false" 
+            "spec.hostNetwork=false"
         ]
     }
 ]

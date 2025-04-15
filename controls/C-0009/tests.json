@@ -3,7 +3,7 @@
         "name": "Pod having containers without memory limit and cpu limit is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
         ]
     },
     {
@@ -18,7 +18,7 @@
         "name": "Pod having containers with memory limit not set and cpu limit set is blocked",
         "template": "pod.yaml",
         "expected": "fail",
-        "field_change_list": [ 
+        "field_change_list": [
             "spec.containers.[0].resources.limits.cpu=2"
         ]
     },
