@@ -25,37 +25,47 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["configmaps"]
+  variables:
+    - expression: |
+        object.kind == 'Pod' ? object.spec.containers
+        : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'] ? object.spec.template.spec.containers
+        : object.kind == 'CronJob' ? object.spec.jobTemplate.spec.template.spec.containers
+        : []
+      name: containers
+    - expression: |
+        object.kind == 'ConfigMap' ?
+          (has(object.data) ?
+            object.data
+            : (has(object.binaryData) ?
+              object.binaryData
+              : {}))
+        : {}
+      name: configMapData
   validations:
     # Note that if the value is mounted using a secret or a configMap, this policy will allow the resource to be deployed in the cluster.
+    - expression: |
+        variables.containers.all(container,
+          !has(container.env) || container.env.all(envVariable,
+            (
+                !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) &&
+                !params.settings.sensitiveValues.exists(sensitiveVal, envVariable.value.matches(sensitiveVal))
+            ) ||
+            !has(envVariable.value) || (envVariable.value == "") ||
+            envVariable.value in params.settings.sensitiveValuesAllowed ||
+            params.settings.sensitiveKeyNamesAllowed.exists(sensitiveKeyName, envVariable.name.matches(sensitiveKeyName))
+          )
+        )
+      reason: Invalid
+      messageExpression: 'object.kind + "/" + object.metadata.name + " has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"'
     - expression: >
-        object.kind != 'Pod' || object.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
-        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
-        !has(envVariable.value) || (envVariable.value == "") ||
-        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
-        ))
-      message: "Pods has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
-        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
-        !has(envVariable.value) || (envVariable.value == "") ||
-        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
-        ))
-      message: "Workloads has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !has(container.env) || container.env.all(envVariable,
-        !params.settings.sensitiveKeyNames.exists(sensitiveKey, envVariable.name.lowerAscii().contains(sensitiveKey)) ||
-        !has(envVariable.value) || (envVariable.value == "") ||
-        params.settings.sensitiveValuesAllowed.exists(allowedVal, envVariable.value == allowedVal)
-        ))
-      message: "CronJob has one or more containers with sensitive information in environment variables! (see more at https://hub.armosec.io/docs/c-0012)"
-    - expression: >
-        object.kind != 'ConfigMap' || object.data.all(key,
+        variables.configMapData.all(key,
         (
           (
             !params.settings.sensitiveKeyNames.exists(sensitiveKey, key.lowerAscii().contains(sensitiveKey)) &&
             !params.settings.sensitiveValues.exists(sensitiveVal, key.lowerAscii().matches(sensitiveVal))
           ) ||
-          object.data[key] == "" ||
-          params.settings.sensitiveValuesAllowed.exists(allowedVal, object.data[key] == allowedVal)
+          variables.configMapData[key] == "" ||
+          variables.configMapData[key] in params.settings.sensitiveValuesAllowed ||
+          params.settings.sensitiveKeyNamesAllowed.exists(sensitiveKeyName, key.matches(sensitiveKeyName))
         ))
-      message: "ConfigMap contains sensitive information in its data! (see more at https://hub.armosec.io/docs/c-0012)"
+      messageExpression: 'object.kind + "/" + object.metadata.name + " contains sensitive information in its data! (see more at https://hub.armosec.io/docs/c-0012)"'
