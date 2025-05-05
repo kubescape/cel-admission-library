@@ -36,7 +36,7 @@ spec:
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
         !(has(container.securityContext)) ||
         (
-          (!(has(container.securityContext.priviliged)) || container.securityContext.privileged != true) &&
+          (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
         )
@@ -45,7 +45,7 @@ spec:
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         !(has(container.securityContext)) ||
         (
-          (!(has(container.securityContext.priviliged)) || container.securityContext.privileged != true) &&
+          (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
         )
