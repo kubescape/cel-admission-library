@@ -7,6 +7,13 @@
         ]
     },
     {
+        "name": "Pod with no volumes",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
         "name": "Pod with hostPath volume and readOnly is not set for corresponding volumeMount is denied",
         "template": "pod.yaml",
         "expected": "fail",
