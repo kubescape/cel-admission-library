@@ -27,7 +27,7 @@ spec:
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
         )
-      message: "Pod has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+      message: "Pod has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
         !(has(container.securityContext)) ||
@@ -36,7 +36,7 @@ spec:
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
         )
-      message: "Workloads has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+      message: "Workloads has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         !(has(container.securityContext)) ||
@@ -45,4 +45,4 @@ spec:
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
         )
-      message: "CronJob has one or more privileged container.(see more at https://hub.armosec.io/docs/c-0057)"
+      message: "CronJob has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"

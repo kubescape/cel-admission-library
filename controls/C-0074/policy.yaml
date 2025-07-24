@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0074"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0074"
+    controlUrl: "https://kubescape.io/docs/controls/c-0074/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -31,7 +31,7 @@ spec:
           vol.hostPath.path != '/var/run/docker.sock' &&
           vol.hostPath.path != '/var/run/docker'
         ))
-      message: "Pod has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
+      message: "Pod has one or more containers mounting Docker socket! (see more at https://kubescape.io/docs/controls/c-0074/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.volumes)) ||
         object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
@@ -40,7 +40,7 @@ spec:
           vol.hostPath.path != '/var/run/docker.sock' &&
           vol.hostPath.path != '/var/run/docker'
         ))
-      message: "Workload has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
+      message: "Workload has one or more containers mounting Docker socket! (see more at https://kubescape.io/docs/controls/c-0074/)"
     - expression: >
         object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.template.spec.volumes)) ||
         object.spec.jobTemplate.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
@@ -49,4 +49,4 @@ spec:
           vol.hostPath.path != '/var/run/docker.sock' &&
           vol.hostPath.path != '/var/run/docker'
         ))
-      message: "CronJob has one or more containers mounting Docker socket! (see more at https://hub.armosec.io/docs/c-0074)"
+      message: "CronJob has one or more containers mounting Docker socket! (see more at https://kubescape.io/docs/controls/c-0074/)"

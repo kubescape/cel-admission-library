@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0077"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0077"
+    controlUrl: "https://kubescape.io/docs/controls/c-0077/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -34,7 +34,7 @@ spec:
             labelInList, labelInList != label
           )))
         )
-      message: "Pod doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
+      message: "Pod doesn't have any k8s common label from the configured list! (see more at https://kubescape.io/docs/controls/c-0077/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         (
@@ -48,7 +48,7 @@ spec:
             labelInList, labelInList != label
           )))
         )
-      message: "Workload or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
+      message: "Workload or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://kubescape.io/docs/controls/c-0077/)"
     - expression: >
         object.kind != 'CronJob' ||
         (
@@ -62,4 +62,4 @@ spec:
             labelInList, labelInList != label
           )))
         )
-      message: "CronJob or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://hub.armosec.io/docs/c-0077)"
+      message: "CronJob or Pod in workload doesn't have any k8s common label from the configured list! (see more at https://kubescape.io/docs/controls/c-0077/)"

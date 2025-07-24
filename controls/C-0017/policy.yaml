@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0017"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0017"
+    controlUrl: "https://kubescape.io/docs/controls/c-0017/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,8 +24,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.readOnlyRootFilesystem) &&  container.securityContext.readOnlyRootFilesystem == true)"
-      message: "Pods having containers with mutable filesystem not allowed! (see more at https://hub.armosec.io/docs/c-0017)"
+      message: "Pods having containers with mutable filesystem not allowed! (see more at https://kubescape.io/docs/controls/c-0017/)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.readOnlyRootFilesystem) &&  container.securityContext.readOnlyRootFilesystem == true)"
-      message: "Workloads having containers with mutable filesystem not allowed! (see more at https://hub.armosec.io/docs/c-0017)"
+      message: "Workloads having containers with mutable filesystem not allowed! (see more at https://kubescape.io/docs/controls/c-0017/)"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.readOnlyRootFilesystem) &&  container.securityContext.readOnlyRootFilesystem == true)"
-      message: "CronJob having containers with mutable filesystem not allowed! (see more at https://hub.armosec.io/docs/c-0017)"
+      message: "CronJob having containers with mutable filesystem not allowed! (see more at https://kubescape.io/docs/controls/c-0017/)"

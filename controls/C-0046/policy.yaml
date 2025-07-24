@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0046"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0046"
+    controlUrl: "https://kubescape.io/docs/controls/c-0046/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -32,18 +32,18 @@ spec:
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
-      message: "Pod has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
+      message: "Pod has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         object.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
-      message: "Workload has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
+      message: "Workload has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"
     - expression: >
         object.kind != 'CronJob' ||
         object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
         ))
-      message: "CronJob has one or more containers with insecure capabilities! (see more at https://hub.armosec.io/docs/c-0046)"
+      message: "CronJob has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"

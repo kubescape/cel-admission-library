@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0001"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0001"
+    controlUrl: "https://kubescape.io/docs/controls/c-0001/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -27,8 +27,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
-      message: "Pods uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"
+      message: "Pods uses an image from a forbidden registry! (see more at https://kubescape.io/docs/controls/c-0001/)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
-      message: "Workloads uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"
+      message: "Workloads uses an image from a forbidden registry! (see more at https://kubescape.io/docs/controls/c-0001/)"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.untrustedRegistries.all(registry,!container.image.startsWith(registry)))"
-      message: "CronJob uses an image from a forbidden registry! (see more at https://hub.armosec.io/docs/c-0001)"
+      message: "CronJob uses an image from a forbidden registry! (see more at https://kubescape.io/docs/controls/c-0001/)"

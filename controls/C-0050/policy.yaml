@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0050"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0050"
+    controlUrl: "https://kubescape.io/docs/controls/c-0050/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -33,7 +33,7 @@ spec:
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
-      message: "Pods contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0050)"
+      message: "Pods contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
@@ -42,7 +42,7 @@ spec:
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
-      message: "Workloads contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0050)"
+      message: "Workloads contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
@@ -51,4 +51,4 @@ spec:
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         params.settings.cpuLimitMin <= int(container.resources.limits.cpu) &&
         params.settings.cpuLimitMax >= int(container.resources.limits.cpu)))
-      message: "CronJob contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0050)"
+      message: "CronJob contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"

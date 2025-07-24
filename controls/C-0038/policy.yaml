@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0038"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0038"
+    controlUrl: "https://kubescape.io/docs/controls/c-0038/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,10 +24,10 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || ((!(has(object.spec.hostPID)) || object.spec.hostPID == false) && (!(has(object.spec.hostIPC)) || object.spec.hostIPC == false))"
-      message: "Pods with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
+      message: "Pods with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://kubescape.io/docs/controls/c-0038/)"
 
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || ((!(has(object.spec.template.spec.hostPID)) || object.spec.template.spec.hostPID == false) && (!(has(object.spec.template.spec.hostIPC)) || object.spec.template.spec.hostPID == false))"
-      message: "Workloads with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
+      message: "Workloads with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://kubescape.io/docs/controls/c-0038/)"
 
     - expression: "object.kind != 'CronJob' || ((!(has(object.spec.jobTemplate.spec.template.spec.hostPID)) || object.spec.jobTemplate.spec.template.spec.hostPID == false) && (!(has(object.spec.jobTemplate.spec.template.spec.hostIPC)) || object.spec.jobTemplate.spec.template.spec.hostIPC == false))"
-      message: "CronJob with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://hub.armosec.io/docs/c-0038)"
+      message: "CronJob with hostPID and hostIPC fields enabled may allow cross-container influence. (see more at https://kubescape.io/docs/controls/c-0038/)"

@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0061"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0061"
+    controlUrl: "https://kubescape.io/docs/controls/c-0061/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,4 +24,4 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "['Pod','Deployment','ReplicaSet','DaemonSet','StatefulSet','Job', 'CronJob'].all(kind, object.kind != kind) || (has(object.metadata.namespace) && object.metadata.namespace != 'default')"
-      message: "Workloads in default namespace are not allowed! (see more at https://hub.armosec.io/docs/c-0061)"
+      message: "Workloads in default namespace are not allowed! (see more at https://kubescape.io/docs/controls/c-0061/)"

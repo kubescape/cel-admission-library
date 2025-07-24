@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0016"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0016"
+    controlUrl: "https://kubescape.io/docs/controls/c-0016/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,8 +24,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) &&  container.securityContext.allowPrivilegeEscalation == false)"
-      message: "Pods with privileged containers are not allowed! (see more at https://hub.armosec.io/docs/c-0016)"
+      message: "Pods with privileged containers are not allowed! (see more at https://kubescape.io/docs/controls/c-0016/)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) &&  container.securityContext.allowPrivilegeEscalation == false)"
-      message: "Workloads with privileged containers are not allowed! (see more at https://hub.armosec.io/docs/c-0016)"
+      message: "Workloads with privileged containers are not allowed! (see more at https://kubescape.io/docs/controls/c-0016/)"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation) &&  container.securityContext.allowPrivilegeEscalation == false)"
-      message: "CronJob with privileged containers are not allowed! (see more at https://hub.armosec.io/docs/c-0016)"
+      message: "CronJob with privileged containers are not allowed! (see more at https://kubescape.io/docs/controls/c-0016/)"
