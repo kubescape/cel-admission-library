@@ -7,7 +7,7 @@ Giving insecure and unnecessary capabilities for a container can increase the im
 ## Severity Level: High
 
 ## Configuration Parameters:
-* [insecureCapabilities](https://hub.armosec.io/docs/configuration_parameter_insecurecapabilities)
+* [insecureCapabilities](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#insecurecapabilities)
 
 ## Resources this policy could be applied to:
 * CronJob
@@ -19,7 +19,7 @@ Giving insecure and unnecessary capabilities for a container can increase the im
 * StatefulSet
 
 ## What does this policy do:
-This Policy compares all the capabilities in every container against a configurable blacklist of [insecureCapabilities](https://hub.armosec.io/docs/configuration_parameter_insecurecapabilities). If there is a match, the resource is denied from being deployed in the cluster.
+This Policy compares all the capabilities in every container against a configurable blacklist of [insecureCapabilities](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#insecurecapabilities). If there is a match, the resource is denied from being deployed in the cluster. 
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

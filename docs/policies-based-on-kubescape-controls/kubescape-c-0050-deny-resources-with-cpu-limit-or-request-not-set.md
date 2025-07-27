@@ -3,10 +3,10 @@
 ## Severity Level: High
 
 ## Configuration Parameters:
-* [cpuRequestMin](https://hub.armosec.io/docs/configuration_parameter_cpu_request_min).
-* [cpuRequestMax](https://hub.armosec.io/docs/configuration_parameter_cpu_request_max).
-* [cpuLimitMin](https://hub.armosec.io/docs/configuration_parameter_cpu_limit_min).
-* [cpuLimitMax](https://hub.armosec.io/docs/configuration_parameter_cpu_limit_max).
+* [cpuRequestMin]( https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_request_min).
+* [cpuRequestMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_request_max).
+* [cpuLimitMin]( https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_limit_min).
+* [cpuLimitMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_limit_max).
 
 ## Resources this policy could be applied to:
 * CronJob
@@ -20,12 +20,12 @@
 ## What does this policy do:
 ### This Policy checks for every container in the resource:
 * If `resources.requests.cpu` is set.
-* If `resources.requests.cpu` >= [cpuRequestMin](https://hub.armosec.io/docs/configuration_parameter_cpu_request_min).
-* If `resources.requests.cpu` <= [cpuRequestMax](https://hub.armosec.io/docs/configuration_parameter_cpu_request_max).
+* If `resources.requests.cpu` >= [cpuRequestMin](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_request_min).
+* If `resources.requests.cpu` <= [cpuRequestMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_request_max).
 
 * If `resources.limits.cpu` is set.
-* If `resources.limits.cpu` >= [cpuLimitMin](https://hub.armosec.io/docs/configuration_parameter_cpu_limit_min).
-* If `resources.limits.cpu` <= [cpuLimitMax](https://hub.armosec.io/docs/configuration_parameter_cpu_limit_max).
+* If `resources.limits.cpu` >= [cpuLimitMin](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_limit_min).
+* If `resources.limits.cpu` <= [cpuLimitMax](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#cpu_limit_max).
 
 If any of the above checks fail, the resource is denied from being deployed in the cluster.
 

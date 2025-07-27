@@ -6,10 +6,10 @@ Developers store secrets in the Kubernetes configuration files, such as environm
 ## Severity Level: High
 
 ## Configuration Parameters:
-* [sensitiveValues](https://hub.armosec.io/docs/configuration_parameter_sensitivevalues)
-* [sensitiveValuesAllowed](https://hub.armosec.io/docs/configuration_parameter_sensitivevaluesallowed)
-* [sensitiveKeyNames](https://hub.armosec.io/docs/configuration_parameter_sensitivekeynames)
-* [sensitiveKeyNamesAllowed](https://hub.armosec.io/docs/configuration_parameter_sensitivekeynames)
+* [sensitiveValues](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#sensitivevalues)
+* [sensitiveValuesAllowed](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#sensitivevaluesallowed)
+* [sensitiveKeyNames](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#sensitivekeynames)
+* [sensitiveKeyNamesAllowed](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#sensitivekeynames)
 
 ## Resources this policy could be applied to:
 * ConfigMap
