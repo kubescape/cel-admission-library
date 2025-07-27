@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0009"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0009"
+    controlUrl: "https://kubescape.io/docs/controls/c-0009/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -32,7 +32,7 @@ spec:
         has(container.resources.limits) &&
         has(container.resources.limits.memory) &&
         has(container.resources.limits.cpu))
-      message: "Pods contains container/s with memory limit and/or cpu limit not set! (see more at https://hub.armosec.io/docs/c-0009)"
+      message: "Pods contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
@@ -40,7 +40,7 @@ spec:
         has(container.resources.limits) &&
         has(container.resources.limits.memory) &&
         has(container.resources.limits.cpu))
-      message: "Workloads contains container/s with memory limit and/or cpu limit not set! (see more at https://hub.armosec.io/docs/c-0009)"
+      message: "Workloads contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
@@ -48,4 +48,4 @@ spec:
         has(container.resources.limits) &&
         has(container.resources.limits.memory) &&
         has(container.resources.limits.cpu))
-      message: "CronJob contains container/s with memory limit and/or cpu limit not set! (see more at https://hub.armosec.io/docs/c-0009)"
+      message: "CronJob contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"

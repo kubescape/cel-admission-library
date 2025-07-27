@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0055"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0055"
+    controlUrl: "https://kubescape.io/docs/controls/c-0055/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -30,7 +30,7 @@ spec:
         object.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
-      message: "Pods could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"
+      message: "Pods could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         (has(object.spec.template.metadata.annotations) && object.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
@@ -38,7 +38,7 @@ spec:
         object.spec.template.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
-      message: "Workloads could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"
+      message: "Workloads could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         object.kind != 'CronJob' ||
         (has(object.spec.jobTemplate.metadata.annotations) && object.spec.jobTemplate.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
@@ -46,4 +46,4 @@ spec:
         object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
-      message: "CronJob could have more security hardening! (see more at https://hub.armosec.io/docs/c-0055)"
+      message: "CronJob could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"

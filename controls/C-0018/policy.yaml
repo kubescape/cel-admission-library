@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0018"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0018"
+    controlUrl: "https://kubescape.io/docs/controls/c-0018/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,8 +24,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || object.spec.containers.all(container, has(container.readinessProbe))"
-      message: "Pods must have readinessProbe set up (see more at https://hub.armosec.io/docs/c-0018)"
+      message: "Pods must have readinessProbe set up (see more at https://kubescape.io/docs/controls/c-0018/)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, has(container.readinessProbe))"
-      message: "Workloads must have readinessProbe set up (see more at https://hub.armosec.io/docs/c-0018)"
+      message: "Workloads must have readinessProbe set up (see more at https://kubescape.io/docs/controls/c-0018/)"
     - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, has(container.readinessProbe))"
-      message: "CronJob must have readinessProbe set up (see more at https://hub.armosec.io/docs/c-0018)"
+      message: "CronJob must have readinessProbe set up (see more at https://kubescape.io/docs/controls/c-0018/)"

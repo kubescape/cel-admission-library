@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0034"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0034"
+    controlUrl: "https://kubescape.io/docs/controls/c-0034/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -29,7 +29,7 @@ spec:
           has(object.automountServiceAccountToken) &&
           object.automountServiceAccountToken == false
         )
-      message: "ServiceAccount has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+      message: "ServiceAccount has \"automountServiceAccountToken\" enabled! (see more at https://kubescape.io/docs/controls/c-0034/)"
 
     - expression: >
         object.kind != 'Pod' ||
@@ -37,7 +37,7 @@ spec:
           has(object.spec.automountServiceAccountToken) &&
           object.spec.automountServiceAccountToken == false
         )
-      message: "Pod has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+      message: "Pod has \"automountServiceAccountToken\" enabled! (see more at https://kubescape.io/docs/controls/c-0034/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
@@ -45,7 +45,7 @@ spec:
           has(object.spec.template.spec.automountServiceAccountToken) &&
           object.spec.template.spec.automountServiceAccountToken == false
         )
-      message: "Workload has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+      message: "Workload has \"automountServiceAccountToken\" enabled! (see more at https://kubescape.io/docs/controls/c-0034/)"
 
     - expression: >
         object.kind != 'CronJob' ||
@@ -53,4 +53,4 @@ spec:
           has(object.spec.jobTemplate.spec.automountServiceAccountToken) &&
           object.spec.jobTemplate.spec.automountServiceAccountToken == false
         )
-      message: "CronJob has \"automountServiceAccountToken\" enabled! (see more at https://hub.armosec.io/docs/c-0034)"
+      message: "CronJob has \"automountServiceAccountToken\" enabled! (see more at https://kubescape.io/docs/controls/c-0034/)"

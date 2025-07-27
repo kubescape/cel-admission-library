@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0041"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0041"
+    controlUrl: "https://kubescape.io/docs/controls/c-0041/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,11 +24,11 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || !(has(object.spec.hostNetwork)) || object.spec.hostNetwork == false"
-      message: "Pods with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+      message: "Pods with hostNetwork enabled may cause security issues. (see more at https://kubescape.io/docs/controls/c-0041/)"
 
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !(has(object.spec.template.spec.hostNetwork)) || object.spec.template.spec.hostNetwork == false"
-      message: "Workloads with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+      message: "Workloads with hostNetwork enabled may cause security issues. (see more at https://kubescape.io/docs/controls/c-0041/)"
 
     - expression: "object.kind != 'CronJob' || !(has(object.spec.jobTemplate.spec.template.spec.hostNetwork)) || object.spec.jobTemplate.spec.template.spec.hostNetwork == false"
-      message: "CronJob with hostNetwork enabled may cause security issues. (see more at https://hub.armosec.io/docs/c-0041)"
+      message: "CronJob with hostNetwork enabled may cause security issues. (see more at https://kubescape.io/docs/controls/c-0041/)"
 

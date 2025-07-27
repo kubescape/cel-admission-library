@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0075"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0075"
+    controlUrl: "https://kubescape.io/docs/controls/c-0075/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -32,7 +32,7 @@ spec:
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
         ))
-      message: "Pods contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
+      message: "Pods contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
@@ -43,7 +43,7 @@ spec:
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
         ))
-      message: "Workloads contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
+      message: "Workloads contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
@@ -54,4 +54,4 @@ spec:
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
         ))
-      message: "CronJob contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://hub.armosec.io/docs/c-0075)"
+      message: "CronJob contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"

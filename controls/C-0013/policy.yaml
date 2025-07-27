@@ -75,7 +75,7 @@ spec:
             )
           )
         )
-      message: "Pods contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
+      message: "Pods contains container/s which have the capability to run as root! (see more at https://kubescape.io/docs/controls/c-0013/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
@@ -133,7 +133,7 @@ spec:
             )
           )
         )
-      message: "Workloads contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
+      message: "Workloads contains container/s which have the capability to run as root! (see more at https://kubescape.io/docs/controls/c-0013/)"
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
@@ -191,4 +191,4 @@ spec:
             )
           )
         )
-      message: "CronJob contains container/s which have the capability to run as root! (see more at https://hub.armosec.io/docs/c-0013)"
+      message: "CronJob contains container/s which have the capability to run as root! (see more at https://kubescape.io/docs/controls/c-0013/)"

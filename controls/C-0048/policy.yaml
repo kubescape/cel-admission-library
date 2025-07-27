@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0048"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0048"
+    controlUrl: "https://kubescape.io/docs/controls/c-0048/"
 spec:
   failurePolicy: Fail
   matchConstraints:
@@ -24,8 +24,8 @@ spec:
       resources:   ["jobs","cronjobs"]
   validations:
     - expression: "object.kind != 'Pod' || !has(object.spec.volumes) || object.spec.volumes.all(vol, !(has(vol.hostPath)))"
-      message: "There are one or more hostPath mounts in the Pod! (see more at https://hub.armosec.io/docs/c-0048)"
+      message: "There are one or more hostPath mounts in the Pod! (see more at https://kubescape.io/docs/controls/c-0048/)"
     - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
-      message: "There are one or more hostPath mounts in the Workload! (see more at https://hub.armosec.io/docs/c-0048)"
+      message: "There are one or more hostPath mounts in the Workload! (see more at https://kubescape.io/docs/controls/c-0048/)"
     - expression: "object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.template.spec.volumes) || object.spec.jobTemplate.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)))"
-      message: "There are one or more hostPath mounts in the CronJob! (see more at https://hub.armosec.io/docs/c-0048)"
+      message: "There are one or more hostPath mounts in the CronJob! (see more at https://kubescape.io/docs/controls/c-0048/)"

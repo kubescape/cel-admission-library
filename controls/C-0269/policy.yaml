@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0269"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0269"
+    controlUrl: "https://kubescape.io/docs/controls/c-0269/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -31,18 +31,18 @@ spec:
         (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
         params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
         params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()))
-      message: "Pods contains container/s with memory request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0269)"
+      message: "Pods contains container/s with memory request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0269/)"
 
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
         (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
         params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
         params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()))
-      message: "Workloads contains container/s with memory request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0269)"
+      message: "Workloads contains container/s with memory request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0269/)"
 
     - expression: >
         object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
         (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.memory))) &&
         params.settings.memoryRequestMin <= quantity(container.resources.requests.memory).asInteger() &&
         params.settings.memoryRequestMax >= quantity(container.resources.requests.memory).asInteger()))
-      message: "CronJob contains container/s with memory request not set or they are not in the specified range! (see more at https://hub.armosec.io/docs/c-0269)"
+      message: "CronJob contains container/s with memory request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0269/)"

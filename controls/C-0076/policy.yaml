@@ -5,7 +5,7 @@ metadata:
   labels:
     controlId: "C-0076"
   annotations:
-    controlUrl: "https://hub.armosec.io/docs/c-0076"
+    controlUrl: "https://kubescape.io/docs/controls/c-0076/"
 spec:
   failurePolicy: Fail
   paramKind:
@@ -34,7 +34,7 @@ spec:
             labelInList, labelInList != label
           )))
         )
-      message: "Pods doesn't have any label from the configured list! (see more at https://hub.armosec.io/docs/c-0076)"
+      message: "Pods doesn't have any label from the configured list! (see more at https://kubescape.io/docs/controls/c-0076/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         (
@@ -49,7 +49,7 @@ spec:
           )))
         )
 
-      message: "Workload or Pod in workload doesn't have any label from the configured list! (see more at https://hub.armosec.io/docs/c-0076)"
+      message: "Workload or Pod in workload doesn't have any label from the configured list! (see more at https://kubescape.io/docs/controls/c-0076/)"
     - expression: >
         object.kind != 'CronJob' ||
         (
@@ -64,4 +64,4 @@ spec:
           )))
         )
 
-      message: "CronJob or Pod in CronJob doesn't have any label from the configured list! (see more at https://hub.armosec.io/docs/c-0076)"
+      message: "CronJob or Pod in CronJob doesn't have any label from the configured list! (see more at https://kubescape.io/docs/controls/c-0076/)"
