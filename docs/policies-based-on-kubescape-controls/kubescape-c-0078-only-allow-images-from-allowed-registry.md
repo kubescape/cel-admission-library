@@ -6,7 +6,7 @@ If attackers get access to the cluster, they can re-point kubernetes to a compro
 ## Severity Level: Medium
 
 ## Configuration Parameters:
-* [imageRepositoryAllowList](https://hub.armosec.io/docs/configuration_parameter_imagerepositoryallowlist)
+* [imageRepositoryAllowList](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#imagerepositoryallowlist)
 
 ## Resources this policy could be applied to:
 * CronJob
@@ -18,7 +18,7 @@ If attackers get access to the cluster, they can re-point kubernetes to a compro
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks that all the containers in the resource are using images from the [imageRepositoryAllowList](https://hub.armosec.io/docs/configuration_parameter_imagerepositoryallowlist). If not, the resource is denied from being deployed in the cluster.
+This Policy checks that all the containers in the resource are using images from the [imageRepositoryAllowList](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#imagerepositoryallowlist). If not, the resource is denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

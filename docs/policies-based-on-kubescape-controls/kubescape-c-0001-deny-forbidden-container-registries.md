@@ -9,7 +9,7 @@ images can also lead to similar results.
 ## Severity Level: High
 
 ## Configuration Parameters:
-* [untrustedRegistries](https://hub.armosec.io/docs/configuration_parameter_untrustedregistries)
+* [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries)
 
 ## Resources this policy could be applied to:
 * CronJob
@@ -21,7 +21,7 @@ images can also lead to similar results.
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks if the image used by any container is from the configured [untrustedRegistries](https://hub.armosec.io/docs/configuration_parameter_untrustedregistries). If it finds any such instance, the resource is
+This Policy checks if the image used by any container is from the configured [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries). If it finds any such instance, the resource is
 denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
