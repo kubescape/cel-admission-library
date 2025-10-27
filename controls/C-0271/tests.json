@@ -11,7 +11,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].resources.limits.memory=128Mi"
+            "spec.containers.[0].resources.limits.memory=256Mi"
         ]
     },
     {
@@ -19,7 +19,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.limits.memory=512Gi"
+            "spec.containers.[0].resources.limits.memory=4.1Gi"
         ]
     },
     {
@@ -34,7 +34,7 @@
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].resources.limits.memory=128Mi"
+            "spec.template.spec.containers.[0].resources.limits.memory=0.5Gi"
         ]
     }
 ]

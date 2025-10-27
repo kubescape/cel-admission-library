@@ -48,13 +48,13 @@ spec:
                     type: integer
                   type: array
                 memoryLimitMax:
-                  type: integer
+                  type: number
                 memoryLimitMin:
-                  type: integer
+                  type: number
                 memoryRequestMax:
-                  type: integer
+                  type: number
                 memoryRequestMin:
-                  type: integer
+                  type: number
                 publicRegistries:
                   items:
                     type: string
