@@ -20,7 +20,7 @@
         "expected": "pass",
         "field_change_list": [
             "spec.containers.[0].resources.requests.memory=128Mi",
-            "spec.containers.[0].resources.limits.memory=128Mi"
+            "spec.containers.[0].resources.limits.memory=256Mi"
         ]
     },
     {
@@ -28,8 +28,8 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.requests.memory=16Mi",
-            "spec.containers.[0].resources.limits.memory=512Gi"
+            "spec.containers.[0].resources.requests.memory=127Mi",
+            "spec.containers.[0].resources.limits.memory=1Gi"
         ]
     },
     {
@@ -45,7 +45,7 @@
         "expected": "pass",
         "field_change_list": [
             "spec.template.spec.containers.[0].resources.requests.memory=128Mi",
-            "spec.template.spec.containers.[0].resources.limits.memory=128Mi"
+            "spec.template.spec.containers.[0].resources.limits.memory=0.25Gi"
         ]
     },
     {
@@ -53,8 +53,8 @@
         "template": "cronjob.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.memory=128Ki",
-            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.memory=128Ki"
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.memory=3.9Gi",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.memory=4096Mi"
         ]
     }
 ]
