@@ -38,4 +38,4 @@ spec:
         (!(!(has(container.resources)) || !(has(container.resources.limits)) || !(has(container.resources.limits.memory))) &&
         quantity(string(params.settings.memoryLimitMin)).compareTo(quantity(string(container.resources.limits.memory))) != 1 &&
         quantity(string(params.settings.memoryLimitMax)).compareTo(quantity(string(container.resources.limits.memory))) != -1 ))
-      messageExpression: 'object.kind + "/" + object.metadata.name + " contains container/s with memory limit not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0270/)"'
+      messageExpression: 'object.kind + "/" + object.metadata.name + " contains container/s with memory limit not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0271/)"'
