@@ -95,20 +95,22 @@ try:
 
         time.sleep(1)
 
-        # Run kubectl apply on the test object
-        result = None
-        try:
-            subprocess.check_call(['kubectl', '--dry-run=server', 'apply', '-f' ,test_object_yaml])
-            result = 0
-        except subprocess.CalledProcessError as e:
-            result = e.returncode
+        # Run kubectl apply on the test object and capture output
+        proc = subprocess.run(
+            ['kubectl', '--dry-run=server', 'apply', '-f', test_object_yaml],
+            capture_output=True, text=True
+        )
+        result = proc.returncode
 
         test_passed = False
-        # Check if the result is as expected
         if expected == 'pass' and result != 0:
             print(colored('Test failed: expected to pass but failed','red'))
+            print(proc.stderr)
         elif expected == 'fail' and result == 0:
             print(colored('Test failed: expected to fail but passed','red'))
+        elif expected == 'fail' and result != 0 and policy_name not in proc.stderr:
+            print(colored('Test failed: expected VAP denial from "' + policy_name + '" but got different error','red'))
+            print(proc.stderr)
         else:
             test_passed = True
             print(colored('Test passed!','green'))

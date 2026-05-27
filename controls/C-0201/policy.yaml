@@ -1,0 +1,31 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0201-deny-capabilities-assigned"
+  labels:
+    controlId: "C-0201"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0201/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || (object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(d, d == 'ALL') && (!has(container.securityContext.capabilities.add) || size(container.securityContext.capabilities.add) == 0))"
+      message: "Container must drop all capabilities and must not have any capabilities added! (see more at https://kubescape.io/docs/controls/c-0201/)"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || (object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(d, d == 'ALL') && (!has(container.securityContext.capabilities.add) || size(container.securityContext.capabilities.add) == 0))"
+      message: "Workload must not have containers with capabilities assigned without dropping all! (see more at https://kubescape.io/docs/controls/c-0201/)"
+    - expression: "object.kind != 'CronJob' || (object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(d, d == 'ALL') && (!has(container.securityContext.capabilities.add) || size(container.securityContext.capabilities.add) == 0))"
+      message: "CronJob must not have containers with capabilities assigned without dropping all! (see more at https://kubescape.io/docs/controls/c-0201/)"

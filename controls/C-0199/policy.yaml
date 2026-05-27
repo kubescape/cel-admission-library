@@ -1,0 +1,31 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0199-deny-net-raw-capability"
+  labels:
+    controlId: "C-0199"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0199/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  validations:
+    - expression: "object.kind != 'Pod' || (object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(c, c == 'NET_RAW' || c == 'ALL') && (!has(container.securityContext.capabilities.add) || container.securityContext.capabilities.add.all(cap, cap != 'NET_RAW' && cap != 'ALL')))"
+      message: "Container must drop the NET_RAW capability (or all capabilities) and must not add NET_RAW back! (see more at https://kubescape.io/docs/controls/c-0199/)"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || (object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(c, c == 'NET_RAW' || c == 'ALL') && (!has(container.securityContext.capabilities.add) || container.securityContext.capabilities.add.all(cap, cap != 'NET_RAW' && cap != 'ALL')))"
+      message: "Workload has a container that must drop the NET_RAW capability (or all capabilities) and must not add NET_RAW back! (see more at https://kubescape.io/docs/controls/c-0199/)"
+    - expression: "object.kind != 'CronJob' || (object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])).all(container, has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop) && container.securityContext.capabilities.drop.exists(c, c == 'NET_RAW' || c == 'ALL') && (!has(container.securityContext.capabilities.add) || container.securityContext.capabilities.add.all(cap, cap != 'NET_RAW' && cap != 'ALL')))"
+      message: "CronJob has a container that must drop the NET_RAW capability (or all capabilities) and must not add NET_RAW back! (see more at https://kubescape.io/docs/controls/c-0199/)"

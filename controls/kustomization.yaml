@@ -8,6 +8,7 @@ resources:
 - C-0017/policy.yaml
 - C-0018/policy.yaml
 - C-0198/policy.yaml
+- C-0199/policy.yaml
 - C-0020/policy.yaml
 - C-0026/policy.yaml
 - C-0034/policy.yaml
@@ -18,6 +19,8 @@ resources:
 - C-0045/policy.yaml
 - C-0046/policy.yaml
 - C-0048/policy.yaml
+- C-0200/policy.yaml
+- C-0201/policy.yaml
 - C-0050/policy.yaml
 - C-0055/policy.yaml
 - C-0056/policy.yaml

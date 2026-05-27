@@ -1,0 +1,60 @@
+[
+    {
+        "name": "Pod without capabilities.drop is denied",
+        "template": "pod.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with drop ALL and no added capabilities is allowed",
+        "template": "pod-drop-all.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with drop ALL but added NET_RAW is denied",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"NET_RAW\"]"
+        ]
+    },
+    {
+        "name": "Pod with drop only NET_RAW (not ALL) is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment without capabilities.drop is denied",
+        "template": "deployment.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment with drop ALL and no added capabilities is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "Deployment with drop ALL but added SYS_ADM is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.template.spec.containers.[0].securityContext.capabilities.add=[\"SYS_ADM\"]"
+        ]
+    },
+    {
+        "name": "CronJob without capabilities.drop is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob with drop ALL and no added capabilities is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    }
+]

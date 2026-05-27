@@ -1,0 +1,67 @@
+[
+    {
+        "name": "Pod without capabilities is denied",
+        "template": "pod.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with drop ALL is allowed",
+        "template": "pod-drop-all.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with drop NET_RAW is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment without capabilities is denied",
+        "template": "deployment.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment with drop ALL is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "CronJob without capabilities is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob with drop ALL is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "Pod with initContainer lacking drop is denied",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"]}]"
+        ]
+    },
+    {
+        "name": "Pod with drop ALL and add NET_RAW is denied",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"NET_RAW\"]"
+        ]
+    },
+    {
+        "name": "Pod with drop ALL and add ALL is denied (loophole)",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"ALL\"]"
+        ]
+    }
+]

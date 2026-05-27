@@ -1,0 +1,45 @@
+[
+    {
+        "name": "Pod without capabilities is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with added capabilities is denied",
+        "template": "pod-capabilities.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with only SYS_ADM added is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment without capabilities is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with added capabilities is denied",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob without capabilities is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with drop ALL and no added capability is allowed",
+        "template": "pod-drop-all.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with initContainer having added capability is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"],\"securityContext\":{\"capabilities\":{\"add\":[\"NET_RAW\"]}}}]"
+        ]
+    }
+]
