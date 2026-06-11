@@ -104,7 +104,10 @@ try:
         result = proc.returncode
 
         test_passed = False
-        if expected == 'pass' and result != 0:
+        valid_expected = {'pass', 'fail', 'warn'}
+        if expected not in valid_expected:
+            print(colored('Test failed: unsupported expected value "' + str(expected) + '"','red'))
+        elif expected == 'pass' and result != 0:
             print(colored('Test failed: expected to pass but failed','red'))
             print(proc.stderr)
         elif expected == 'fail' and result == 0:
