@@ -82,6 +82,8 @@ The normal "policy violated" path produces a clean `false`. That is the `validat
 
 This matters when you migrate an audit-style Rego rule, like C-0026, which alerts on every CronJob rather than denying. The policy YAML on its own cannot express "audit-only." You ship the policy plus a `[Warn]` or `[Audit]` binding alongside it and document the requirement on the policy's doc page. `test-resources/policy-binding-warn.yaml` is the existing example, and the C-0026 doc shows how to call it out.
 
+The general rule: `validationActions` is an operator-by-binding decision, and the library only needs to ship a non-`[Deny]` binding when `[Deny]` would block legitimate, compliant resources. C-0026 is the sole control in the current library where that applies. For every other control in this repo, the default `[Deny]` binding is the right shipped default, and the operator can override per cluster if they want audit semantics.
+
 ## 5. When `paramKind` makes sense
 
 Use `paramKind` only when the control has tunable knobs that an operator should be able to override per cluster. C-0046 is the example to look at. It accepts a `ControlConfiguration` parameter holding a list of insecure capabilities so different orgs can decide what counts as insecure for them.
