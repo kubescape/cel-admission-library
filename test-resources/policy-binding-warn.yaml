@@ -1,0 +1,14 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: placeholder
+spec:
+  policyName: placeholder
+  validationActions: [Warn]
+  paramRef:
+    name: placeholder
+    parameterNotFoundAction: Deny
+  matchResources:
+    objectSelector:
+      matchLabels:
+        admission-policy-test: abc

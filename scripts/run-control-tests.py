@@ -55,6 +55,7 @@ try:
         template = test['template']
         field_change_list = test['field_change_list'] if 'field_change_list' in test else []
         expected = test['expected']
+        binding_template = test['binding_template'] if 'binding_template' in test else 'policy-binding.yaml'
 
         print('-'*120)
         print('Running test: ' + name)
@@ -77,7 +78,7 @@ try:
         # Create the policy binding file
         policy_name = policy['metadata']['name']
         policy_bind_change_list = ['spec.policyName=' + policy_name, 'metadata.name=' + policy_name + '-binding', 'spec.paramRef.name=' + policy_name + '-params']
-        subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, 'policy-binding.yaml'), '-o', policy_bind_temp_file_name] + policy_bind_change_list)
+        subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, binding_template), '-o', policy_bind_temp_file_name] + policy_bind_change_list)
         print('Generated policy binding: ' + policy_bind_temp_file_name)
 
         # Create parameter file
@@ -110,6 +111,12 @@ try:
             print(colored('Test failed: expected to fail but passed','red'))
         elif expected == 'fail' and result != 0 and policy_name not in proc.stderr:
             print(colored('Test failed: expected VAP denial from "' + policy_name + '" but got different error','red'))
+            print(proc.stderr)
+        elif expected == 'warn' and result != 0:
+            print(colored('Test failed: expected to pass with a warning but failed','red'))
+            print(proc.stderr)
+        elif expected == 'warn' and result == 0 and policy_name not in proc.stderr:
+            print(colored('Test failed: expected VAP warning from "' + policy_name + '" but none was emitted','red'))
             print(proc.stderr)
         else:
             test_passed = True
