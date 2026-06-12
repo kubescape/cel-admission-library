@@ -1,8 +1,9 @@
 [
     {
-        "name": "Any CronJob is flagged for review",
+        "name": "Any CronJob is surfaced via a [Warn] binding for review",
         "template": "cronjob.yaml",
-        "expected": "fail",
+        "binding_template": "policy-binding-warn.yaml",
+        "expected": "warn",
         "field_change_list": [
         ]
     }
