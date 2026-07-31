@@ -1,22 +1,19 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
-  name: "kubescape-c-0078-only-allow-images-from-allowed-registry"
+  name: "kubescape-c-0078-deny-missing-resource-limits"
   labels:
     controlId: "C-0078"
   annotations:
     controlUrl: "https://kubescape.io/docs/controls/c-0078/"
 spec:
   failurePolicy: Fail
-  paramKind:
-    apiVersion: kubescape.io/v1
-    kind: ControlConfiguration
   matchConstraints:
     resourceRules:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
@@ -25,28 +22,22 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
-        object.kind != 'Pod' ||
-        object.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
-        (
-          (registry == 'docker.io' && (!container.image.contains('/') || (!container.image.split('/')[0].contains('.') && !container.image.split('/')[0].contains(':') && container.image.split('/')[0] != 'localhost'))) ||
-          (container.image.startsWith(registry + '/'))
-        )))
-      message: "Pods uses an image from a registry that is not in the allow list! (see more at https://kubescape.io/docs/controls/c-0078/)"
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
-        object.spec.template.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
-        (
-          (registry == 'docker.io' && (!container.image.contains('/') || (!container.image.split('/')[0].contains('.') && !container.image.split('/')[0].contains(':') && container.image.split('/')[0] != 'localhost'))) ||
-          (container.image.startsWith(registry + '/'))
-        )))
-      message: "Workloads uses an image from a registry that is not in the allow list! (see more at https://kubescape.io/docs/controls/c-0078/)"
-    - expression: >
-        object.kind != 'CronJob' ||
-        object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.imageRepositoryAllowList.exists(registry,
-        (
-          (registry == 'docker.io' && (!container.image.contains('/') || (!container.image.split('/')[0].contains('.') && !container.image.split('/')[0].contains(':') && container.image.split('/')[0] != 'localhost'))) ||
-          (container.image.startsWith(registry + '/'))
-        )))
-      message: "CronJob uses an image from a registry that is not in the allow list! (see more at https://kubescape.io/docs/controls/c-0078/)"
+        variables.containers.all(container,
+          has(container.resources) &&
+          has(container.resources.limits) &&
+          (has(container.resources.limits.cpu) || has(container.resources.limits.memory))
+        )
+      message: >
+        object.kind + '/' + object.metadata.name + ' has a container without resource limits. (see more at https://kubescape.io/docs/controls/c-0078/)'

@@ -1,28 +1,63 @@
 [
     {
-        "name": "Pod with livenessProbe is allowed",
+        "name": "Pod with allowPrivilegeEscalation set to false is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].livenessProbe.httpGet.port=8080"
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
     },
     {
-        "name": "Pod without livenessProbe is not allowed",
+        "name": "Pod with allowPrivilegeEscalation set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod without securityContext is blocked (defaults to true)",
         "template": "pod.yaml",
         "expected": "fail"
     },
     {
-        "name": "Deployment with livenessProbe is allowed",
-        "template": "deployment.yaml",
+        "name": "Pod with pod-level allowPrivilegeEscalation set to false is allowed",
+        "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].livenessProbe.httpGet.port=8080"
+            "spec.securityContext.allowPrivilegeEscalation=false"
         ]
     },
     {
-        "name": "Deployment without livenessProbe is not allowed",
+        "name": "Pod with pod-level allowPrivilegeEscalation set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod without container securityContext but pod-level false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with allowPrivilegeEscalation set to true is blocked",
         "template": "deployment.yaml",
-        "expected": "fail"
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Deployment with pod-level allowPrivilegeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.allowPrivilegeEscalation=false"
+        ]
     }
 ]

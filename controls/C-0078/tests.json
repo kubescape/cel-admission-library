@@ -1,176 +1,62 @@
 [
     {
-        "name": "Pod with image from quay.io is blocked",
+        "name": "Pod without resource limits is blocked",
         "template": "pod.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
-        ]
+        "expected": "fail"
     },
     {
-        "name": "Pod with image from gcr.io is allowed",
+        "name": "Pod with CPU limit is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].image=gcr.io/google-containers/busybox"
+            "spec.containers.[0].resources.limits.cpu=100m",
+            "spec.containers.[0].resources.limits.memory=128Mi"
         ]
     },
     {
-        "name": "Pod with image from docker.io without prefix docker.io/ is allowed",
+        "name": "Pod with memory limit only is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
+            "spec.containers.[0].resources.limits.memory=128Mi"
         ]
     },
     {
-        "name": "Pod with image from docker.io with prefix docker.io/ is allowed",
+        "name": "Pod with CPU limit only is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.containers.[0].image=docker.io/alpine"
+            "spec.containers.[0].resources.limits.cpu=100m"
         ]
     },
     {
-        "name": "Deployment with image from quay.io is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=quay.io/openshift/origin-cli:latest"
-        ]
-    },
-    {
-        "name": "Deployment with image from gcr.io is allowed",
-        "template": "deployment.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=gcr.io/google-containers/busybox"
-        ]
-    },
-    {
-        "name": "Deployment with image from docker.io without prefix docker.io/ is allowed",
-        "template": "deployment.yaml",
-        "expected": "pass",
-        "field_change_list": [
-        ]
-    },
-    {
-        "name": "Deployment with image from docker.io with prefix docker.io/ is allowed",
-        "template": "deployment.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=docker.io/alpine"
-        ]
-    },
-    {
-        "name": "Pod with docker.io user image (username/image) is allowed",
-        "template": "pod.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.containers.[0].image=bitnami/elasticsearch"
-        ]
-    },
-    {
-        "name": "Pod with spoofed docker.io domain is blocked",
+        "name": "Pod with empty limits map is blocked",
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].image=docker.io.evil.com/malware"
+            "spec.containers.[0].resources.limits=~!?"
         ]
     },
     {
-        "name": "Pod with spoofed gcr.io domain is blocked",
+        "name": "Pod with requests but no limits is blocked",
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].image=gcr.io.evil.com/malware"
+            "spec.containers.[0].resources.requests.cpu=100m"
         ]
     },
     {
-        "name": "Pod with image starting with a dot is blocked",
-        "template": "pod.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.containers.[0].image=.evil.com/malware"
-        ]
+        "name": "Deployment without resource limits is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail"
     },
     {
-        "name": "Pod with local registry with port (localhost:5000/image) is blocked",
-        "template": "pod.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.containers.[0].image=localhost:5000/my-image"
-        ]
-    },
-    {
-        "name": "Pod with official docker.io image with tag is allowed",
-        "template": "pod.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.containers.[0].image=alpine:latest"
-        ]
-    },
-    {
-        "name": "Pod with localhost registry (no port) is blocked",
-        "template": "pod.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.containers.[0].image=localhost/my-image"
-        ]
-    },
-    {
-        "name": "Deployment with docker.io user image (username/image) is allowed",
+        "name": "Deployment with CPU and memory limits is allowed",
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.containers.[0].image=bitnami/elasticsearch"
-        ]
-    },
-    {
-        "name": "Deployment with spoofed docker.io domain is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=docker.io.evil.com/malware"
-        ]
-    },
-    {
-        "name": "Deployment with spoofed gcr.io domain is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=gcr.io.evil.com/malware"
-        ]
-    },
-    {
-        "name": "Deployment with image starting with a dot is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=.evil.com/malware"
-        ]
-    },
-    {
-        "name": "Deployment with local registry with port (localhost:5000/image) is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=localhost:5000/my-image"
-        ]
-    },
-    {
-        "name": "Deployment with official docker.io image with tag is allowed",
-        "template": "deployment.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=alpine:latest"
-        ]
-    },
-    {
-        "name": "Deployment with localhost registry (no port) is blocked",
-        "template": "deployment.yaml",
-        "expected": "fail",
-        "field_change_list": [
-            "spec.template.spec.containers.[0].image=localhost/my-image"
+            "spec.template.spec.containers.[0].resources.limits.cpu=100m",
+            "spec.template.spec.containers.[0].resources.limits.memory=128Mi"
         ]
     }
 ]
