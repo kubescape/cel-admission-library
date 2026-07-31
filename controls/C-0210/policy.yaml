@@ -51,5 +51,5 @@ spec:
                 : 'Unconfined')
           ) != 'Unconfined'
         )
-      message: >
+      messageExpression: >
         object.kind + '/' + object.metadata.name + ' has a container with seccomp profile Unconfined or undefined. (see more at https://kubescape.io/docs/controls/c-0210/)'
