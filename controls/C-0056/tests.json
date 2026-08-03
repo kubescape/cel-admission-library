@@ -25,7 +25,6 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
             "spec.containers.[0].securityContext.privileged=true"
         ]
     },
@@ -35,7 +34,7 @@
         "expected": "fail",
         "field_change_list": [
             "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
-            "spec.containers.[0].securityContext.capabilities.add=+SYS_ADMIN"
+            "spec.containers.[0].securityContext.capabilities.add=[\"SYS_ADMIN\"]"
         ]
     },
     {
@@ -44,7 +43,7 @@
         "expected": "pass",
         "field_change_list": [
             "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
-            "spec.containers.[0].securityContext.capabilities.add=+NET_ADMIN"
+            "spec.containers.[0].securityContext.capabilities.add=[\"NET_ADMIN\"]"
         ]
     },
     {
