@@ -5,7 +5,7 @@
         "expected": "fail"
     },
     {
-        "name": "Pod with CPU limit is allowed",
+        "name": "Pod with CPU and memory limits is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
@@ -34,7 +34,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.containers.[0].resources.limits=~!?"
+            "spec.containers.[0].resources.limits={}"
         ]
     },
     {

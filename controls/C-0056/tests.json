@@ -21,27 +21,30 @@
         "expected": "fail"
     },
     {
-        "name": "Pod with pod-level allowPrivilegeEscalation set to false is allowed",
-        "template": "pod.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "spec.securityContext.allowPrivilegeEscalation=false"
-        ]
-    },
-    {
-        "name": "Pod with pod-level allowPrivilegeEscalation set to true is blocked",
+        "name": "Pod with allowPrivilegeEscalation=false and privileged=true is blocked",
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.securityContext.allowPrivilegeEscalation=true"
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.containers.[0].securityContext.privileged=true"
         ]
     },
     {
-        "name": "Pod without container securityContext but pod-level false is allowed",
+        "name": "Pod with allowPrivilegeEscalation=false and SYS_ADMIN capability is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.containers.[0].securityContext.capabilities.add=+SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Pod with allowPrivilegeEscalation=false and other capability is allowed",
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.securityContext.allowPrivilegeEscalation=false"
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.containers.[0].securityContext.capabilities.add=+NET_ADMIN"
         ]
     },
     {
@@ -53,11 +56,11 @@
         ]
     },
     {
-        "name": "Deployment with pod-level allowPrivilegeEscalation set to false is allowed",
+        "name": "Deployment with allowPrivilegeEscalation set to false is allowed",
         "template": "deployment.yaml",
         "expected": "pass",
         "field_change_list": [
-            "spec.template.spec.securityContext.allowPrivilegeEscalation=false"
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
     }
 ]

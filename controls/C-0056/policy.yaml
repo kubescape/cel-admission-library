@@ -32,24 +32,16 @@ spec:
               ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
               : []
       name: containers
-    - expression: |
-        object.kind == 'Pod'
-          ? (has(object.spec.securityContext) ? object.spec.securityContext : {})
-          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
-            ? (has(object.spec.template.spec.securityContext) ? object.spec.template.spec.securityContext : {})
-            : object.kind == 'CronJob'
-              ? (has(object.spec.jobTemplate.spec.template.spec.securityContext) ? object.spec.jobTemplate.spec.template.spec.securityContext : {})
-              : {}
-      name: podSecurityContext
   validations:
     - expression: >
         variables.containers.all(container,
-          (has(container.securityContext) && has(container.securityContext.allowPrivilegeEscalation)
-            ? container.securityContext.allowPrivilegeEscalation
-            : (has(variables.podSecurityContext) && has(variables.podSecurityContext.allowPrivilegeEscalation)
-                ? variables.podSecurityContext.allowPrivilegeEscalation
-                : true)
-          ) != true
+          has(container.securityContext) &&
+          has(container.securityContext.allowPrivilegeEscalation) &&
+          !container.securityContext.allowPrivilegeEscalation &&
+          !(has(container.securityContext.privileged) && container.securityContext.privileged) &&
+          !(has(container.securityContext.capabilities) &&
+            has(container.securityContext.capabilities.add) &&
+            container.securityContext.capabilities.add.exists(cap, cap == 'SYS_ADMIN'))
         )
       message: >
-        object.kind + '/' + object.metadata.name + ' has a container with allowPrivilegeEscalation. (see more at https://kubescape.io/docs/controls/c-0056/)'
+        object.kind + '/' + object.metadata.name + ' has a container with effective allowPrivilegeEscalation. (see more at https://kubescape.io/docs/controls/c-0056/)'
