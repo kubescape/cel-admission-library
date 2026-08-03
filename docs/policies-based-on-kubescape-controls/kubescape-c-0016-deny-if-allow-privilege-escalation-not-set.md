@@ -18,9 +18,10 @@ Attackers may gain access to a container and uplift its privilege to enable exce
 * StatefulSet
 
 ## What does this policy do:
-### This Policy checks for every container in the resource:
-* If `resources.limits.memory` and `resources.limits.cpu` are set. If any of them is not set,
-the resource is denied from being deployed in the cluster.
+### This Policy checks for every container (regular, init, and ephemeral) in the resource:
+* If `securityContext.allowPrivilegeEscalation` is explicitly set to `false`. If it is missing,
+  set to `true`, or the entire `securityContext` is absent, the resource is denied from being
+  deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

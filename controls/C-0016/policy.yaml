@@ -13,7 +13,7 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]

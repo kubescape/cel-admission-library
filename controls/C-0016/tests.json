@@ -29,6 +29,15 @@
         ]
     },
     {
+        "name": "Pod with initContainer missing allowPrivilegeEscalation is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"]}]"
+        ]
+    },
+    {
         "name": "Deployment with allowPrivilegeEscalation set to true is blocked",
         "template": "deployment.yaml",
         "expected": "fail",
@@ -43,5 +52,18 @@
         "field_change_list": [
             "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
+    },
+    {
+        "name": "CronJob with allowPrivilegeEscalation set to false is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "CronJob without allowPrivilegeEscalation is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail"
     }
 ]
