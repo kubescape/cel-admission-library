@@ -1,0 +1,53 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0297-agent-sandbox-runtime-isolation-warn
+spec:
+  policyName: kubescape-c-0297-agent-sandbox-runtime-isolation
+  paramRef:
+    name: basic-control-configuration
+    parameterNotFoundAction: Deny
+  validationActions: [Warn, Audit]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0298-agent-sandbox-token-automount-warn
+spec:
+  policyName: kubescape-c-0298-agent-sandbox-token-automount
+  validationActions: [Warn, Audit]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0299-agent-sandbox-container-limits-warn
+spec:
+  policyName: kubescape-c-0299-agent-sandbox-container-limits
+  validationActions: [Warn, Audit]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0300-agent-sandbox-image-digests-warn
+spec:
+  policyName: kubescape-c-0300-agent-sandbox-image-digests
+  validationActions: [Warn, Audit]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0301-agent-sandbox-image-registries-warn
+spec:
+  policyName: kubescape-c-0301-agent-sandbox-image-registries
+  paramRef:
+    name: basic-control-configuration
+    parameterNotFoundAction: Deny
+  validationActions: [Warn, Audit]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: kubescape-c-0302-agent-sandbox-managed-networking-warn
+spec:
+  policyName: kubescape-c-0302-agent-sandbox-managed-networking
+  validationActions: [Warn, Audit]

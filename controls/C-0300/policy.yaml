@@ -1,0 +1,45 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0300-agent-sandbox-image-digests
+  labels:
+    controlId: C-0300
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0300/
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+    - apiGroups: ["ate.dev"]
+      apiVersions: ["v1alpha1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["workerpools", "actortemplates"]
+  validations:
+  - expression: >-
+      !['Sandbox', 'SandboxTemplate'].exists(k, object.kind == k) ||
+      (has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+      has(object.spec.podTemplate.spec.containers) &&
+      object.spec.podTemplate.spec.containers.all(c,
+        c.image.matches('^.+@sha256:[A-Fa-f0-9]{64}$')) &&
+      (!has(object.spec.podTemplate.spec.initContainers) ||
+        object.spec.podTemplate.spec.initContainers.all(c,
+          c.image.matches('^.+@sha256:[A-Fa-f0-9]{64}$'))))
+    message: Every Agent Sandbox image must be pinned to an exact SHA-256 digest.
+  - expression: >-
+      object.kind != 'WorkerPool' ||
+      (has(object.spec.ateomImage) && object.spec.ateomImage.matches('^.+@sha256:[A-Fa-f0-9]{64}$'))
+    message: WorkerPool ateomImage must be pinned to an exact SHA-256 digest.
+  - expression: >-
+      object.kind != 'ActorTemplate' ||
+      (has(object.spec.pauseImage) && object.spec.pauseImage.matches('^.+@sha256:[A-Fa-f0-9]{64}$') &&
+       has(object.spec.containers) && object.spec.containers.all(c,
+         c.image.matches('^.+@sha256:[A-Fa-f0-9]{64}$')))
+    message: ActorTemplate pause and container images must be pinned to exact SHA-256 digests.

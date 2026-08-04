@@ -3,6 +3,9 @@ kind: ControlConfiguration
 metadata:
   name: placeholder
 settings:
+  agentRuntimeClassAllowList:
+  - gvisor
+  - kata
   cpuLimitMax: 5
   cpuLimitMin: 1
   cpuRequestMax: 5

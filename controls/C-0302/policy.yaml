@@ -1,0 +1,21 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0302-agent-sandbox-managed-networking
+  labels:
+    controlId: C-0302
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0302/
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+  validations:
+  - expression: >-
+      !has(object.spec.networkPolicyManagement) ||
+      object.spec.networkPolicyManagement == 'Managed'
+    message: SandboxTemplate must use managed networking. The managed default blocks private and internal destinations but still permits public internet.

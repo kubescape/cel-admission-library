@@ -1,0 +1,4 @@
+[
+  {"name":"SandboxTemplate with token automount enabled is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.podTemplate.spec.automountServiceAccountToken=true"]},
+  {"name":"SandboxTemplate with token automount disabled is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]}
+]

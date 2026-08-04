@@ -1,0 +1,6 @@
+[
+  {"name":"SandboxTemplate with a tagged image is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.podTemplate.spec.containers.[0].image=registry.example.com/actor:latest"]},
+  {"name":"SandboxTemplate with exact digest pins is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]},
+  {"name":"WorkerPool with a tagged ateomImage is blocked","template":"agent-worker-pool.yaml","expected":"fail","field_change_list":["spec.ateomImage=gcr.io/example/ateom:latest"]},
+  {"name":"WorkerPool with an exact digest pin is allowed","template":"agent-worker-pool.yaml","expected":"pass","field_change_list":[]}
+]

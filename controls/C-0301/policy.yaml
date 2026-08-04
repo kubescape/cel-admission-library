@@ -1,0 +1,50 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0301-agent-sandbox-image-registries
+  labels:
+    controlId: C-0301
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0301/
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+    - apiGroups: ["ate.dev"]
+      apiVersions: ["v1alpha1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["workerpools", "actortemplates"]
+  validations:
+  - expression: >-
+      !['Sandbox', 'SandboxTemplate'].exists(k, object.kind == k) ||
+      (has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+      has(object.spec.podTemplate.spec.containers) &&
+      object.spec.podTemplate.spec.containers.all(c,
+        params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/'))) &&
+      (!has(object.spec.podTemplate.spec.initContainers) ||
+        object.spec.podTemplate.spec.initContainers.all(c,
+          params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/')))))
+    message: Every Agent Sandbox image must use a registry in imageRepositoryAllowList.
+  - expression: >-
+      object.kind != 'WorkerPool' ||
+      (has(object.spec.ateomImage) && params.settings.imageRepositoryAllowList.exists(r,
+        object.spec.ateomImage.startsWith(r + '/')))
+    message: WorkerPool ateomImage must use a registry in imageRepositoryAllowList.
+  - expression: >-
+      object.kind != 'ActorTemplate' ||
+      (has(object.spec.pauseImage) && params.settings.imageRepositoryAllowList.exists(r,
+         object.spec.pauseImage.startsWith(r + '/')) &&
+       has(object.spec.containers) && object.spec.containers.all(c,
+         params.settings.imageRepositoryAllowList.exists(r, c.image.startsWith(r + '/'))))
+    message: ActorTemplate pause and container images must use registries in imageRepositoryAllowList.

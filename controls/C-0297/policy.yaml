@@ -1,0 +1,29 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0297-agent-sandbox-runtime-isolation
+  labels:
+    controlId: C-0297
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0297/
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: kubescape.io/v1
+    kind: ControlConfiguration
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+  validations:
+  - expression: >-
+      has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+      has(object.spec.podTemplate.spec.runtimeClassName) &&
+      object.spec.podTemplate.spec.runtimeClassName in params.settings.agentRuntimeClassAllowList
+    message: Agent Sandbox must select a RuntimeClass from agentRuntimeClassAllowList.

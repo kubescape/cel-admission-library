@@ -1,0 +1,19 @@
+apiVersion: extensions.agents.x-k8s.io/v1beta1
+kind: SandboxTemplate
+metadata:
+  name: test-agent-sandbox-no-cpu
+  namespace: test-namespace
+  labels:
+    admission-policy-test: abc
+spec:
+  networkPolicyManagement: Managed
+  podTemplate:
+    spec:
+      runtimeClassName: gvisor
+      automountServiceAccountToken: false
+      containers:
+      - name: actor
+        image: gcr.io/example/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        resources:
+          limits:
+            memory: 256Mi
