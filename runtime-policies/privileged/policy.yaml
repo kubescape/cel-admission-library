@@ -25,7 +25,7 @@ spec:
         (
           (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADMIN')))
         )
       message: "Pod has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
     - expression: >
@@ -34,7 +34,7 @@ spec:
         (
           (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADMIN')))
         )
       message: "Workloads has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
     - expression: >
@@ -43,6 +43,6 @@ spec:
         (
           (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADM')))
+          container.securityContext.capabilities.add.all(cap, cap != 'SYS_ADMIN')))
         )
       message: "CronJob has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"

@@ -21,7 +21,7 @@ A privileged container is a container that has all the capabilities of the host 
 ## What does this policy do:
 This Policy checks for every container in the resource:
 * If `securityContext.privileged` is not set or set to false.
-* If `securityContext.capabilities.add` does not contain `SYS_ADM` capability.
+* If `securityContext.capabilities.add` does not contain `SYS_ADMIN` capability.
 
 . If any of the above two checks fail, the resource is denied from being deployed in the cluster.
 
