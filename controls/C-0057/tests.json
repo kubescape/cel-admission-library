@@ -93,5 +93,20 @@
         "expected": "pass",
         "field_change_list": [
         ]
+    },
+    {
+        "name": "Pod having initContainer with securityContext.privileged set to true is denied",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod having initContainer without securityContext.privileged set to true is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
     }
 ]
