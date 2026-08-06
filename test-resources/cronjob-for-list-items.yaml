@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-cronjob
+  labels:
+    admission-policy-test: abc
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: test-container
+            image: busybox:1.35
+            command:
+            - /bin/sh
+            - -c
+            - date; echo "Hello from the Kubernetes cluster"; sleep 5
+            securityContext:
+              capabilities:
+                add:
+                - CHOWN
+                drop:
+                - NET_RAW

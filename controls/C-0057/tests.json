@@ -70,5 +70,28 @@
         "field_change_list": [
             "spec.containers.[0].securityContext.capabilities.add.[0]=ALL"
         ]
+    },
+    {
+        "name": "CronJob having container having securityContext.privileged set to true is denied",
+        "template": "cronjob-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "CronJob having container with \"SYS_ADMIN\" capability is denied",
+        "template": "cronjob-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "CronJob having container not having securityContext.privileged set to true and without \"SYS_ADMIN\" capability is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
     }
 ]
