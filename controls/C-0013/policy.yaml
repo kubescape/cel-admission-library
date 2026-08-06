@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0013-deny-resources-with-capability-to-run-as-root"
+  labels:
+    controlId: "C-0013"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0013/"
 spec:
   failurePolicy: Fail
   matchConstraints:

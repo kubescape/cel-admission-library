@@ -2,6 +2,10 @@ apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
   name: "kubescape-c-0012-deny-resources-with-sensitive-information-in-environment-variables"
+  labels:
+    controlId: "C-0012"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0012/"
 spec:
   failurePolicy: Fail
   paramKind:
