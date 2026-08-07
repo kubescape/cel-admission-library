@@ -1,0 +1,26 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0298-agent-sandbox-token-automount
+  labels:
+    controlId: C-0298
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0298/
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+  validations:
+  - expression: >-
+      has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+      has(object.spec.podTemplate.spec.automountServiceAccountToken) &&
+      object.spec.podTemplate.spec.automountServiceAccountToken == false
+    message: Agent Sandbox must explicitly set automountServiceAccountToken to false.

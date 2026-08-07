@@ -1,0 +1,4 @@
+[
+  {"name":"SandboxTemplate with unmanaged networking is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.networkPolicyManagement=Unmanaged"]},
+  {"name":"SandboxTemplate with managed networking is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]}
+]

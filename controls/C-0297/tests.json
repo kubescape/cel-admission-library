@@ -1,0 +1,4 @@
+[
+  {"name":"SandboxTemplate with runc is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.podTemplate.spec.runtimeClassName=runc"]},
+  {"name":"SandboxTemplate with gVisor is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]}
+]

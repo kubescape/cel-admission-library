@@ -1,0 +1,9 @@
+apiVersion: ate.dev/v1alpha1
+kind: WorkerPool
+metadata:
+  name: test-worker-pool
+  namespace: test-namespace
+  labels:
+    admission-policy-test: abc
+spec:
+  ateomImage: gcr.io/example/ateom@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

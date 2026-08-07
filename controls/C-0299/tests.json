@@ -1,0 +1,4 @@
+[
+  {"name":"SandboxTemplate without a CPU limit is blocked","template":"agent-sandbox-template-no-cpu.yaml","expected":"fail","field_change_list":[]},
+  {"name":"SandboxTemplate with all limits is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]}
+]

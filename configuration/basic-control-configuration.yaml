@@ -3,6 +3,9 @@ kind: ControlConfiguration
 metadata:
   name: basic-control-configuration
 settings:
+  agentRuntimeClassAllowList:
+  - gvisor
+  - kata
   cpuLimitMax: 5
   cpuLimitMin: 0.5
   cpuRequestMax: 5
@@ -126,4 +129,3 @@ settings:
   - ca-webhook
   - ca-websocket
   - clair-clair
-

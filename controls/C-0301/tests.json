@@ -1,0 +1,6 @@
+[
+  {"name":"SandboxTemplate with a disallowed registry is blocked","template":"agent-sandbox-template.yaml","expected":"fail","field_change_list":["spec.podTemplate.spec.containers.[0].image=evil.example/actor@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]},
+  {"name":"SandboxTemplate with an allowed registry is allowed","template":"agent-sandbox-template.yaml","expected":"pass","field_change_list":[]},
+  {"name":"WorkerPool with a disallowed registry is blocked","template":"agent-worker-pool.yaml","expected":"fail","field_change_list":["spec.ateomImage=evil.example/ateom@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]},
+  {"name":"WorkerPool with an allowed registry is allowed","template":"agent-worker-pool.yaml","expected":"pass","field_change_list":[]}
+]

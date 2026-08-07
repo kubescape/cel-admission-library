@@ -1,0 +1,32 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: kubescape-c-0299-agent-sandbox-container-limits
+  labels:
+    controlId: C-0299
+  annotations:
+    controlUrl: https://kubescape.io/docs/controls/c-0299/
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups: ["agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxes"]
+    - apiGroups: ["extensions.agents.x-k8s.io"]
+      apiVersions: ["v1alpha1", "v1beta1"]
+      operations: ["CREATE", "UPDATE"]
+      resources: ["sandboxtemplates"]
+  validations:
+  - expression: >-
+      has(object.spec.podTemplate) && has(object.spec.podTemplate.spec) &&
+      has(object.spec.podTemplate.spec.containers) &&
+      object.spec.podTemplate.spec.containers.all(c,
+        has(c.resources) && has(c.resources.limits) &&
+        has(c.resources.limits.cpu) && has(c.resources.limits.memory)) &&
+      (!has(object.spec.podTemplate.spec.initContainers) ||
+        object.spec.podTemplate.spec.initContainers.all(c,
+          has(c.resources) && has(c.resources.limits) &&
+          has(c.resources.limits.cpu) && has(c.resources.limits.memory)))
+    message: Every Agent Sandbox container and init container must set CPU and memory limits.
