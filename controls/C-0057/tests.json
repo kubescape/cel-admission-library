@@ -54,5 +54,21 @@
         "field_change_list": [
             "spec.containers.[0].securityContext.capabilities.add.[0]=NET_ADMIN"
         ]
+    },
+    {
+        "name": "Pod having container with lowercase \"sys_admin\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=sys_admin"
+        ]
+    },
+    {
+        "name": "Pod having container with \"ALL\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=ALL"
+        ]
     }
 ]

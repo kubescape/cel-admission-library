@@ -28,22 +28,28 @@ spec:
   validations:
     - expression: >
         object.kind != 'Pod' ||
-        object.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        object.spec.containers.all(container,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
-        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
-        ))
+        (container.securityContext.capabilities.add.all(capability, capability.upperAscii() != 'ALL') &&
+        params.settings.insecureCapabilities.all(insecureCapability,
+        container.securityContext.capabilities.add.all(capability, capability.upperAscii() != insecureCapability.upperAscii())))
+        )
       message: "Pod has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
-        object.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        object.spec.template.spec.containers.all(container,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
-        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
-        ))
+        (container.securityContext.capabilities.add.all(capability, capability.upperAscii() != 'ALL') &&
+        params.settings.insecureCapabilities.all(insecureCapability,
+        container.securityContext.capabilities.add.all(capability, capability.upperAscii() != insecureCapability.upperAscii())))
+        )
       message: "Workload has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"
     - expression: >
         object.kind != 'CronJob' ||
-        object.spec.jobTemplate.spec.template.spec.containers.all(container, params.settings.insecureCapabilities.all(insecureCapability,
+        object.spec.jobTemplate.spec.template.spec.containers.all(container,
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
-        container.securityContext.capabilities.add.all(capability, capability != insecureCapability)
-        ))
+        (container.securityContext.capabilities.add.all(capability, capability.upperAscii() != 'ALL') &&
+        params.settings.insecureCapabilities.all(insecureCapability,
+        container.securityContext.capabilities.add.all(capability, capability.upperAscii() != insecureCapability.upperAscii())))
+        )
       message: "CronJob has one or more containers with insecure capabilities! (see more at https://kubescape.io/docs/controls/c-0046/)"

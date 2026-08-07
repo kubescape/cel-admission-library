@@ -33,5 +33,21 @@
         "expected": "fail",
         "field_change_list": [
         ]
+    },
+    {
+        "name": "Pod having container with lowercase \"net_raw\" capability is blocked",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=net_raw"
+        ]
+    },
+    {
+        "name": "Pod having container with \"ALL\" capability is blocked",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=ALL"
+        ]
     }
 ]
