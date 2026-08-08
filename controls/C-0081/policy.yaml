@@ -1,0 +1,47 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0081-deny-vulnerable-argocd-versions"
+  labels:
+    controlId: "C-0081"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0081/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments"]
+  variables:
+    - expression: |
+        object.kind == 'Deployment'
+          ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+          : []
+      name: containers
+  validations:
+    # Argo CD fixed CVE-2022-24348 in 2.1.9 and 2.2.4. Vulnerable: any 1.x, any 2.0.x,
+    # 2.1.x below 9 and 2.2.x below 4.
+    # argocd has to be a whole repository segment, otherwise an unrelated image such as
+    # myargocd:v1.8.7 would be denied.
+    # The single-element list is only there to bind the split result to a name, CEL has
+    # no let binding and repeating the split eleven times is unreadable.
+    # size() and matches() must both be checked before int(), because int() raises on a
+    # tag like v2.1.0-rc1 and a raise is an eval error, not a pass.
+    - expression: >
+        variables.containers.all(container,
+          !(container.image.contains('/argocd:v') || container.image.startsWith('argocd:v')) ||
+          [container.image.split('argocd:v')[1].split('.')].all(parts,
+            parts.size() != 3 ||
+            !parts.all(part, part.matches('^[0-9]+$')) ||
+            !(
+              int(parts[0]) == 1 ||
+              (int(parts[0]) == 2 && int(parts[1]) == 0) ||
+              (int(parts[0]) == 2 && int(parts[1]) == 1 && int(parts[2]) < 9) ||
+              (int(parts[0]) == 2 && int(parts[1]) == 2 && int(parts[2]) < 4)
+            )
+          )
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' runs an Argo CD image affected by CVE-2022-24348, fixed in 2.1.9 and 2.2.4. (see more at https://kubescape.io/docs/controls/c-0081/)'

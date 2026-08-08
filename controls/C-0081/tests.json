@@ -1,0 +1,111 @@
+[
+    {
+        "name": "Deployment not running argocd is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment running argocd v2.1.8 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.1.8"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v1.8.7 is blocked, every 1.x is vulnerable",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v1.8.7"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.0.5 is blocked, every 2.0.x is vulnerable",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.0.5"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.2.3 is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.2.3"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.1.9 is allowed, that is the fixed release on the 2.1 line",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.1.9"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.2.4 is allowed, that is the fixed release on the 2.2 line",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.2.4"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.3.0 is allowed, it is past the vulnerable range",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.3.0"
+        ]
+    },
+    {
+        "name": "Deployment running argocd v2.1.0-rc1 is allowed, the non numeric guard stops int from raising",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.1.0-rc1"
+        ]
+    },
+    {
+        "name": "Deployment running a two part argocd tag is allowed, the size guard stops the index from raising",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argoproj/argocd:v2.1"
+        ]
+    },
+    {
+        "name": "Deployment running nginx is allowed, the image does not contain argocd:v",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=nginx:1.25"
+        ]
+    },
+    {
+        "name": "Deployment running a bare argocd:v2.1.8 with no registry prefix is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=argocd:v2.1.8"
+        ]
+    },
+    {
+        "name": "Deployment running myargocd:v1.8.7 is allowed, argocd has to be a whole repository segment",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.example.com/team/myargocd:v1.8.7"
+        ]
+    },
+    {
+        "name": "Deployment running a vulnerable argocd image in an init container is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers=[{\"name\": \"setup\", \"image\": \"argoproj/argocd:v2.1.8\", \"command\": [\"sh\", \"-c\", \"true\"]}]"
+        ]
+    }
+]

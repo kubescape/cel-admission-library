@@ -90,6 +90,9 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0271](https://kubescape.io/docs/controls/c-0271/) | Ensure memory limits are set | [kubescape-c-0271-deny-resources-with-memory-limit-not-set](/docs/policies-based-on-kubescape-controls/kubescape-c-0271-deny-resources-with-memory-limit-not-set.md) | [memoryLimitMin](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#memory_limit_min) |
 | [C-0275](https://kubescape.io/docs/controls/c-0275/) | Minimize the admission of containers wishing to share the host process ID namespace | [kubescape-c-0275-deny-resources-sharing-host-pid-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0275-deny-resources-sharing-host-pid-namespace.md) | not configurable |
 | [C-0276](https://kubescape.io/docs/controls/c-0276/) | Minimize the admission of containers wishing to share the host IPC namespace | [kubescape-c-0276-deny-resources-sharing-host-ipc-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0276-deny-resources-sharing-host-ipc-namespace.md) | not configurable |
+| [C-0081](https://kubescape.io/docs/controls/c-0081/) | CVE-2022-24348 Argo CD directory traversal | [kubescape-c-0081-deny-vulnerable-argocd-versions](/docs/policies-based-on-kubescape-controls/kubescape-c-0081-deny-vulnerable-argocd-versions.md) | not configurable |
+| [C-0263](https://kubescape.io/docs/controls/c-0263/) | Ingress uses TLS | [kubescape-c-0263-deny-ingress-without-tls](/docs/policies-based-on-kubescape-controls/kubescape-c-0263-deny-ingress-without-tls.md) | not configurable |
+| [C-0292](https://kubescape.io/docs/controls/c-0292/) | Nginx Ingress Controller End of Life | [kubescape-c-0292-deny-nginx-ingress-controller-eol](/docs/policies-based-on-kubescape-controls/kubescape-c-0292-deny-nginx-ingress-controller-eol.md) | not configurable |
 
 ## Testing Policies
 
