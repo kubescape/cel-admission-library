@@ -1,0 +1,105 @@
+[
+    {
+        "name": "Pod without hostPID is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with hostPID set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostPID=false"
+        ]
+    },
+    {
+        "name": "Pod with hostPID set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "Pod with only hostIPC set to true is allowed, this control does not cover hostIPC",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "Deployment without hostPID is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with hostPID set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.hostPID=false"
+        ]
+    },
+    {
+        "name": "Deployment with hostPID set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "ReplicaSet with hostPID set to true is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "DaemonSet with hostPID set to true is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "StatefulSet with hostPID set to true is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "Job with hostPID set to true is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "CronJob without hostPID is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with hostPID set to false is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.hostPID=false"
+        ]
+    },
+    {
+        "name": "CronJob with hostPID set to true is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.hostPID=true"
+        ]
+    }
+]
