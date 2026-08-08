@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  labels:
+    admission-policy-test: abc
+spec:
+  initContainers:
+  - name: init
+    image: alpine
+    command: ["sh", "-c", "true"]
+  containers:
+  - name: sleep
+    image: alpine
+    command: ["sh"]
+    args: ["-c", "while true; do sleep 1; done"]

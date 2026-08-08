@@ -13,7 +13,7 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
@@ -22,31 +22,24 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
-        object.kind != 'Pod' || object.spec.containers.all(container,
+        variables.containers.all(container,
         !(has(container.securityContext)) ||
         (
           (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
           container.securityContext.capabilities.add.all(cap, cap.upperAscii() != 'SYS_ADMIN' && cap.upperAscii() != 'ALL')))
         )
-      message: "Pod has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet', 'Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
-        !(has(container.securityContext)) ||
-        (
-          (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
-          (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap.upperAscii() != 'SYS_ADMIN' && cap.upperAscii() != 'ALL')))
-        )
-      message: "Workloads has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
-    - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
-        !(has(container.securityContext)) ||
-        (
-          (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
-          (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap.upperAscii() != 'SYS_ADMIN' && cap.upperAscii() != 'ALL')))
-        )
-      message: "CronJob has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)'
