@@ -1,0 +1,73 @@
+[
+    {
+        "name": "ClusterIP Service is allowed, this control only cares about LoadBalancers",
+        "template": "service.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "LoadBalancer serving 443 with no annotations at all is blocked",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]"
+        ]
+    },
+    {
+        "name": "LoadBalancer serving 443 with an unrelated annotation is blocked",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]",
+            "metadata.annotations={\"service.beta.kubernetes.io/aws-load-balancer-internal\": \"true\"}"
+        ]
+    },
+    {
+        "name": "LoadBalancer serving 443 with the ssl-cert annotation is allowed",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]",
+            "metadata.annotations={\"service.beta.kubernetes.io/aws-load-balancer-ssl-cert\": \"arn:aws:acm:us-east-1:123456789012:certificate/test\"}"
+        ]
+    },
+    {
+        "name": "LoadBalancer serving 443 with a suffixed ssl-cert annotation is allowed, the match is on the key prefix",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]",
+            "metadata.annotations={\"service.beta.kubernetes.io/aws-load-balancer-ssl-cert-arn\": \"arn:aws:acm:us-east-1:123456789012:certificate/test\"}"
+        ]
+    },
+    {
+        "name": "LoadBalancer serving only 80 is allowed",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 80, \"targetPort\": 8080}]"
+        ]
+    },
+    {
+        "name": "LoadBalancer serving both 80 and 443 with no ssl-cert annotation is blocked",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.type=LoadBalancer",
+            "spec.ports=[{\"name\": \"http\", \"protocol\": \"TCP\", \"port\": 80, \"targetPort\": 8080}, {\"name\": \"https\", \"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]"
+        ]
+    },
+    {
+        "name": "NodePort Service serving 443 is allowed, it is not a LoadBalancer",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.type=NodePort",
+            "spec.ports=[{\"protocol\": \"TCP\", \"port\": 443, \"targetPort\": 8443}]"
+        ]
+    }
+]
