@@ -1,0 +1,33 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0292-deny-nginx-ingress-controller-eol"
+  labels:
+    controlId: "C-0292"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0292/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","daemonsets","statefulsets"]
+  variables:
+    - expression: |
+        object.kind in ['Deployment','DaemonSet','StatefulSet']
+          ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+          : []
+      name: containers
+  validations:
+    # Only the community ingress-nginx project reached end of life in March 2026.
+    # NGINX Inc commercial images have their own lifecycle and are deliberately not matched.
+    - expression: >
+        variables.containers.all(container,
+          !container.image.contains('ingress-nginx/controller') &&
+          !container.image.contains('k8s.gcr.io/ingress-nginx') &&
+          !container.image.contains('registry.k8s.io/ingress-nginx')
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' runs the community ingress-nginx controller, which reached end of life in March 2026 and gets no security fixes any more. (see more at https://kubescape.io/docs/controls/c-0292/)'

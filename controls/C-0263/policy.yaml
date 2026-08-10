@@ -1,0 +1,21 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0263-deny-ingress-without-tls"
+  labels:
+    controlId: "C-0263"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0263/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["networking.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["ingresses"]
+  validations:
+    # An empty tls list is treated the same as no tls block: it configures no TLS.
+    - expression: "has(object.spec.tls) && object.spec.tls.size() > 0"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has no TLS configuration, so it serves traffic over plaintext HTTP. (see more at https://kubescape.io/docs/controls/c-0263/)'

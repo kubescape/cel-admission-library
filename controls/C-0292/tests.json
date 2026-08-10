@@ -1,0 +1,76 @@
+[
+    {
+        "name": "Deployment not running an ingress controller is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment running the community controller from registry.k8s.io is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/ingress-nginx/controller:v1.11.2"
+        ]
+    },
+    {
+        "name": "Deployment running an ingress-nginx sidecar image from the old k8s.gcr.io registry is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=k8s.gcr.io/ingress-nginx/kube-webhook-certgen:v1.0"
+        ]
+    },
+    {
+        "name": "Deployment running a mirrored copy of the community controller is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=quay.io/mycompany/ingress-nginx/controller:v1.9.6"
+        ]
+    },
+    {
+        "name": "Deployment running plain nginx is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=nginx:1.25"
+        ]
+    },
+    {
+        "name": "Deployment running the NGINX Inc commercial ingress controller is allowed, it has its own lifecycle",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=nginx/nginx-ingress:3.4.0"
+        ]
+    },
+    {
+        "name": "DaemonSet running the community controller is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/ingress-nginx/controller:v1.11.2"
+        ]
+    },
+    {
+        "name": "StatefulSet running the community controller is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/ingress-nginx/controller:v1.11.2"
+        ]
+    },
+    {
+        "name": "DaemonSet not running an ingress controller is allowed",
+        "template": "daemonset.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment running the community controller in an init container is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers=[{\"name\": \"setup\", \"image\": \"registry.k8s.io/ingress-nginx/controller:v1.11.2\", \"command\": [\"sh\", \"-c\", \"true\"]}]"
+        ]
+    }
+]
