@@ -109,5 +109,29 @@
         "name": "CronJob with no env is allowed",
         "template": "cronjob.yaml",
         "expected": "pass"
+    },
+    {
+        "name": "Pod with a secretRef envFrom is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].envFrom=[{\"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
+    },
+    {
+        "name": "Pod with a secretRef envFrom in an init container is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].envFrom=[{\"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
+    },
+    {
+        "name": "Pod with a configMapRef envFrom is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].envFrom=[{\"configMapRef\": {\"name\": \"app-config\"}}]"
+        ]
     }
 ]

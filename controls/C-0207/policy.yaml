@@ -34,13 +34,15 @@ spec:
       name: containers
   validations:
     # env is optional on a container and valueFrom is optional on an env entry, so both
-    # guards are needed. has(env.valueFrom.secretKeyRef) alone does not guard a missing
-    # valueFrom.
+    # guards are needed. envFrom is also optional on a container.
     - expression: >
         variables.containers.all(container,
-          !has(container.env) || container.env.all(env,
+          (!has(container.env) || container.env.all(env,
             !has(env.valueFrom) || !has(env.valueFrom.secretKeyRef)
-          )
+          )) &&
+          (!has(container.envFrom) || container.envFrom.all(envFrom,
+            !has(envFrom.secretRef)
+          ))
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' injects a Secret into a container through an environment variable, mount it as a file instead. (see more at https://kubescape.io/docs/controls/c-0207/)'

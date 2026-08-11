@@ -19,7 +19,7 @@ A Secret injected as an environment variable is readable by anything that can re
 
 ## What does this policy do:
 This Policy checks every container in the resource, including init containers and, for a Pod, ephemeral containers:
-* If any environment variable takes its value from `valueFrom.secretKeyRef`, the resource is denied from being deployed in the cluster.
+* If any environment variable takes its value from `valueFrom.secretKeyRef` or `envFrom.secretRef`, the resource is denied from being deployed in the cluster.
 
 Environment variables sourced from a ConfigMap, from a field reference or from a plain value are not affected.
 

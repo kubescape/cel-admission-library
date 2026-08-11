@@ -18,8 +18,8 @@ spec:
     # subjects is optional on a binding, so it needs the guard.
     - expression: >
         !has(object.subjects) || object.subjects.all(subject,
-          subject.name != 'system:anonymous' &&
-          subject.name != 'system:unauthenticated'
+          !(subject.kind == 'User' && subject.name == 'system:anonymous') &&
+          !(subject.kind == 'Group' && subject.name == 'system:unauthenticated')
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' grants permissions to anonymous users, so anyone who can reach the API server without credentials gets them. (see more at https://kubescape.io/docs/controls/c-0262/)'

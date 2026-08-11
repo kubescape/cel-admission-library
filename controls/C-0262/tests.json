@@ -64,5 +64,21 @@
         "field_change_list": [
             "subjects=[{\"kind\": \"Group\", \"name\": \"system:unauthenticated\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
         ]
+    },
+    {
+        "name": "RoleBinding for Group system:anonymous is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"Group\", \"name\": \"system:anonymous\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding for User system:unauthenticated is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:unauthenticated\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
     }
 ]

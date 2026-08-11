@@ -14,7 +14,7 @@ A RoleBinding or ClusterRoleBinding that names `system:anonymous` or the `system
 
 ## What does this policy do:
 This Policy checks every subject in the binding:
-* If a subject is named `system:anonymous` or `system:unauthenticated`, the binding is denied from being deployed in the cluster.
+* If a subject is a User named `system:anonymous` or a Group named `system:unauthenticated`, the binding is denied from being deployed in the cluster.
 
 A binding with no subjects at all is allowed, since it grants nothing.
 
