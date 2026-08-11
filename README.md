@@ -93,6 +93,9 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0081](https://kubescape.io/docs/controls/c-0081/) | CVE-2022-24348 Argo CD directory traversal | [kubescape-c-0081-deny-vulnerable-argocd-versions](/docs/policies-based-on-kubescape-controls/kubescape-c-0081-deny-vulnerable-argocd-versions.md) | not configurable |
 | [C-0263](https://kubescape.io/docs/controls/c-0263/) | Ingress uses TLS | [kubescape-c-0263-deny-ingress-without-tls](/docs/policies-based-on-kubescape-controls/kubescape-c-0263-deny-ingress-without-tls.md) | not configurable |
 | [C-0292](https://kubescape.io/docs/controls/c-0292/) | Nginx Ingress Controller End of Life | [kubescape-c-0292-deny-nginx-ingress-controller-eol](/docs/policies-based-on-kubescape-controls/kubescape-c-0292-deny-nginx-ingress-controller-eol.md) | not configurable |
+| [C-0207](https://kubescape.io/docs/controls/c-0207/) | Prefer using secrets as files over secrets as environment variables | [kubescape-c-0207-deny-secrets-as-environment-variables](/docs/policies-based-on-kubescape-controls/kubescape-c-0207-deny-secrets-as-environment-variables.md) | not configurable |
+| [C-0231](https://kubescape.io/docs/controls/c-0231/) | Encrypt traffic to HTTPS load balancers with TLS certificates | [kubescape-c-0231-deny-loadbalancers-without-tls-certificate](/docs/policies-based-on-kubescape-controls/kubescape-c-0231-deny-loadbalancers-without-tls-certificate.md) | not configurable |
+| [C-0262](https://kubescape.io/docs/controls/c-0262/) | Anonymous user has RoleBinding | [kubescape-c-0262-deny-anonymous-access-in-role-bindings](/docs/policies-based-on-kubescape-controls/kubescape-c-0262-deny-anonymous-access-in-role-bindings.md) | not configurable |
 
 ## Testing Policies
 

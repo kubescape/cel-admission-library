@@ -1,0 +1,68 @@
+[
+    {
+        "name": "RoleBinding for an ordinary user is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "RoleBinding for system:anonymous is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:anonymous\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding for system:unauthenticated is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"Group\", \"name\": \"system:unauthenticated\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding for system:authenticated is allowed, only the two anonymous names are the concern",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"Group\", \"name\": \"system:authenticated\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding with system:anonymous as the second of two subjects is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"test-user\", \"apiGroup\": \"rbac.authorization.k8s.io\"}, {\"kind\": \"User\", \"name\": \"system:anonymous\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding with no subjects is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[]"
+        ]
+    },
+    {
+        "name": "ClusterRoleBinding for an ordinary user is allowed",
+        "template": "cluster-role-binding.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "ClusterRoleBinding for system:anonymous is blocked",
+        "template": "cluster-role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:anonymous\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "ClusterRoleBinding for system:unauthenticated is blocked",
+        "template": "cluster-role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"Group\", \"name\": \"system:unauthenticated\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    }
+]

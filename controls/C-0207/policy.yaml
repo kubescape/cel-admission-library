@@ -1,0 +1,46 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0207-deny-secrets-as-environment-variables"
+  labels:
+    controlId: "C-0207"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0207/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : [])
+              : []
+      name: containers
+  validations:
+    # env is optional on a container and valueFrom is optional on an env entry, so both
+    # guards are needed. has(env.valueFrom.secretKeyRef) alone does not guard a missing
+    # valueFrom.
+    - expression: >
+        variables.containers.all(container,
+          !has(container.env) || container.env.all(env,
+            !has(env.valueFrom) || !has(env.valueFrom.secretKeyRef)
+          )
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' injects a Secret into a container through an environment variable, mount it as a file instead. (see more at https://kubescape.io/docs/controls/c-0207/)'

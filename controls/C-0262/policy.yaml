@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0262-deny-anonymous-access-in-role-bindings"
+  labels:
+    controlId: "C-0262"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0262/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   ["rbac.authorization.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["rolebindings","clusterrolebindings"]
+  validations:
+    # subjects is optional on a binding, so it needs the guard.
+    - expression: >
+        !has(object.subjects) || object.subjects.all(subject,
+          subject.name != 'system:anonymous' &&
+          subject.name != 'system:unauthenticated'
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' grants permissions to anonymous users, so anyone who can reach the API server without credentials gets them. (see more at https://kubescape.io/docs/controls/c-0262/)'

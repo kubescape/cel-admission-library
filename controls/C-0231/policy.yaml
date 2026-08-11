@@ -1,0 +1,35 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0231-deny-loadbalancers-without-tls-certificate"
+  labels:
+    controlId: "C-0231"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0231/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["services"]
+  validations:
+    # The annotation check leads so that the derived remediation path points at the
+    # annotation, which is where the fix goes, rather than at spec.type.
+    # It is a key PREFIX match over the annotation map, not an exact key lookup, because
+    # the AWS annotation family has suffixed variants.
+    # spec.type and spec.ports are both guarded: the apiserver defaults spec.type before
+    # admission, but a Service read straight from a YAML file during a scan may not carry
+    # it, and a headless or ExternalName Service has no ports.
+    - expression: >
+        (
+          has(object.metadata.annotations) &&
+          object.metadata.annotations.exists(key,
+            key.startsWith('service.beta.kubernetes.io/aws-load-balancer-ssl-cert')
+          )
+        ) ||
+        !has(object.spec.type) || object.spec.type != 'LoadBalancer' ||
+        !has(object.spec.ports) || !object.spec.ports.exists(port, port.port == 443)
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' is a LoadBalancer serving 443 with no AWS SSL certificate annotation, so traffic to the backend is not encrypted. (see more at https://kubescape.io/docs/controls/c-0231/)'

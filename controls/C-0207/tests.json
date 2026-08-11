@@ -1,0 +1,113 @@
+[
+    {
+        "name": "Pod with no env at all is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with a plain value env is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}]"
+        ]
+    },
+    {
+        "name": "Pod with a secretKeyRef env is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a configMapKeyRef env is allowed, only Secrets are the concern here",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"APP_MODE\", \"valueFrom\": {\"configMapKeyRef\": {\"name\": \"app-config\", \"key\": \"mode\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a fieldRef env is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"POD_NAME\", \"valueFrom\": {\"fieldRef\": {\"fieldPath\": \"metadata.name\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a secretKeyRef env in an init container is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "Deployment with no env is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with a secretKeyRef env is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "Deployment with a secretKeyRef env on the second of two env entries is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "ReplicaSet with a secretKeyRef env is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "DaemonSet with a secretKeyRef env is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "StatefulSet with a secretKeyRef env is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "Job with a secretKeyRef env is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "CronJob with a secretKeyRef env is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "CronJob with no env is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    }
+]
