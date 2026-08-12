@@ -1,0 +1,54 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0234-deny-workloads-without-external-secret-storage"
+  labels:
+    controlId: "C-0234"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0234/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    # volumes is optional on every kind, and this control has to treat "no volumes at
+    # all" the same as "volumes, none of them a secrets-store CSI volume", so each
+    # branch defaults to an empty list rather than reading the field unguarded.
+    - expression: |
+        object.kind == 'Pod'
+          ? (has(object.spec.volumes) ? object.spec.volumes : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? (has(object.spec.template.spec.volumes) ? object.spec.template.spec.volumes : [])
+            : object.kind == 'CronJob'
+              ? (has(object.spec.jobTemplate.spec.template.spec.volumes) ? object.spec.jobTemplate.spec.template.spec.volumes : [])
+              : []
+      name: volumes
+  validations:
+    # This control is inverted compared to the rest of the library: it denies on the
+    # ABSENCE of something good rather than the presence of something bad. So the
+    # expression is a bare exists() with no negation, and an empty volumes list fails.
+    #
+    # All three has() calls are needed and they have to be chained. csi is optional on a
+    # volume and volumeAttributes is optional on a csi source, so
+    # has(volume.csi.volumeAttributes.secretProviderClass) on a hostPath volume errors
+    # instead of returning false.
+    - expression: >
+        variables.volumes.exists(volume,
+          has(volume.csi) &&
+          has(volume.csi.volumeAttributes) &&
+          has(volume.csi.volumeAttributes.secretProviderClass)
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' does not read its secrets from an external store through the secrets-store CSI driver. (see more at https://kubescape.io/docs/controls/c-0234/)'

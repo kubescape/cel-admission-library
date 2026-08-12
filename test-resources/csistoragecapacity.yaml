@@ -1,0 +1,8 @@
+apiVersion: storage.k8s.io/v1
+kind: CSIStorageCapacity
+metadata:
+  name: test-csistoragecapacity
+  labels:
+    admission-policy-test: abc
+storageClassName: standard
+capacity: 10Gi

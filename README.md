@@ -96,6 +96,9 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0207](https://kubescape.io/docs/controls/c-0207/) | Prefer using secrets as files over secrets as environment variables | [kubescape-c-0207-deny-secrets-as-environment-variables](/docs/policies-based-on-kubescape-controls/kubescape-c-0207-deny-secrets-as-environment-variables.md) | not configurable |
 | [C-0231](https://kubescape.io/docs/controls/c-0231/) | Encrypt traffic to HTTPS load balancers with TLS certificates | [kubescape-c-0231-deny-loadbalancers-without-tls-certificate](/docs/policies-based-on-kubescape-controls/kubescape-c-0231-deny-loadbalancers-without-tls-certificate.md) | not configurable |
 | [C-0262](https://kubescape.io/docs/controls/c-0262/) | Anonymous user has RoleBinding | [kubescape-c-0262-deny-anonymous-access-in-role-bindings](/docs/policies-based-on-kubescape-controls/kubescape-c-0262-deny-anonymous-access-in-role-bindings.md) | not configurable |
+| [C-0234](https://kubescape.io/docs/controls/c-0234/) | Consider external secret storage | [kubescape-c-0234-deny-workloads-without-external-secret-storage](/docs/policies-based-on-kubescape-controls/kubescape-c-0234-deny-workloads-without-external-secret-storage.md) | not configurable |
+| [C-0295](https://kubescape.io/docs/controls/c-0295/) | Duplicate environment variable | [kubescape-c-0295-deny-duplicate-environment-variables](/docs/policies-based-on-kubescape-controls/kubescape-c-0295-deny-duplicate-environment-variables.md) | not configurable |
+| [C-0212](https://kubescape.io/docs/controls/c-0212/) | The default namespace should not be used | [kubescape-c-0212-deny-resources-in-default-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0212-deny-resources-in-default-namespace.md) | not configurable |
 
 ## Testing Policies
 

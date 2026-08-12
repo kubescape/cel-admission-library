@@ -1,0 +1,67 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0212-deny-resources-in-default-namespace"
+  labels:
+    controlId: "C-0212"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0212/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods","replicationcontrollers","podtemplates","services","serviceaccounts","secrets","configmaps","endpoints","persistentvolumeclaims"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+    - apiGroups:   ["rbac.authorization.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["roles","rolebindings"]
+    - apiGroups:   ["networking.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["ingresses"]
+    - apiGroups:   ["discovery.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["endpointslices"]
+    # HorizontalPodAutoscaler is served under both v1 and v2 and clusters use both, so
+    # matching only v1 here would quietly miss most of them.
+    - apiGroups:   ["autoscaling"]
+      apiVersions: ["v1","v2"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["horizontalpodautoscalers"]
+    - apiGroups:   ["coordination.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["leases"]
+    - apiGroups:   ["policy"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["poddisruptionbudgets"]
+    - apiGroups:   ["storage.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["csistoragecapacities"]
+  validations:
+    # Every kind this policy matches is namespaced and reaches its namespace through the
+    # same path, so there is no kind dispatch here. This is the one control in the
+    # library where one expression really does cover every matched kind.
+    #
+    # The has() guard is not just defensive. An absent metadata.namespace has to FAIL,
+    # not pass, because it means the default namespace at apply time. At live admission
+    # the apiserver has already defaulted the field before this runs, so the guard is
+    # always true there; it earns its keep when kubescape evaluates the same expression
+    # against a manifest on disk, where nothing has defaulted anything yet.
+    - expression: "has(object.metadata.namespace) && object.metadata.namespace != 'default'"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' is in the default namespace, which has no RBAC, quota or network boundary of its own. (see more at https://kubescape.io/docs/controls/c-0212/)'
