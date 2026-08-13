@@ -42,6 +42,22 @@
         ]
     },
     {
+        "name": "Pod with an unrelated CSI driver exposing an attribute named secretProviderClass is blocked, the driver has to be the secrets-store one",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"other-csi\", \"csi\": {\"driver\": \"ebs.csi.aws.com\", \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with an empty secretProviderClass is blocked, the key being present is not enough",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"\"}}}]"
+        ]
+    },
+    {
         "name": "Pod with a non-CSI volume is blocked, and the has(volume.csi) guard must not error on it",
         "template": "pod-no-volume.yaml",
         "expected": "fail",

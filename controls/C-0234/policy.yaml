@@ -40,15 +40,24 @@ spec:
     # ABSENCE of something good rather than the presence of something bad. So the
     # expression is a bare exists() with no negation, and an empty volumes list fails.
     #
-    # All three has() calls are needed and they have to be chained. csi is optional on a
-    # volume and volumeAttributes is optional on a csi source, so
+    # The has() calls are chained rather than collapsed. csi is optional on a volume and
+    # volumeAttributes is optional on a csi source, so
     # has(volume.csi.volumeAttributes.secretProviderClass) on a hostPath volume errors
-    # instead of returning false.
+    # instead of returning false. driver is required by the API but a manifest read off
+    # disk during a scan never went through that validation, so it is guarded too.
+    #
+    # The driver name and the non-empty check are both STRICTER than the Rego, which only
+    # asks whether the secretProviderClass key resolves. Without them any CSI driver that
+    # happens to expose an attribute of that name satisfies the control, and so does an
+    # empty value, neither of which is reading secrets from an external store.
     - expression: >
         variables.volumes.exists(volume,
           has(volume.csi) &&
+          has(volume.csi.driver) &&
+          volume.csi.driver == 'secrets-store.csi.k8s.io' &&
           has(volume.csi.volumeAttributes) &&
-          has(volume.csi.volumeAttributes.secretProviderClass)
+          has(volume.csi.volumeAttributes.secretProviderClass) &&
+          volume.csi.volumeAttributes.secretProviderClass != ''
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' does not read its secrets from an external store through the secrets-store CSI driver. (see more at https://kubescape.io/docs/controls/c-0234/)'

@@ -19,9 +19,11 @@ Kubernetes Secrets are only base64 encoded, they sit in etcd, and anything with 
 
 ## What does this policy do:
 This Policy looks at the volumes of the resource, which for a workload means the volumes of its pod template:
-* If none of them is a CSI volume carrying a `csi.volumeAttributes.secretProviderClass`, the resource is denied from being deployed in the cluster.
+* If none of them is a `secrets-store.csi.k8s.io` CSI volume carrying a non-empty `csi.volumeAttributes.secretProviderClass`, the resource is denied from being deployed in the cluster.
 
 A resource with no volumes at all is treated the same as one whose volumes are all ordinary: neither reads secrets from an external store.
+
+The driver name is checked, not just the attribute. Another CSI driver that happens to expose an attribute called `secretProviderClass` is not the secrets-store driver and does not satisfy this control. An empty value does not satisfy it either.
 
 ## Read this before binding it:
 This policy is inverted compared to almost everything else in the library. It does not deny a resource for doing something dangerous, it denies a resource for not doing something good. That means it fires on nearly every workload in a normal cluster, because nearly every workload does not use the secrets-store CSI driver.

@@ -10,10 +10,13 @@ spec:
   failurePolicy: Fail
   matchConstraints:
     resourceRules:
+    # pods/ephemeralcontainers is the only way an ephemeral container is ever added, so
+    # without it the ephemeralContainers half of the container walk below never sees
+    # anything on a real cluster.
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods","replicationcontrollers"]
+      resources:   ["pods","pods/ephemeralcontainers","replicationcontrollers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
