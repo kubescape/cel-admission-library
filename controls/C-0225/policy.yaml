@@ -1,0 +1,55 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0225-deny-default-service-account-rbac-and-automount"
+  labels:
+    controlId: "C-0225"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0225/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["serviceaccounts"]
+    - apiGroups:   ["rbac.authorization.k8s.io"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["rolebindings","clusterrolebindings"]
+  validations:
+    # This control is two unrelated rules under one control ID, matching two different
+    # kinds, so each validation carries its own kind guard and they never both apply to
+    # the same object.
+    #
+    # Rule 1: nobody should be granting extra permissions to the `default` ServiceAccount,
+    # which every pod in a namespace gets unless it names another one.
+    #
+    # The bootstrap-label exemption is load bearing. Kubernetes labels its own built-in
+    # bindings with `kubernetes.io/bootstrapping: rbac-defaults`, and several of them bind
+    # the default ServiceAccount on purpose. Without this the policy fires on the cluster's
+    # own bindings everywhere and becomes noise.
+    - expression: >
+        !(object.kind in ['RoleBinding','ClusterRoleBinding']) ||
+        !has(object.subjects) ||
+        (
+          has(object.metadata.labels) &&
+          'kubernetes.io/bootstrapping' in object.metadata.labels &&
+          object.metadata.labels['kubernetes.io/bootstrapping'] == 'rbac-defaults'
+        ) ||
+        object.subjects.all(subject,
+          subject.kind != 'ServiceAccount' || subject.name != 'default'
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' grants permissions to the default ServiceAccount, which every pod in the namespace gets by default. Bind a dedicated ServiceAccount instead. (see more at https://kubescape.io/docs/controls/c-0225/)'
+    # Rule 2: the default ServiceAccount should not hand out its token automatically.
+    #
+    # Unset fails as well as true. Kubernetes mounts the token when the field is absent,
+    # so silence means yes, same as C-0034. Only an explicit false passes.
+    - expression: >
+        object.kind != 'ServiceAccount' ||
+        object.metadata.name != 'default' ||
+        (has(object.automountServiceAccountToken) && object.automountServiceAccountToken == false)
+      messageExpression: >
+        'ServiceAccount/' + object.metadata.name + ' mounts its token into every pod that does not name another ServiceAccount. Set automountServiceAccountToken to false. (see more at https://kubescape.io/docs/controls/c-0225/)'

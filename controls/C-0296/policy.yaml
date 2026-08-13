@@ -1,0 +1,117 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0296-deny-workloads-with-mismatching-selector"
+  labels:
+    controlId: "C-0296"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0296/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["replicationcontrollers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    # Two variables rather than one ternary picking between them by kind. A single
+    # kind-dispatch variable works, but every validation referencing it then carries BOTH
+    # label paths in its AST, and the remediation path derivation reports both: a
+    # Deployment gets told to look at spec.jobTemplate.spec.template.metadata.labels,
+    # which does not exist on it. Splitting them keeps each validation's paths to the
+    # shape its own kinds actually have.
+    #
+    # Each level is guarded separately. has(a.b.c) does not guard a missing a.b, and a
+    # template with no metadata block is legal YAML even though the API would reject it
+    # for a Deployment. A scan reads manifests that never went through that validation.
+    #
+    # Variables are evaluated lazily, so the CronJob validation never touches the first
+    # of these and the workload validations never touch the second.
+    - expression: |
+        has(object.spec.template) && has(object.spec.template.metadata) && has(object.spec.template.metadata.labels)
+          ? object.spec.template.metadata.labels : {}
+      name: templateLabels
+    - expression: |
+        has(object.spec.jobTemplate) && has(object.spec.jobTemplate.spec) &&
+        has(object.spec.jobTemplate.spec.template) && has(object.spec.jobTemplate.spec.template.metadata) &&
+        has(object.spec.jobTemplate.spec.template.metadata.labels)
+          ? object.spec.jobTemplate.spec.template.metadata.labels : {}
+      name: jobTemplateLabels
+  validations:
+    # The subset direction is the easy thing to get backwards: every SELECTOR entry has to
+    # appear in the template labels with the same value. Extra template labels are fine,
+    # that is what makes it a selector.
+    #
+    # On matchExpressions, the operator check has to come first in each clause. Exists and
+    # DoesNotExist carry no `values` field, and reading e.values on one of them raises, so
+    # it is CEL's && short-circuit that keeps those two clauses safe. Do not reorder them.
+    # In and NotIn do read e.values, so those two get a has() guard: the Rego defaults a
+    # missing values to an empty list, which makes In fail to match and NotIn match, and
+    # the guard reproduces exactly that instead of raising.
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        !has(object.spec.selector) ||
+        (
+          (
+            !has(object.spec.selector.matchLabels) ||
+            object.spec.selector.matchLabels.all(key,
+              key in variables.templateLabels &&
+              variables.templateLabels[key] == object.spec.selector.matchLabels[key]
+            )
+          ) && (
+            !has(object.spec.selector.matchExpressions) ||
+            object.spec.selector.matchExpressions.all(e,
+              (e.operator == 'In' && e.key in variables.templateLabels && has(e.values) && variables.templateLabels[e.key] in e.values) ||
+              (e.operator == 'NotIn' && (!(e.key in variables.templateLabels) || !has(e.values) || !(variables.templateLabels[e.key] in e.values))) ||
+              (e.operator == 'Exists' && e.key in variables.templateLabels) ||
+              (e.operator == 'DoesNotExist' && !(e.key in variables.templateLabels))
+            )
+          )
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a spec.selector that does not match the labels on its own pod template, so it owns no pods. (see more at https://kubescape.io/docs/controls/c-0296/)'
+    # CronJob keeps its selector under the job template. In practice it is almost never
+    # set, so the guard carries most of the weight here.
+    - expression: >
+        object.kind != 'CronJob' ||
+        !has(object.spec.jobTemplate.spec.selector) ||
+        (
+          (
+            !has(object.spec.jobTemplate.spec.selector.matchLabels) ||
+            object.spec.jobTemplate.spec.selector.matchLabels.all(key,
+              key in variables.jobTemplateLabels &&
+              variables.jobTemplateLabels[key] == object.spec.jobTemplate.spec.selector.matchLabels[key]
+            )
+          ) && (
+            !has(object.spec.jobTemplate.spec.selector.matchExpressions) ||
+            object.spec.jobTemplate.spec.selector.matchExpressions.all(e,
+              (e.operator == 'In' && e.key in variables.jobTemplateLabels && has(e.values) && variables.jobTemplateLabels[e.key] in e.values) ||
+              (e.operator == 'NotIn' && (!(e.key in variables.jobTemplateLabels) || !has(e.values) || !(variables.jobTemplateLabels[e.key] in e.values))) ||
+              (e.operator == 'Exists' && e.key in variables.jobTemplateLabels) ||
+              (e.operator == 'DoesNotExist' && !(e.key in variables.jobTemplateLabels))
+            )
+          )
+        )
+      messageExpression: >
+        'CronJob/' + object.metadata.name + ' has a spec.jobTemplate.spec.selector that does not match the labels on its own pod template, so the Jobs it creates own no pods. (see more at https://kubescape.io/docs/controls/c-0296/)'
+    # ReplicationController is the odd one out: its spec.selector is a plain label map with
+    # no matchLabels wrapper and no matchExpressions at all, so it needs its own expression
+    # rather than sharing either of the two above.
+    - expression: >
+        object.kind != 'ReplicationController' ||
+        !has(object.spec.selector) ||
+        object.spec.selector.all(key,
+          key in variables.templateLabels &&
+          variables.templateLabels[key] == object.spec.selector[key]
+        )
+      messageExpression: >
+        'ReplicationController/' + object.metadata.name + ' has a spec.selector that does not match the labels on its own pod template, so it owns no pods. (see more at https://kubescape.io/docs/controls/c-0296/)'
