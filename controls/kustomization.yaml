@@ -52,3 +52,6 @@ resources:
 - C-0212/policy.yaml
 - C-0225/policy.yaml
 - C-0296/policy.yaml
+- C-0202/policy.yaml
+- C-0203/policy.yaml
+- C-0204/policy.yaml

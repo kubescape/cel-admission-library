@@ -1,0 +1,49 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0203-deny-hostpath-volumes"
+  labels:
+    controlId: "C-0203"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0203/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  # Written per kind against object rather than through a podSpec variable, which is the
+  # shape C-0048 already uses for the same field. A variable would work, but the path
+  # derivation in the scanner walks object-rooted expressions, so this way a failure can
+  # point at spec.volumes[2] instead of at nothing. Volumes are pod level and ephemeral
+  # containers cannot add any, so there is no init or ephemeral dimension here and no
+  # reason to reach for a variable.
+  validations:
+    - expression: >
+        object.kind != 'Pod' ||
+        !has(object.spec.volumes) ||
+        object.spec.volumes.all(volume, !has(volume.hostPath))
+      messageExpression: >
+        'Pod/' + object.metadata.name + ' has a hostPath volume, which mounts a path from the node into the pod. (see more at https://kubescape.io/docs/controls/c-0203/)'
+    - expression: >
+        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
+        !has(object.spec.template.spec.volumes) ||
+        object.spec.template.spec.volumes.all(volume, !has(volume.hostPath))
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a hostPath volume, which mounts a path from the node into its pods. (see more at https://kubescape.io/docs/controls/c-0203/)'
+    - expression: >
+        object.kind != 'CronJob' ||
+        !has(object.spec.jobTemplate.spec.template.spec.volumes) ||
+        object.spec.jobTemplate.spec.template.spec.volumes.all(volume, !has(volume.hostPath))
+      messageExpression: >
+        'CronJob/' + object.metadata.name + ' has a hostPath volume, which mounts a path from the node into the pods it creates. (see more at https://kubescape.io/docs/controls/c-0203/)'

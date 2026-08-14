@@ -1,0 +1,68 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0202-deny-windows-hostprocess-containers"
+  labels:
+    controlId: "C-0202"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0202/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
+  validations:
+    # Deliberately two validations rather than one `&&`. hostProcess can be set on the pod
+    # security context or on a single container, and the two are different things to fix.
+    # Joined with && the whole thing is one expression, and a container-level violation
+    # still derives the pod-level field as its remediation path, which would tell someone
+    # to edit spec.securityContext when the problem is in a container.
+    #
+    # Every level is guarded on its own. has(a.b.c) does not guard a missing a.b, and
+    # windowsOptions with only runAsUserName in it is a normal thing to write.
+    - expression: >
+        !has(variables.podSpec.securityContext) ||
+        !has(variables.podSpec.securityContext.windowsOptions) ||
+        !has(variables.podSpec.securityContext.windowsOptions.hostProcess) ||
+        variables.podSpec.securityContext.windowsOptions.hostProcess != true
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' sets windowsOptions.hostProcess on the pod security context, so its Windows containers run as host processes. (see more at https://kubescape.io/docs/controls/c-0202/)'
+    - expression: >
+        variables.containers.all(container,
+          !has(container.securityContext) ||
+          !has(container.securityContext.windowsOptions) ||
+          !has(container.securityContext.windowsOptions.hostProcess) ||
+          container.securityContext.windowsOptions.hostProcess != true
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a container that sets windowsOptions.hostProcess, so it runs as a host process on the Windows node. (see more at https://kubescape.io/docs/controls/c-0202/)'

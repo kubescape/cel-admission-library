@@ -101,6 +101,9 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0212](https://kubescape.io/docs/controls/c-0212/) | The default namespace should not be used | [kubescape-c-0212-deny-resources-in-default-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0212-deny-resources-in-default-namespace.md) | not configurable |
 | [C-0225](https://kubescape.io/docs/controls/c-0225/) | Prefer using dedicated EKS Service Accounts | [kubescape-c-0225-deny-default-service-account-rbac-and-automount](/docs/policies-based-on-kubescape-controls/kubescape-c-0225-deny-default-service-account-rbac-and-automount.md) | not configurable |
 | [C-0296](https://kubescape.io/docs/controls/c-0296/) | Mismatching selector | [kubescape-c-0296-deny-workloads-with-mismatching-selector](/docs/policies-based-on-kubescape-controls/kubescape-c-0296-deny-workloads-with-mismatching-selector.md) | not configurable |
+| [C-0202](https://kubescape.io/docs/controls/c-0202/) | Minimize the admission of Windows HostProcess Containers | [kubescape-c-0202-deny-windows-hostprocess-containers](/docs/policies-based-on-kubescape-controls/kubescape-c-0202-deny-windows-hostprocess-containers.md) | not configurable |
+| [C-0203](https://kubescape.io/docs/controls/c-0203/) | Minimize the admission of HostPath volumes | [kubescape-c-0203-deny-hostpath-volumes](/docs/policies-based-on-kubescape-controls/kubescape-c-0203-deny-hostpath-volumes.md) | not configurable |
+| [C-0204](https://kubescape.io/docs/controls/c-0204/) | Minimize the admission of containers which use HostPorts | [kubescape-c-0204-deny-containers-using-host-ports](/docs/policies-based-on-kubescape-controls/kubescape-c-0204-deny-containers-using-host-ports.md) | not configurable |
 
 ## Testing Policies
 
