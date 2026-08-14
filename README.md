@@ -99,6 +99,8 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0234](https://kubescape.io/docs/controls/c-0234/) | Consider external secret storage | [kubescape-c-0234-deny-workloads-without-external-secret-storage](/docs/policies-based-on-kubescape-controls/kubescape-c-0234-deny-workloads-without-external-secret-storage.md) | not configurable |
 | [C-0295](https://kubescape.io/docs/controls/c-0295/) | Duplicate environment variable | [kubescape-c-0295-deny-duplicate-environment-variables](/docs/policies-based-on-kubescape-controls/kubescape-c-0295-deny-duplicate-environment-variables.md) | not configurable |
 | [C-0212](https://kubescape.io/docs/controls/c-0212/) | The default namespace should not be used | [kubescape-c-0212-deny-resources-in-default-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0212-deny-resources-in-default-namespace.md) | not configurable |
+| [C-0225](https://kubescape.io/docs/controls/c-0225/) | Prefer using dedicated EKS Service Accounts | [kubescape-c-0225-deny-default-service-account-rbac-and-automount](/docs/policies-based-on-kubescape-controls/kubescape-c-0225-deny-default-service-account-rbac-and-automount.md) | not configurable |
+| [C-0296](https://kubescape.io/docs/controls/c-0296/) | Mismatching selector | [kubescape-c-0296-deny-workloads-with-mismatching-selector](/docs/policies-based-on-kubescape-controls/kubescape-c-0296-deny-workloads-with-mismatching-selector.md) | not configurable |
 
 ## Testing Policies
 

@@ -1,0 +1,81 @@
+[
+    {
+        "name": "Deployment whose selector matches its pod template labels is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with extra labels on the pod template is allowed, the selector only has to be a subset",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.metadata.labels={\"label\": \"test-deployment\", \"tier\": \"web\"}"
+        ]
+    },
+    {
+        "name": "Deployment selecting with an In matchExpression that its template satisfies is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.selector={\"matchExpressions\": [{\"key\": \"label\", \"operator\": \"In\", \"values\": [\"test-deployment\"]}]}"
+        ]
+    },
+    {
+        "name": "Deployment selecting with a NotIn matchExpression that its template satisfies is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.selector={\"matchLabels\": {\"label\": \"test-deployment\"}, \"matchExpressions\": [{\"key\": \"tier\", \"operator\": \"NotIn\", \"values\": [\"db\"]}]}"
+        ]
+    },
+    {
+        "name": "Deployment selecting with an Exists matchExpression that its template satisfies is allowed, and reading the absent values field must not error",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.selector={\"matchExpressions\": [{\"key\": \"label\", \"operator\": \"Exists\"}]}"
+        ]
+    },
+    {
+        "name": "Deployment selecting with a DoesNotExist matchExpression that its template satisfies is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.selector={\"matchLabels\": {\"label\": \"test-deployment\"}, \"matchExpressions\": [{\"key\": \"absent-key\", \"operator\": \"DoesNotExist\"}]}"
+        ]
+    },
+    {
+        "name": "Deployment combining matchLabels and matchExpressions that both hold is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.metadata.labels={\"label\": \"test-deployment\", \"tier\": \"web\"}",
+            "spec.selector={\"matchLabels\": {\"label\": \"test-deployment\"}, \"matchExpressions\": [{\"key\": \"tier\", \"operator\": \"In\", \"values\": [\"web\", \"api\"]}]}"
+        ]
+    },
+    {
+        "name": "ReplicaSet whose selector matches is allowed",
+        "template": "replicaset.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "DaemonSet whose selector matches is allowed",
+        "template": "daemonset.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "StatefulSet whose selector matches is allowed",
+        "template": "statefulset.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Job with no selector of its own is allowed, the controller generates one",
+        "template": "job.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with no selector under its job template is allowed, which is the normal case",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    }
+]

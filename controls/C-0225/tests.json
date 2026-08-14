@@ -1,0 +1,125 @@
+[
+    {
+        "name": "RoleBinding with a User subject is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "RoleBinding with no subjects at all is allowed, it grants nothing",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[]"
+        ]
+    },
+    {
+        "name": "RoleBinding granting the default ServiceAccount is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding granting a dedicated ServiceAccount is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"my-app\", \"namespace\": \"default\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding granting the default ServiceAccount alongside other subjects is still blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"my-app\", \"namespace\": \"default\"}, {\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding with a User who happens to be called default is allowed, the subject kind matters",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"default\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding granting the default ServiceAccount but carrying the bootstrap label is allowed, that is how Kubernetes marks its own bindings",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]",
+            "metadata.labels={\"admission-policy-test\": \"abc\", \"kubernetes.io/bootstrapping\": \"rbac-defaults\"}"
+        ]
+    },
+    {
+        "name": "RoleBinding with a bootstrapping label set to something else is still blocked, the exemption is the exact value",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]",
+            "metadata.labels={\"admission-policy-test\": \"abc\", \"kubernetes.io/bootstrapping\": \"something-else\"}"
+        ]
+    },
+    {
+        "name": "ClusterRoleBinding granting the default ServiceAccount is blocked",
+        "template": "cluster-role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]"
+        ]
+    },
+    {
+        "name": "ClusterRoleBinding with a User subject is allowed",
+        "template": "cluster-role-binding.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "ClusterRoleBinding granting the default ServiceAccount but carrying the bootstrap label is allowed",
+        "template": "cluster-role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"ServiceAccount\", \"name\": \"default\", \"namespace\": \"default\"}]",
+            "metadata.labels={\"admission-policy-test\": \"abc\", \"kubernetes.io/bootstrapping\": \"rbac-defaults\"}"
+        ]
+    },
+    {
+        "name": "ServiceAccount that is not the default one is allowed whatever it does with its token",
+        "template": "service-account.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace",
+            "automountServiceAccountToken=true"
+        ]
+    },
+    {
+        "name": "default ServiceAccount with automountServiceAccountToken unset is blocked, Kubernetes mounts when the field is absent",
+        "template": "service-account.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.name=default",
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "default ServiceAccount with automountServiceAccountToken true is blocked",
+        "template": "service-account.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.name=default",
+            "metadata.namespace=test-namespace",
+            "automountServiceAccountToken=true"
+        ]
+    },
+    {
+        "name": "default ServiceAccount with automountServiceAccountToken false is allowed",
+        "template": "service-account.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=default",
+            "metadata.namespace=test-namespace",
+            "automountServiceAccountToken=false"
+        ]
+    }
+]
