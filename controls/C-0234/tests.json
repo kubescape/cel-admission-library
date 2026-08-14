@@ -1,0 +1,114 @@
+[
+    {
+        "name": "Pod with no volumes at all is blocked",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with volumes but none from the secrets-store CSI driver is blocked",
+        "template": "pod.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with a secretProviderClass CSI volume is allowed",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a secretProviderClass CSI volume alongside an ordinary volume is allowed",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"scratch\", \"emptyDir\": {}}, {\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a CSI volume that carries no volumeAttributes is blocked, and the chained has() must not error reading it",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"inline-csi\", \"csi\": {\"driver\": \"csi.example.com\"}}]"
+        ]
+    },
+    {
+        "name": "Pod with a CSI volume whose volumeAttributes has no secretProviderClass is blocked",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"inline-csi\", \"csi\": {\"driver\": \"csi.example.com\", \"volumeAttributes\": {\"nodePublishSecretRef\": \"other\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with an unrelated CSI driver exposing an attribute named secretProviderClass is blocked, the driver has to be the secrets-store one",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"other-csi\", \"csi\": {\"driver\": \"ebs.csi.aws.com\", \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with an empty secretProviderClass is blocked, the key being present is not enough",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with a non-CSI volume is blocked, and the has(volume.csi) guard must not error on it",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes=[{\"name\": \"host\", \"hostPath\": {\"path\": \"/etc\"}}]"
+        ]
+    },
+    {
+        "name": "Deployment with no secrets-store CSI volume is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Deployment with a secretProviderClass CSI volume is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.volumes=[{\"name\": \"test-volume\"}, {\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    },
+    {
+        "name": "ReplicaSet with no secrets-store CSI volume is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "DaemonSet with no secrets-store CSI volume is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "StatefulSet with no secrets-store CSI volume is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Job with no secrets-store CSI volume is blocked",
+        "template": "job.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob with no secrets-store CSI volume is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob with a secretProviderClass CSI volume is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes=[{\"name\": \"test-volume\", \"emptyDir\": {}}, {\"name\": \"secrets-store\", \"csi\": {\"driver\": \"secrets-store.csi.k8s.io\", \"readOnly\": true, \"volumeAttributes\": {\"secretProviderClass\": \"vault-provider\"}}}]"
+        ]
+    }
+]

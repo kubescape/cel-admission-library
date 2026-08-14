@@ -1,0 +1,234 @@
+[
+    {
+        "name": "Pod in the default namespace is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "ReplicationController in the default namespace is blocked",
+        "template": "replicationcontroller.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "PodTemplate in the default namespace is blocked",
+        "template": "podtemplate.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Service in the default namespace is blocked",
+        "template": "service.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "ServiceAccount in the default namespace is blocked",
+        "template": "service-account.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Secret in the default namespace is blocked",
+        "template": "secret.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "ConfigMap in the default namespace is blocked",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Endpoints in the default namespace is blocked",
+        "template": "endpoints.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "PersistentVolumeClaim in the default namespace is blocked",
+        "template": "persistentvolumeclaim.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Deployment in the default namespace is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "ReplicaSet in the default namespace is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "DaemonSet in the default namespace is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "StatefulSet in the default namespace is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Job in the default namespace is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "CronJob in the default namespace is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Role in the default namespace is blocked",
+        "template": "role.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "RoleBinding in the default namespace is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Ingress in the default namespace is blocked",
+        "template": "ingress.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "EndpointSlice in the default namespace is blocked",
+        "template": "endpointslice.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "HorizontalPodAutoscaler in the default namespace is blocked",
+        "template": "horizontalpodautoscaler.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Lease in the default namespace is blocked",
+        "template": "lease.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "PodDisruptionBudget in the default namespace is blocked",
+        "template": "poddisruptionbudget.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "CSIStorageCapacity in the default namespace is blocked",
+        "template": "csistoragecapacity.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Pod outside the default namespace is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "ConfigMap outside the default namespace is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "Role outside the default namespace is allowed",
+        "template": "role.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "Ingress outside the default namespace is allowed",
+        "template": "ingress.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "Lease outside the default namespace is allowed",
+        "template": "lease.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    },
+    {
+        "name": "CSIStorageCapacity outside the default namespace is allowed",
+        "template": "csistoragecapacity.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.namespace=test-namespace"
+        ]
+    }
+]

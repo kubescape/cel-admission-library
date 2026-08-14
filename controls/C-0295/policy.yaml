@@ -1,0 +1,63 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0295-deny-duplicate-environment-variables"
+  labels:
+    controlId: "C-0295"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0295/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    # pods/ephemeralcontainers is the only way an ephemeral container is ever added, so
+    # without it the ephemeralContainers half of the container walk below never sees
+    # anything on a real cluster.
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods","pods/ephemeralcontainers","replicationcontrollers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    # ReplicationController is in the pod-template branch on purpose. It is not in the
+    # usual workload list this library walks, but the rule this control comes from covers
+    # it, and leaving it out would drop coverage rather than add any.
+    #
+    # The container walk lives in a variable rather than being copied into each
+    # validation because the check below is the most expensive one in the library. One
+    # walk shared by one validation spends far less of the per-object cost budget than
+    # nine separate expressions would.
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job','ReplicationController']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
+  validations:
+    # Finding a duplicate means comparing every entry against every other one, so this is
+    # quadratic in the length of a container's env list however it is written. exists_one
+    # is the cheapest way to say it: a name that appears once matches exactly one entry
+    # (itself), a name that appears twice matches two and fails. filter().size() == 1
+    # says the same thing but builds a throwaway list per entry.
+    #
+    # env is optional on a container, so the !has() guard comes first. A container with
+    # no env has no duplicates.
+    - expression: >
+        variables.containers.all(container,
+          !has(container.env) ||
+          container.env.all(entry,
+            container.env.exists_one(other, other.name == entry.name)
+          )
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a container that defines the same environment variable name twice, and Kubernetes silently keeps the last one. (see more at https://kubescape.io/docs/controls/c-0295/)'

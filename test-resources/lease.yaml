@@ -1,0 +1,9 @@
+apiVersion: coordination.k8s.io/v1
+kind: Lease
+metadata:
+  name: test-lease
+  labels:
+    admission-policy-test: abc
+spec:
+  holderIdentity: test-holder
+  leaseDurationSeconds: 40

@@ -1,0 +1,11 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-poddisruptionbudget
+  labels:
+    admission-policy-test: abc
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      label: test-deployment

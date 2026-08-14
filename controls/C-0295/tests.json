@@ -1,0 +1,135 @@
+[
+    {
+        "name": "Pod with no env at all is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with an empty env list is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env=[]"
+        ]
+    },
+    {
+        "name": "Pod with distinct env names is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"PORT\", \"value\": \"8080\"}]"
+        ]
+    },
+    {
+        "name": "Pod with the same env name twice is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "Pod with the same env name three times is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"warn\"}]"
+        ]
+    },
+    {
+        "name": "Pod where the duplicate entries take their values from different sources is still blocked, the name is what collides",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].env=[{\"name\": \"DB_PASSWORD\", \"value\": \"literal\"}, {\"name\": \"DB_PASSWORD\", \"valueFrom\": {\"secretKeyRef\": {\"name\": \"db-secret\", \"key\": \"password\"}}}]"
+        ]
+    },
+    {
+        "name": "Pod with the same env name in two different containers is allowed, the check is per container",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers=[{\"name\": \"first\", \"image\": \"alpine\", \"env\": [{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}]}, {\"name\": \"second\", \"image\": \"alpine\", \"env\": [{\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]}]"
+        ]
+    },
+    {
+        "name": "Pod with a duplicate in the second container is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers=[{\"name\": \"first\", \"image\": \"alpine\", \"env\": [{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}]}, {\"name\": \"second\", \"image\": \"alpine\", \"env\": [{\"name\": \"PORT\", \"value\": \"8080\"}, {\"name\": \"PORT\", \"value\": \"9090\"}]}]"
+        ]
+    },
+    {
+        "name": "Pod with a duplicate in an init container is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].env=[{\"name\": \"SETUP_MODE\", \"value\": \"a\"}, {\"name\": \"SETUP_MODE\", \"value\": \"b\"}]"
+        ]
+    },
+    {
+        "name": "Pod with distinct names in an init container is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].env=[{\"name\": \"SETUP_MODE\", \"value\": \"a\"}, {\"name\": \"SETUP_TIMEOUT\", \"value\": \"30\"}]"
+        ]
+    },
+    {
+        "name": "Deployment with distinct env names is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"PORT\", \"value\": \"8080\"}]"
+        ]
+    },
+    {
+        "name": "Deployment with a duplicate env name is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "StatefulSet with a duplicate env name is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "Job with a duplicate env name is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "ReplicationController with a duplicate env name is blocked, it is in the rule this control comes from so it is matched here too",
+        "template": "replicationcontroller.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "CronJob with a duplicate env name is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"LOG_LEVEL\", \"value\": \"info\"}]"
+        ]
+    },
+    {
+        "name": "CronJob with distinct env names is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].env=[{\"name\": \"LOG_LEVEL\", \"value\": \"debug\"}, {\"name\": \"PORT\", \"value\": \"8080\"}]"
+        ]
+    }
+]
