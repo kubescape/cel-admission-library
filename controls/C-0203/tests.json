@@ -1,0 +1,87 @@
+[
+    {
+        "name": "Pod with no volumes at all is allowed",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with volumes but none of them hostPath is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with a hostPath volume is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "Pod with a hostPath volume mounted readOnly is still blocked, this is what separates it from C-0045",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var",
+            "spec.containers.[0].volumeMounts.[0].readOnly=true"
+        ]
+    },
+    {
+        "name": "Deployment with volumes but none of them hostPath is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with a hostPath volume is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "ReplicaSet with a hostPath volume is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes=[{\"name\": \"host\", \"hostPath\": {\"path\": \"/var\"}}]"
+        ]
+    },
+    {
+        "name": "DaemonSet with a hostPath volume is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes=[{\"name\": \"host\", \"hostPath\": {\"path\": \"/var\"}}]"
+        ]
+    },
+    {
+        "name": "StatefulSet with a hostPath volume is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes=[{\"name\": \"host\", \"hostPath\": {\"path\": \"/var\"}}]"
+        ]
+    },
+    {
+        "name": "Job with a hostPath volume is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes=[{\"name\": \"host\", \"hostPath\": {\"path\": \"/var\"}}]"
+        ]
+    },
+    {
+        "name": "CronJob with an emptyDir volume is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with a hostPath volume is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[0]={\"name\": \"test-volume\", \"hostPath\": {\"path\": \"/var\"}}"
+        ]
+    }
+]

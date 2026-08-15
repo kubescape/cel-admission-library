@@ -1,0 +1,124 @@
+[
+    {
+        "name": "Pod with no security context is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with windowsOptions but no hostProcess is allowed, this is the guard that matters",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.windowsOptions.runAsUserName=ContainerUser"
+        ]
+    },
+    {
+        "name": "Pod with hostProcess set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.windowsOptions.hostProcess=false"
+        ]
+    },
+    {
+        "name": "Pod with hostProcess on the pod security context is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.securityContext.windowsOptions.hostProcess=true",
+            "spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Pod with hostProcess on a container is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Pod with hostProcess on an init container is blocked, the api server makes every container carry it",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Deployment with no security context is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with hostProcess on the pod security context is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Deployment with hostProcess on a container is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "ReplicaSet with hostProcess on a container is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "DaemonSet with hostProcess on a container is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "StatefulSet with hostProcess on a container is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Job with hostProcess on a container is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "CronJob with no security context is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with hostProcess on a container is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.windowsOptions.hostProcess=true",
+            "spec.jobTemplate.spec.template.spec.hostNetwork=true"
+        ]
+    }
+]

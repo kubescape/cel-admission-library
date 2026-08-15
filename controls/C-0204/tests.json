@@ -1,0 +1,94 @@
+[
+    {
+        "name": "Pod with a container port but no host port is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with no ports at all is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with hostPort set to 0 is allowed, zero claims nothing on the node",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].ports.[0].hostPort=0"
+        ]
+    },
+    {
+        "name": "Pod with a real hostPort is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].ports.[0].hostPort=8080"
+        ]
+    },
+    {
+        "name": "Pod with a hostPort only on an init container is blocked, C-0044 does not look there",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].ports=[{\"containerPort\": 9000, \"hostPort\": 9000}]"
+        ]
+    },
+    {
+        "name": "Deployment with a container port but no host port is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with a real hostPort is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports.[0].hostPort=8080"
+        ]
+    },
+    {
+        "name": "ReplicaSet with a real hostPort is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports=[{\"containerPort\": 8086, \"hostPort\": 8080}]"
+        ]
+    },
+    {
+        "name": "DaemonSet with a real hostPort is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports=[{\"containerPort\": 8086, \"hostPort\": 8080}]"
+        ]
+    },
+    {
+        "name": "StatefulSet with a real hostPort is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports=[{\"containerPort\": 8086, \"hostPort\": 8080}]"
+        ]
+    },
+    {
+        "name": "Job with a real hostPort is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].ports=[{\"containerPort\": 8086, \"hostPort\": 8080}]"
+        ]
+    },
+    {
+        "name": "CronJob with a container port but no host port is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with a real hostPort is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].ports.[0].hostPort=8080"
+        ]
+    }
+]

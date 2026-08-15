@@ -1,0 +1,48 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0204-deny-containers-using-host-ports"
+  labels:
+    controlId: "C-0204"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0204/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
+  validations:
+    # hostPort == 0 passes on purpose. HostPort is a plain int32 in the Go type, not a
+    # pointer, so a manifest that carries it as an explicit zero means the same thing as
+    # leaving it out: no port is claimed on the node. Failing on 0 would block a manifest
+    # that reserves nothing. C-0044 checks the same field with has() alone and does fail
+    # on an explicit zero, and it also walks only spec.containers, so the two policies do
+    # not always agree.
+    - expression: >
+        variables.containers.all(container,
+          !has(container.ports) ||
+          container.ports.all(port, !has(port.hostPort) || port.hostPort == 0)
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a container claiming a hostPort, which binds a port on the node itself. (see more at https://kubescape.io/docs/controls/c-0204/)'
