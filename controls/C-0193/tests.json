@@ -1,0 +1,97 @@
+[
+    {
+        "name": "Pod without securityContext is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with privileged set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=false"
+        ]
+    },
+    {
+        "name": "Pod with privileged set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod with a privileged initContainer is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"],\"securityContext\":{\"privileged\":true}}]"
+        ]
+    },
+    {
+        "name": "Pod adding the SYS_ADMIN capability without the privileged flag is allowed, added capabilities are C-0057's job",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Deployment without securityContext is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with privileged set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "ReplicaSet with privileged set to true is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "DaemonSet with privileged set to true is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "StatefulSet with privileged set to true is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Job with privileged set to true is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "CronJob without securityContext is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with privileged set to true is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    }
+]

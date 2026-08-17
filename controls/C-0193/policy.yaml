@@ -1,0 +1,47 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0193-deny-privileged-containers"
+  labels:
+    controlId: "C-0193"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0193/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
+  validations:
+    # securityContext.privileged only. C-0057 checks this same field and also fails a
+    # container adding SYS_ADMIN or ALL, so a workload that only adds a capability is a
+    # C-0057 violation and not a C-0193 one. Keeping this narrow is the point: the CIS
+    # item behind C-0193 is about the privileged flag.
+    - expression: >
+        variables.containers.all(container,
+          !has(container.securityContext) ||
+          !has(container.securityContext.privileged) ||
+          container.securityContext.privileged != true
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a privileged container, which gets almost all of the host kernel capabilities. (see more at https://kubescape.io/docs/controls/c-0193/)'

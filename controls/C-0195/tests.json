@@ -1,0 +1,105 @@
+[
+    {
+        "name": "Pod without hostIPC is allowed",
+        "template": "pod.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Pod with hostIPC set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostIPC=false"
+        ]
+    },
+    {
+        "name": "Pod with hostIPC set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "Pod with only hostPID set to true is allowed, this control does not cover hostPID",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostPID=true"
+        ]
+    },
+    {
+        "name": "Deployment without hostIPC is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "Deployment with hostIPC set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=false"
+        ]
+    },
+    {
+        "name": "Deployment with hostIPC set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "ReplicaSet with hostIPC set to true is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "DaemonSet with hostIPC set to true is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "StatefulSet with hostIPC set to true is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "Job with hostIPC set to true is blocked",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.hostIPC=true"
+        ]
+    },
+    {
+        "name": "CronJob without hostIPC is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass"
+    },
+    {
+        "name": "CronJob with hostIPC set to false is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.hostIPC=false"
+        ]
+    },
+    {
+        "name": "CronJob with hostIPC set to true is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.hostIPC=true"
+        ]
+    }
+]

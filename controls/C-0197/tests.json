@@ -1,0 +1,98 @@
+[
+    {
+        "name": "Pod with allowPrivilegeEscalation set to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Pod with allowPrivilegeEscalation set to true is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "Pod without securityContext is blocked, the field defaults to true",
+        "template": "pod.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Pod with a securityContext that does not mention allowPrivilegeEscalation is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.runAsUser=1000"
+        ]
+    },
+    {
+        "name": "Pod with a good container and an initContainer missing the field is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"]}]"
+        ]
+    },
+    {
+        "name": "Pod with both the container and the initContainer setting it to false is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"],\"securityContext\":{\"allowPrivilegeEscalation\":false}}]"
+        ]
+    },
+    {
+        "name": "Deployment with allowPrivilegeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment with allowPrivilegeEscalation set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=true"
+        ]
+    },
+    {
+        "name": "ReplicaSet without allowPrivilegeEscalation is blocked",
+        "template": "replicaset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "DaemonSet without allowPrivilegeEscalation is blocked",
+        "template": "daemonset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "StatefulSet without allowPrivilegeEscalation is blocked",
+        "template": "statefulset.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "Job without allowPrivilegeEscalation is blocked",
+        "template": "job.yaml",
+        "expected": "fail"
+    },
+    {
+        "name": "CronJob with allowPrivilegeEscalation set to false is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "CronJob without allowPrivilegeEscalation is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail"
+    }
+]

@@ -104,6 +104,10 @@ kubectl -n policy-example run nginx --image=nginx --restart=Never
 | [C-0202](https://kubescape.io/docs/controls/c-0202/) | Minimize the admission of Windows HostProcess Containers | [kubescape-c-0202-deny-windows-hostprocess-containers](/docs/policies-based-on-kubescape-controls/kubescape-c-0202-deny-windows-hostprocess-containers.md) | not configurable |
 | [C-0203](https://kubescape.io/docs/controls/c-0203/) | Minimize the admission of HostPath volumes | [kubescape-c-0203-deny-hostpath-volumes](/docs/policies-based-on-kubescape-controls/kubescape-c-0203-deny-hostpath-volumes.md) | not configurable |
 | [C-0204](https://kubescape.io/docs/controls/c-0204/) | Minimize the admission of containers which use HostPorts | [kubescape-c-0204-deny-containers-using-host-ports](/docs/policies-based-on-kubescape-controls/kubescape-c-0204-deny-containers-using-host-ports.md) | not configurable |
+| [C-0193](https://kubescape.io/docs/controls/c-0193/) | Minimize the admission of privileged containers | [kubescape-c-0193-deny-privileged-containers](/docs/policies-based-on-kubescape-controls/kubescape-c-0193-deny-privileged-containers.md) | not configurable |
+| [C-0194](https://kubescape.io/docs/controls/c-0194/) | Minimize the admission of containers wishing to share the host process ID namespace | [kubescape-c-0194-deny-resources-sharing-host-pid-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0194-deny-resources-sharing-host-pid-namespace.md) | not configurable |
+| [C-0195](https://kubescape.io/docs/controls/c-0195/) | Minimize the admission of containers wishing to share the host IPC namespace | [kubescape-c-0195-deny-resources-sharing-host-ipc-namespace](/docs/policies-based-on-kubescape-controls/kubescape-c-0195-deny-resources-sharing-host-ipc-namespace.md) | not configurable |
+| [C-0197](https://kubescape.io/docs/controls/c-0197/) | Minimize the admission of containers with allowPrivilegeEscalation | [kubescape-c-0197-deny-containers-with-allow-privilege-escalation](/docs/policies-based-on-kubescape-controls/kubescape-c-0197-deny-containers-with-allow-privilege-escalation.md) | not configurable |
 
 ## Testing Policies
 
