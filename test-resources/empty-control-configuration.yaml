@@ -1,0 +1,9 @@
+# A ControlConfiguration with an empty settings block. Every key in the schema is
+# optional, so this is a valid thing for a user to apply, and a policy that reads
+# a setting has to cope with that key not being there instead of erroring out.
+# Point a test at this with "param_template" to check that.
+apiVersion: "kubescape.io/v1"
+kind: ControlConfiguration
+metadata:
+  name: placeholder
+settings: {}

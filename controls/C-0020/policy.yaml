@@ -25,12 +25,20 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    # cloudProvider is optional in the ControlConfiguration, and reading a key
+    # that is not there is an eval error, which failurePolicy: Fail turns into a
+    # denial. Falling back to an empty string keeps that a pass instead: no
+    # provider matches, so none of the credential path lists are checked.
+    - name: cloudProvider
+      expression: >
+        has(params.settings.cloudProvider) ? params.settings.cloudProvider : ''
   validations:
     - expression: >
         object.kind != 'Pod' || !has(object.spec.volumes) || object.spec.volumes.all(vol,
         !has(vol.hostPath) || !has(vol.hostPath.path) ||
         (
-          (params.settings.cloudProvider != 'eks' ||
+          (variables.cloudProvider != 'eks' ||
           ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
           (
             (
@@ -42,7 +50,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'aks' ||
+          (variables.cloudProvider != 'aks' ||
           ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
           (
             (
@@ -54,7 +62,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'gke' ||
+          (variables.cloudProvider != 'gke' ||
           ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
           (
             (
@@ -72,7 +80,7 @@ spec:
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !has(object.spec.template.spec.volumes) || object.spec.template.spec.volumes.all(vol,
         !has(vol.hostPath) || !has(vol.hostPath.path) ||
         (
-          (params.settings.cloudProvider != 'eks' ||
+          (variables.cloudProvider != 'eks' ||
           ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
           (
             (
@@ -84,7 +92,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'aks' ||
+          (variables.cloudProvider != 'aks' ||
           ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
           (
             (
@@ -96,7 +104,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'gke' ||
+          (variables.cloudProvider != 'gke' ||
           ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
           (
             (
@@ -114,7 +122,7 @@ spec:
         object.kind != 'CronJob' || !has(object.spec.jobTemplate.spec.template.spec.volumes) || object.spec.jobTemplate.spec.template.spec.volumes.all(vol,
         !has(vol.hostPath) || !has(vol.hostPath.path) ||
         (
-          (params.settings.cloudProvider != 'eks' ||
+          (variables.cloudProvider != 'eks' ||
           ["/.aws/","/.aws/config/","/.aws/credentials/"].all(unsafePath,
           (
             (
@@ -126,7 +134,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'aks' ||
+          (variables.cloudProvider != 'aks' ||
           ["/etc/","/etc/kubernetes/","/etc/kubernetes/azure.json","/.azure/","/.azure/credentials/","/etc/kubernetes/azure.json"].all(unsafePath,
           (
             (
@@ -138,7 +146,7 @@ spec:
               unsafePath != vol.hostPath.path
             )))) &&
 
-          (params.settings.cloudProvider != 'gke' ||
+          (variables.cloudProvider != 'gke' ||
           ["/.config/gcloud/","/.config/","/gcloud/","/.config/gcloud/application_default_credentials.json","/gcloud/application_default_credentials.json"].all(unsafePath,
           (
             (

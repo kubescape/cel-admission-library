@@ -61,5 +61,24 @@
         "field_change_list": [
             "spec.template.spec.volumes.[0].hostPath.path=/etc/kubernetes/azure.json"
         ]
+    },
+
+    {
+        "name": "Cloud Provider is not configured and Pod having volume with hostPath \"/etc/kubernetes\" is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "param_template": "empty-control-configuration.yaml",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/etc/kubernetes"
+        ]
+    },
+    {
+        "name": "Cloud Provider is not configured and Deployment having volume with hostPath \"/etc/kubernetes\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "param_template": "empty-control-configuration.yaml",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/etc/kubernetes"
+        ]
     }
 ]

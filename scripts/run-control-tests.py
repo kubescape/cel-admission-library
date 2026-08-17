@@ -56,6 +56,7 @@ try:
         field_change_list = test['field_change_list'] if 'field_change_list' in test else []
         expected = test['expected']
         binding_template = test['binding_template'] if 'binding_template' in test else 'policy-binding.yaml'
+        param_template = test['param_template'] if 'param_template' in test else 'default-control-configuration.yaml'
 
         print('-'*120)
         print('Running test: ' + name)
@@ -85,7 +86,7 @@ try:
         with tempfile.NamedTemporaryFile() as temp_file:
             param_file_name = temp_file.name
         param_file_change_list = ['metadata.name=' + policy_name + '-params']
-        subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, 'default-control-configuration.yaml'), '-o', param_file_name] + param_file_change_list)
+        subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, param_template), '-o', param_file_name] + param_file_change_list)
         print('Generated parameter file: ' + param_file_name)
 
 
