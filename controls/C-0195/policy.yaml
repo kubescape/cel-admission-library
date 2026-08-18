@@ -1,0 +1,40 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0195-deny-resources-sharing-host-ipc-namespace"
+  labels:
+    controlId: "C-0195"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0195/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
+  validations:
+    # Same check as C-0276, which is the same CIS item under a different control ID.
+    # Keep the two expressions identical if either one changes.
+    - expression: "!has(variables.podSpec.hostIPC) || variables.podSpec.hostIPC == false"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has hostIPC enabled, so its containers share the host IPC namespace. (see more at https://kubescape.io/docs/controls/c-0195/)'

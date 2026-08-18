@@ -1,0 +1,46 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: "kubescape-c-0197-deny-containers-with-allow-privilege-escalation"
+  labels:
+    controlId: "C-0197"
+  annotations:
+    controlUrl: "https://kubescape.io/docs/controls/c-0197/"
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+    - apiGroups:   [""]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
+    - apiGroups:   ["apps"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["deployments","replicasets","daemonsets","statefulsets"]
+    - apiGroups:   ["batch"]
+      apiVersions: ["v1"]
+      operations:  ["CREATE", "UPDATE"]
+      resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
+  validations:
+    # Absent counts as a violation, not a pass. allowPrivilegeEscalation defaults to true
+    # for a container that is not running as privileged with no capabilities added, so
+    # leaving it unset is the risk the control is about. Same reading as C-0016.
+    - expression: >
+        variables.containers.all(container,
+          has(container.securityContext) &&
+          has(container.securityContext.allowPrivilegeEscalation) &&
+          container.securityContext.allowPrivilegeEscalation == false
+        )
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has a container with allowPrivilegeEscalation not set to false, so a process in it can gain more privileges than its parent. (see more at https://kubescape.io/docs/controls/c-0197/)'
