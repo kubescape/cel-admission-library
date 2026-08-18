@@ -7,6 +7,22 @@ import os
 
 __DEBUG__ = False
 
+def is_index(field):
+    """True if the field selects a list element, e.g. [0]."""
+    return re.fullmatch(r'\[\d+\]', field) is not None
+
+
+def key_of(field):
+    """The value to index a container with: an int for [0], the name otherwise."""
+    return int(field[1:-1]) if is_index(field) else field
+
+
+def grow_to(lst, index):
+    """Pad a list with None so index is addressable."""
+    if len(lst) <= index:
+        lst += [None] * (index - len(lst) + 1)
+
+
 def apply_field(data, field, value):
     # Check if value looks like JSON
     try:
@@ -16,43 +32,53 @@ def apply_field(data, field, value):
 
     # Parse the field name into a list
     fields = field.split('.')
-    root = data
-    for f in fields[:-1]:
-        # Check if the field is a json key and contains only letters
-        if not re.match(r'[a-zA-Z]\w+', f) and not re.match(r'\[\d+\]', f):
+    for f in fields:
+        # Check if the field is a json key starting with a letter, or a list
+        # index in the format of [x]. Deliberately a prefix match, not a full
+        # one: keys like `top-secret-allowed` and `app.kubernetes.io/name` are
+        # ordinary in Kubernetes objects and were always accepted here.
+        if not re.match(r'[a-zA-Z]\w*', f) and not is_index(f):
             raise ValueError('Invalid field name: ' + f)
 
-        # Check with regex if the field is a list index in the format of [x]
-        if re.match(r'\[\d+\]', f):
-            f = int(f[1:-1])
-            if type(root) is not list:
-                root = []
-            if len(root) < f:
-                root += [None] * (f - len(root) + 1)
+    root = data
+    for i, f in enumerate(fields[:-1]):
+        key = key_of(f)
+        if not isinstance(root, (dict, list)):
+            raise ValueError('Cannot descend past ' + '.'.join(fields[:i]) +
+                             ' in ' + field + ': it holds a scalar, not a mapping or a list')
+        # What this level has to hold depends on how the NEXT field indexes into
+        # it: [0] needs a list, a name needs a dict. Deciding it from the next
+        # field is what lets a path create containers that are not there yet.
+        missing = [] if is_index(fields[i + 1]) else {}
 
+        if isinstance(root, list):
+            if not is_index(f):
+                raise ValueError('Expected a list index like [0] for ' + f + ' in ' + field)
+            grow_to(root, key)
+        elif is_index(f):
+            raise ValueError('Cannot index ' + f + ' into a mapping in ' + field)
 
-        if (type(root) is list and root[f] == None) or (type(root) is dict and f not in root):
-            # Check the next field to see if it's a number
-            try:
-                int(fields[fields.index(f) + 1])
-                root[f] = []
-            except ValueError:
-                root[f] = {}
+        # Create the container in place. Assigning to a fresh local would build a
+        # structure detached from the document, so always write through the
+        # parent.
+        if isinstance(root, list):
+            if root[key] is None:
+                root[key] = missing
+        elif root.get(f) is None:
+            root[f] = missing
 
-        root = root[f]
+        root = root[key]
 
     # Set the value
-    try:
-        f = fields[-1]
-        if re.match(r'\[\d+\]', f):
-            f = int(f[1:-1])
-        root[f] = value
-    except KeyError:
-        print(f"Key {fields[-1]} not found in {root}")
-        raise
-    except TypeError:
-        print(f"Type error: {fields[-1]} is not a valid key for {root}")
-        raise
+    key = key_of(fields[-1])
+    if not isinstance(root, (dict, list)):
+        raise ValueError('Cannot set ' + field + ': ' + '.'.join(fields[:-1]) +
+                         ' holds a scalar, not a mapping or a list')
+    if isinstance(root, list):
+        if not is_index(fields[-1]):
+            raise ValueError('Expected a list index like [0] for ' + fields[-1] + ' in ' + field)
+        grow_to(root, key)
+    root[key] = value
 
 
 def main():

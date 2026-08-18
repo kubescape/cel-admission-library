@@ -30,7 +30,8 @@
         "template": "pod-with-init-container.yaml",
         "expected": "fail",
         "field_change_list": [
-            "spec.initContainers.[0].ports=[{\"containerPort\": 9000, \"hostPort\": 9000}]"
+            "spec.initContainers.[0].ports.[0].containerPort=9000",
+            "spec.initContainers.[0].ports.[0].hostPort=9000"
         ]
     },
     {
