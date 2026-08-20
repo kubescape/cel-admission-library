@@ -23,4 +23,4 @@ spec:
         securityContext:
           capabilities:
             add:
-            - SYS_ADM
+            - SYS_ADMIN
