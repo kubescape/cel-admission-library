@@ -18,6 +18,21 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["rolebindings","clusterrolebindings"]
+  matchConditions:
+    # Only the ServiceAccount half of this control is narrower than its kind. Rule 2
+    # below is about the `default` ServiceAccount specifically, so without this every
+    # ServiceAccount in the cluster enters the control and passes vacuously, which
+    # counts resources that were never in scope as having satisfied it. The equivalent
+    # Rego rule narrows the same way with its own resource filter.
+    #
+    # The kind guard is what makes that safe: rule 1 is about RoleBindings and
+    # ClusterRoleBindings and is NOT name-narrowed, so an unguarded name check here
+    # would silently drop every binding this control is supposed to see.
+    #
+    # has() guarded because a ServiceAccount written with generateName and no name
+    # would otherwise be an evaluation error rather than a clean exclusion.
+    - name: default-serviceaccount-or-any-binding
+      expression: "object.kind != 'ServiceAccount' || (has(object.metadata.name) && object.metadata.name == 'default')"
   validations:
     # This control is two unrelated rules under one control ID, matching two different
     # kinds, so each validation carries its own kind guard and they never both apply to
