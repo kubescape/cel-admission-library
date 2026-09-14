@@ -49,5 +49,28 @@
         "field_change_list": [
             "spec.containers.[0].securityContext.capabilities.add.[0]=ALL"
         ]
+    },
+    {
+        "name": "Pod having init container with NET_RAW capability is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers=[{\"name\":\"init\",\"image\":\"alpine\",\"command\":[\"sh\"],\"securityContext\":{\"capabilities\":{\"add\":[\"NET_RAW\"]}}}]"
+        ]
+    },
+    {
+        "name": "CronJob having container with capabilities not set is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob having container with NET_RAW capability is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=NET_RAW"
+        ]
     }
 ]
