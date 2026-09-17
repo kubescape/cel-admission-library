@@ -16,7 +16,6 @@ spec:
     - apiGroups:
       - agents.x-k8s.io
       apiVersions:
-      - v1alpha1
       - v1beta1
       operations:
       - CREATE
@@ -26,7 +25,6 @@ spec:
     - apiGroups:
       - extensions.agents.x-k8s.io
       apiVersions:
-      - v1alpha1
       - v1beta1
       operations:
       - CREATE

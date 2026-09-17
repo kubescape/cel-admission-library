@@ -1,7 +1,9 @@
 # Agent runtime posture admission policies
 
 These policies validate fields on Agent Sandbox `Sandbox` and `SandboxTemplate`
-resources and Agent Substrate `WorkerPool` resources. The control IDs match the
+resources using the `v1beta1` APIs served by Agent Sandbox v1.0 and later. They
+also validate Agent Substrate `WorkerPool` resources, which continue to use the
+separate `ate.dev/v1alpha1` API. The control IDs match the
 AgentRuntimeHardening framework in regolibrary:
 
 | Control | Admission evidence |
@@ -39,6 +41,10 @@ The WorkerPool field was verified against
 ActorTemplate is an [ATE protobuf resource](https://github.com/agent-substrate/substrate/blob/a9c1bd389403af59520e419d3884d447cf40edd2/pkg/proto/ateapipb/ateapi.proto),
 not a Kubernetes CRD, so it is not targeted by these policies or represented by
 an invented test CRD. Actor checks require a supported scanner integration first.
+
+`SandboxClaim` and `SandboxWarmPool` are not matched directly because the
+posture fields checked here live on the referenced `SandboxTemplate` and the
+resulting `Sandbox`.
 
 The policies do not use `spec.matchConditions`, contact image registries, verify
 signatures, or make cross-resource IAM claims. Registry and digest checks
