@@ -23,9 +23,9 @@ spec:
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
   validations:
-    - expression: "object.kind != 'Pod' || object.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+    - expression: "object.kind != 'Pod' || object.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
       message: "Pod has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"
-    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
       message: "Workload has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"
-    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, cmd != 'sudo'))"
+    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
       message: "CronJob has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"

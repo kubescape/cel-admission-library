@@ -41,5 +41,37 @@
         "expected": "pass",
         "field_change_list": [
         ]
+    },
+    {
+        "name": "Pod with container running sudo by absolute path is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].command.[0]=/usr/bin/sudo"
+        ]
+    },
+    {
+        "name": "Pod with container running sudo through a shell is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].command=[\"sh\",\"-c\",\"sudo id\"]"
+        ]
+    },
+    {
+        "name": "Deployment with container running sudo by absolute path is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].command.[0]=/usr/bin/sudo"
+        ]
+    },
+    {
+        "name": "CronJob with container running sudo by absolute path is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].command.[0]=/usr/bin/sudo"
+        ]
     }
 ]
