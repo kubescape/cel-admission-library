@@ -94,5 +94,43 @@
         "field_change_list": [
             "spec.jobTemplate.spec.template.spec.containers.[0].image=gcr.io.evil.com/app:latest"
         ]
+    },
+    {
+        "name": "Pod having initContainer with image from quay.io is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.initContainers.[0].image=quay.io/x/y:1"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with image from an unlisted registry is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.initContainers.[0].image=ghcr.io/example/init:1"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with image from quay.io is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=quay.io/x/y:1"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image from quay.io is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=quay.io/x/y:1"
+        ]
     }
 ]
