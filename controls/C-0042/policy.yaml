@@ -25,7 +25,7 @@ spec:
   validations:
     - expression: >
         object.kind != 'Service' ||
-        object.spec.ports.all(currentPort, currentPort.port != 22 && currentPort.port != 2222 && currentPort.targetPort != 22 && currentPort.targetPort != 2222)
+        !has(object.spec.ports) || object.spec.ports.all(currentPort, currentPort.port != 22 && currentPort.port != 2222 && (!has(currentPort.targetPort) || (currentPort.targetPort != 22 && currentPort.targetPort != 2222)))
       message: "Services with ssh server(Port 22 and 2222) are denied! (see more at https://kubescape.io/docs/controls/c-0042/)"
     - expression: >
         object.kind != 'Pod' ||
