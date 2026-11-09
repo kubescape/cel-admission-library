@@ -84,5 +84,21 @@
         "field_change_list": [
             "rules.[0].verbs=[\"patch\"]"
         ]
+    },
+    {
+        "name": "ClusterRole with null rules is allowed",
+        "template": "cluster-role.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "rules=null"
+        ]
+    },
+    {
+        "name": "Role with null rules is allowed",
+        "template": "role.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "rules=null"
+        ]
     }
 ]

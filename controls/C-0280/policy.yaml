@@ -17,7 +17,7 @@ spec:
   validations:
     - expression: >
         ['Role', 'ClusterRole'].all(kind, object.kind != kind) ||
-        !has(object.rules) ||
+        !has(object.rules) || object.rules == null ||
         object.rules.all(rule,
           !(
             has(rule.resources) && (
