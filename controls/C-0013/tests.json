@@ -180,5 +180,87 @@
             "spec.template.spec.containers.[0].securityContext.runAsNonRoot=false",
             "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false"
         ]
+    },
+    {
+        "name": "Pod having initContainer without securityContext is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.containers.[0].securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with runAsNonRoot set to true and allowPrivilegeEscalation set to false is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.initContainers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.initContainers.[0].securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "Pod with runAsNonRoot set true in PodSecurityContext and allowPrivilegeEscalation set to false in container and initContainer is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.runAsNonRoot=true",
+            "spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.initContainers.[0].securityContext.allowPrivilegeEscalation=false"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with allowPrivilegeEscalation set to true is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].securityContext.allowPrivilegeEscalation=true",
+            "spec.template.spec.initContainers.[0].securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with runAsNonRoot set to true and allowPrivilegeEscalation set to false is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.template.spec.initContainers.[0].securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with allowPrivilegeEscalation set to true is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.allowPrivilegeEscalation=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.runAsNonRoot=true"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with runAsNonRoot set to true and allowPrivilegeEscalation set to false is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.runAsNonRoot=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.allowPrivilegeEscalation=false",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.runAsNonRoot=true"
+        ]
     }
 ]
