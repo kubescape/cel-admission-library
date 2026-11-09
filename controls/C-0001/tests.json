@@ -124,6 +124,16 @@
         ]
     },
     {
+        "name": "Deployment having initContainer with image from an unlisted registry is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=ghcr.io/example/init:1"
+        ]
+    },
+    {
         "name": "CronJob having initContainer with image from quay.io is blocked",
         "template": "cronjob.yaml",
         "expected": "fail",
@@ -131,6 +141,16 @@
             "spec.jobTemplate.spec.template.spec.containers.[0].image=ghcr.io/example/app:1",
             "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
             "spec.jobTemplate.spec.template.spec.initContainers.[0].image=quay.io/x/y:1"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image from an unlisted registry is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=ghcr.io/example/init:1"
         ]
     }
 ]
