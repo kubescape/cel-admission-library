@@ -30,9 +30,9 @@ spec:
         : []
       name: containers
     - expression: |
-        object.kind == 'Pod' ? object.spec.securityContext
-        : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'] ? object.spec.template.spec.securityContext
-        : object.kind == 'CronJob' ? object.spec.jobTemplate.spec.template.spec.securityContext
+        object.kind == 'Pod' ? object.spec.?securityContext.orValue({})
+        : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'] ? object.spec.template.spec.?securityContext.orValue({})
+        : object.kind == 'CronJob' ? object.spec.jobTemplate.spec.template.spec.?securityContext.orValue({})
         : {}
       name: podSecurityContext
   validations:
