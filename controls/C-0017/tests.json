@@ -35,5 +35,67 @@
         "field_change_list": [
             "spec.containers.[0].securityContext.readOnlyRootFilesystem=true"
         ]
+    },
+    {
+        "name": "Pod having initContainer with readOnlyRootFilesystem set to false is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.initContainers.[0].securityContext.readOnlyRootFilesystem=false"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with readOnlyRootFilesystem set to true is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.initContainers.[0].securityContext.readOnlyRootFilesystem=true"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with readOnlyRootFilesystem set to false is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].securityContext.readOnlyRootFilesystem=false"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with readOnlyRootFilesystem set to true is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].securityContext.readOnlyRootFilesystem=true"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with readOnlyRootFilesystem set to false is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.readOnlyRootFilesystem=false"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with readOnlyRootFilesystem set to true is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.readOnlyRootFilesystem=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.readOnlyRootFilesystem=true"
+        ]
     }
 ]
