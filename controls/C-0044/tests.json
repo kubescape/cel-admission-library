@@ -15,6 +15,14 @@
         ]
     },
     {
+        "name": "Pod having container with hostPort 0 is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].ports.[0].hostPort=0"
+        ]
+    },
+    {
         "name": "Deployment with container having hostPort blocked",
         "template": "deployment.yaml",
         "expected": "fail",
