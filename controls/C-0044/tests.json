@@ -51,5 +51,73 @@
         "field_change_list": [
             "spec.jobTemplate.spec.template.spec.containers.[0].ports.[0].hostPort=2023"
         ]
+    },
+    {
+        "name": "Pod having initContainer with hostPort is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].ports.[0].containerPort=8080",
+            "spec.initContainers.[0].ports.[0].hostPort=2023"
+        ]
+    },
+    {
+        "name": "Pod having initContainer without hostPort is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].ports.[0].containerPort=8080"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with hostPort is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].ports.[0].containerPort=8080",
+            "spec.template.spec.initContainers.[0].ports.[0].hostPort=2023"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer without hostPort is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].ports.[0].containerPort=8080"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with hostPort is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].ports.[0].containerPort=8080",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].ports.[0].hostPort=2023"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer without hostPort is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].ports.[0].containerPort=8080"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with hostPort 0 is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].ports.[0].containerPort=8080",
+            "spec.initContainers.[0].ports.[0].hostPort=0"
+        ]
     }
 ]
