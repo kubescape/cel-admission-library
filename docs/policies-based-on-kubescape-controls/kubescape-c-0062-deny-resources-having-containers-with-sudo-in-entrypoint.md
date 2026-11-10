@@ -18,7 +18,7 @@ Adding sudo to a container entry point command may escalate process privileges a
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks that there is `no sudo in the container entrypoint`. If there is `sudo` in container entrypoint, the resource is denied from being deployed in the cluster.
+This Policy checks that there is `no sudo in the container entrypoint` for every container, init container, and ephemeral container (added with `kubectl debug`). If there is `sudo` in a container entrypoint, the resource is denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

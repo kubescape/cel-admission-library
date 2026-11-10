@@ -73,5 +73,61 @@
         "field_change_list": [
             "spec.jobTemplate.spec.template.spec.containers.[0].command.[0]=/usr/bin/sudo"
         ]
+    },
+    {
+        "name": "Pod having initContainer with sudo in command is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].command=[\"sudo\",\"sh\",\"-c\",\"true\"]"
+        ]
+    },
+    {
+        "name": "Pod having initContainer without sudo in command is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].command=[\"sh\",\"-c\",\"true\"]"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with sudo in command is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].command=[\"sudo\",\"sh\",\"-c\",\"true\"]"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer without sudo in command is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].command=[\"sh\",\"-c\",\"true\"]"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with sudo in command is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].command=[\"sudo\",\"sh\",\"-c\",\"true\"]"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer without sudo in command is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].command=[\"sh\",\"-c\",\"true\"]"
+        ]
     }
 ]
