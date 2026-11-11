@@ -18,7 +18,7 @@ hostPath volume mounts a directory or a file from the host to the container. Att
 * StatefulSet
 
 ## What does this policy do:
-This Policy is checking in POD spec if there is a `hostPath` volume, if it has the section `mount.readOnly == false` (or doesn’t exist). If the above check fails, the resource is denied from being deployed into the cluster.
+This Policy is checking in POD spec if there is a `hostPath` volume, if it has the section `mount.readOnly == false` (or doesn’t exist) in any container, init container, or ephemeral container (added with `kubectl debug`) that mounts it. If the above check fails, the resource is denied from being deployed into the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
