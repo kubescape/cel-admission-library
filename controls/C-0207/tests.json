@@ -109,5 +109,45 @@
         "name": "CronJob with no env is allowed",
         "template": "cronjob.yaml",
         "expected": "pass"
+    },
+    {
+        "name": "Pod with an envFrom secretRef is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].envFrom=[{\"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
+    },
+    {
+        "name": "Pod with an envFrom configMapRef is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].envFrom=[{\"configMapRef\": {\"name\": \"app-config\"}}]"
+        ]
+    },
+    {
+        "name": "Pod with an envFrom secretRef in an init container is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].envFrom=[{\"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
+    },
+    {
+        "name": "Deployment with an envFrom secretRef after a configMapRef is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].envFrom=[{\"configMapRef\": {\"name\": \"app-config\"}}, {\"prefix\": \"DB_\", \"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
+    },
+    {
+        "name": "CronJob with an envFrom secretRef is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].envFrom=[{\"secretRef\": {\"name\": \"db-secret\"}}]"
+        ]
     }
 ]

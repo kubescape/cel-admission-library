@@ -20,8 +20,9 @@ A Secret injected as an environment variable is readable by anything that can re
 ## What does this policy do:
 This Policy checks every container in the resource, including init containers and, for a Pod, ephemeral containers:
 * If any environment variable takes its value from `valueFrom.secretKeyRef`, the resource is denied from being deployed in the cluster.
+* If any `envFrom` entry has a `secretRef`, the resource is denied from being deployed in the cluster. That form turns every key of the Secret into an environment variable.
 
-Environment variables sourced from a ConfigMap, from a field reference or from a plain value are not affected.
+Environment variables sourced from a ConfigMap (`configMapKeyRef` or `envFrom.configMapRef`), from a field reference or from a plain value are not affected.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
