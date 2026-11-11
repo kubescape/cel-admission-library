@@ -24,5 +24,8 @@ images can also lead to similar results.
 This Policy checks if the image used by any container, init container, or ephemeral container (added with `kubectl debug`) is from the configured [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries). If it finds any such instance, the resource is
 denied from being deployed in the cluster.
 
+## A note on `kubectl debug`:
+This policy checks every container in the Pod, not only the new debug container. `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers use a forbidden registry, for example because the Pod was created before this policy was bound. Choosing an allowed `--image`, or using `--custom`, only makes the new debug container compliant. It does nothing for the Pod's existing containers.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
