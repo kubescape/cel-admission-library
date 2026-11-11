@@ -100,5 +100,35 @@
         "field_change_list": [
             "rules=null"
         ]
+    },
+    {
+        "name": "ClusterRole with */approval in the certificates apiGroup is blocked",
+        "template": "cluster-role.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "rules.[0].resources=[\"*/approval\"]",
+            "rules.[0].apiGroups=[\"certificates.k8s.io\"]",
+            "rules.[0].verbs=[\"update\"]"
+        ]
+    },
+    {
+        "name": "Role with */approval in the * apiGroup is blocked",
+        "template": "role.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "rules.[0].resources=[\"*/approval\"]",
+            "rules.[0].apiGroups=[\"*\"]",
+            "rules.[0].verbs=[\"patch\"]"
+        ]
+    },
+    {
+        "name": "ClusterRole with */approval in an unrelated apiGroup is allowed",
+        "template": "cluster-role.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "rules.[0].resources=[\"*/approval\"]",
+            "rules.[0].apiGroups=[\"example.com\"]",
+            "rules.[0].verbs=[\"update\"]"
+        ]
     }
 ]

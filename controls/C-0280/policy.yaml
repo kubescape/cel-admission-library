@@ -23,7 +23,7 @@ spec:
             has(rule.resources) && (
               rule.resources.exists(r, r == "certificatesigningrequests/approval" || r == "certificatesigningrequests/*")
               ||
-              (rule.resources.exists(r, r == "*" || r == "*/*") && has(rule.apiGroups) && rule.apiGroups.exists(g, g == "certificates.k8s.io" || g == "*"))
+              (rule.resources.exists(r, r == "*" || r == "*/*" || r == "*/approval") && has(rule.apiGroups) && rule.apiGroups.exists(g, g == "certificates.k8s.io" || g == "*"))
             )
             &&
             has(rule.verbs) && rule.verbs.exists(v, v == "update" || v == "patch" || v == "*")
