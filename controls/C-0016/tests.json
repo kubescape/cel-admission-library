@@ -65,5 +65,37 @@
         "name": "CronJob without allowPrivilegeEscalation is blocked",
         "template": "cronjob.yaml",
         "expected": "fail"
+    },
+    {
+        "name": "Windows Pod without allowPrivilegeEscalation is allowed, the API server forbids the field there",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.os.name=windows"
+        ]
+    },
+    {
+        "name": "Linux Pod without allowPrivilegeEscalation is still blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.os.name=linux"
+        ]
+    },
+    {
+        "name": "Windows Deployment without allowPrivilegeEscalation is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.os.name=windows"
+        ]
+    },
+    {
+        "name": "Windows CronJob without allowPrivilegeEscalation is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.os.name=windows"
+        ]
     }
 ]
