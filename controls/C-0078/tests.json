@@ -172,5 +172,61 @@
         "field_change_list": [
             "spec.template.spec.containers.[0].image=localhost/my-image"
         ]
+    },
+    {
+        "name": "Pod having initContainer with image from quay.io is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].image=quay.io/openshift/origin-cli:latest"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with image from gcr.io is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].image=gcr.io/google-containers/busybox"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with image from quay.io is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].image=quay.io/openshift/origin-cli:latest"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with image from gcr.io is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].image=gcr.io/google-containers/busybox"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image from quay.io is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=quay.io/openshift/origin-cli:latest"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image from gcr.io is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=gcr.io/google-containers/busybox"
+        ]
     }
 ]

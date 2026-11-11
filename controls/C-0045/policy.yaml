@@ -13,7 +13,7 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
@@ -22,24 +22,34 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
         object.kind != 'Pod' || (!has(object.spec.volumes)) || object.spec.volumes.all(vol, !(has(vol.hostPath)) ||
-        object.spec.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
+        variables.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
           containerVol, containerVol.name != vol.name ||
           (has(containerVol.readOnly) && containerVol.readOnly == true)
         )))
       message: "One or more hostPath Volumes in the Pod has readOnly not set to false! (see more at https://kubescape.io/docs/controls/c-0045/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || (!has(object.spec.template.spec.volumes)) || object.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
-        object.spec.template.spec.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
+        variables.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
           containerVol, containerVol.name != vol.name ||
           (has(containerVol.readOnly) && containerVol.readOnly == true)
         )))
       message: "One or more hostPath Volumes in the Workload has readOnly not set to false! (see more at https://kubescape.io/docs/controls/c-0045/)"
     - expression: >
         object.kind != 'CronJob' || (!has(object.spec.jobTemplate.spec.template.spec.volumes)) || object.spec.jobTemplate.spec.template.spec.volumes.all(vol, !(has(vol.hostPath)) ||
-        object.spec.jobTemplate.spec.template.spec.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
+        variables.containers.all(container, !(has(container.volumeMounts)) || container.volumeMounts.all(
           containerVol, containerVol.name != vol.name ||
           (has(containerVol.readOnly) && containerVol.readOnly == true)
         )))

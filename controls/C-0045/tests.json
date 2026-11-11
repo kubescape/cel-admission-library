@@ -71,5 +71,94 @@
             "spec.template.spec.volumes.[0].hostPath.path=/var",
             "spec.template.spec.containers.[0].volumeMounts.[0].readOnly=true"
         ]
+    },
+    {
+        "name": "Pod with hostPath volume and readOnly is not set for the initContainer volumeMount is denied",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].name=host-volume",
+            "spec.volumes.[0].hostPath.path=/var",
+            "spec.containers.[0].volumeMounts.[0].name=host-volume",
+            "spec.containers.[0].volumeMounts.[0].mountPath=/host",
+            "spec.containers.[0].volumeMounts.[0].readOnly=true",
+            "spec.initContainers.[0].volumeMounts.[0].name=host-volume",
+            "spec.initContainers.[0].volumeMounts.[0].mountPath=/host"
+        ]
+    },
+    {
+        "name": "Pod with hostPath volume and readOnly is set to true for the initContainer volumeMount is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.volumes.[0].name=host-volume",
+            "spec.volumes.[0].hostPath.path=/var",
+            "spec.containers.[0].volumeMounts.[0].name=host-volume",
+            "spec.containers.[0].volumeMounts.[0].mountPath=/host",
+            "spec.containers.[0].volumeMounts.[0].readOnly=true",
+            "spec.initContainers.[0].volumeMounts.[0].name=host-volume",
+            "spec.initContainers.[0].volumeMounts.[0].mountPath=/host",
+            "spec.initContainers.[0].volumeMounts.[0].readOnly=true"
+        ]
+    },
+    {
+        "name": "Deployment with hostPath volume and readOnly is not set for the initContainer volumeMount is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var",
+            "spec.template.spec.containers.[0].volumeMounts.[0].readOnly=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].volumeMounts.[0].name=test-volume",
+            "spec.template.spec.initContainers.[0].volumeMounts.[0].mountPath=/test-pd"
+        ]
+    },
+    {
+        "name": "Deployment with hostPath volume and readOnly is set to true for the initContainer volumeMount is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var",
+            "spec.template.spec.containers.[0].volumeMounts.[0].readOnly=true",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].volumeMounts.[0].name=test-volume",
+            "spec.template.spec.initContainers.[0].volumeMounts.[0].mountPath=/test-pd",
+            "spec.template.spec.initContainers.[0].volumeMounts.[0].readOnly=true"
+        ]
+    },
+    {
+        "name": "CronJob with hostPath volume and readOnly is not set for the initContainer volumeMount is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[1].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.volumes.[1].hostPath.path=/var",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].mountPath=/host",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].readOnly=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].volumeMounts.[0].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].volumeMounts.[0].mountPath=/host"
+        ]
+    },
+    {
+        "name": "CronJob with hostPath volume and readOnly is set to true for the initContainer volumeMount is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[1].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.volumes.[1].hostPath.path=/var",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].mountPath=/host",
+            "spec.jobTemplate.spec.template.spec.containers.[0].volumeMounts.[1].readOnly=true",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].volumeMounts.[0].name=host-volume",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].volumeMounts.[0].mountPath=/host",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].volumeMounts.[0].readOnly=true"
+        ]
     }
 ]
