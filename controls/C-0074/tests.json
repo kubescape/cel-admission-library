@@ -78,5 +78,55 @@
             "spec.template.spec.volumes.[0].hostPath.path=/var/run/docker",
             "spec.template.spec.volumes.[1].hostPath.path=/var/run/docker.sock"
         ]
+    },
+    {
+        "name": "Pod having hostPath volume and path /run/containerd/containerd.sock is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/run/containerd/containerd.sock"
+        ]
+    },
+    {
+        "name": "Pod having hostPath volume and path /var/run/crio/crio.sock is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var/run/crio/crio.sock"
+        ]
+    },
+    {
+        "name": "Pod having hostPath volume and path /run/docker.sock is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/run/docker.sock"
+        ]
+    },
+    {
+        "name": "Deployment having hostPath volume and path /run/containerd/containerd.sock is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/run/containerd/containerd.sock"
+        ]
+    },
+    {
+        "name": "CronJob having hostPath volume and path /run/containerd/containerd.sock is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[0].emptyDir=null",
+            "spec.jobTemplate.spec.template.spec.volumes.[0].hostPath.path=/run/containerd/containerd.sock"
+        ]
+    },
+    {
+        "name": "CronJob having hostPath volume and no runtime socket mounted is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[0].emptyDir=null",
+            "spec.jobTemplate.spec.template.spec.volumes.[0].hostPath.path=/var/log"
+        ]
     }
 ]
