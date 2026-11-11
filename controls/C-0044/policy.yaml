@@ -22,10 +22,17 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : [])
+              : []
+      name: containers
   validations:
-    - expression: "object.kind != 'Pod' || !object.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort) && port.hostPort != 0))"
-      message: "One or more containers in the Pod has Host-port! (see more at https://kubescape.io/docs/controls/c-0044/)"
-    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || !object.spec.template.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort) && port.hostPort != 0))"
-      message: "One or more containers in the Workload has Host-port! (see more at https://kubescape.io/docs/controls/c-0044/)"
-    - expression: "object.kind != 'CronJob' || !object.spec.jobTemplate.spec.template.spec.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort) && port.hostPort != 0))"
-      message: "One or more containers in the CronJob has Host-port! (see more at https://kubescape.io/docs/controls/c-0044/)"
+    - expression: "!variables.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort) && port.hostPort != 0))"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has one or more containers with a host port! (see more at https://kubescape.io/docs/controls/c-0044/)'

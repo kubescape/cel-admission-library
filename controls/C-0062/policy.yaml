@@ -13,7 +13,7 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
@@ -22,10 +22,17 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
   validations:
-    - expression: "object.kind != 'Pod' || object.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
-      message: "Pod has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"
-    - expression: "['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
-      message: "Workload has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"
-    - expression: "object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
-      message: "CronJob has a container/s having sudo in entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)"
+    - expression: "variables.containers.all(container, !(has(container.command)) || container.command.all(cmd, !cmd.contains('sudo')))"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has one or more containers with sudo in the entrypoint! (see more at https://kubescape.io/docs/controls/c-0062/)'

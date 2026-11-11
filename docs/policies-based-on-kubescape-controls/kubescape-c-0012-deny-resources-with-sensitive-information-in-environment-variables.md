@@ -22,7 +22,7 @@ Developers store secrets in the Kubernetes configuration files, such as environm
 * StatefulSet
 
 ## What does this policy do:
-### This Policy checks for every container in the resource:
+### This Policy checks for every container (regular, init, and ephemeral containers added with `kubectl debug`) in the resource:
 * If pod has sensitive information in environment variables, by using list of known sensitive key names and values.
 
 ### This Policy checks for every configMap in the resource:

@@ -137,5 +137,67 @@
         "field_change_list": [
             "data.top-secret-allowed=password123"
         ]
+    },
+    {
+        "name": "Pod having initContainer with env with sensitive key name and non-empty value and not from sensitiveValuesAllowed is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.initContainers.[0].env.[0].value=randomValue"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with env with sensitive key name and non-empty value and from sensitiveValuesAllowed is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.initContainers.[0].env.[0].value=test-value"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with env with sensitive key name and non-empty value and not from sensitiveValuesAllowed is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.template.spec.initContainers.[0].env.[0].value=randomValue"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with env with sensitive key name and non-empty value and from sensitiveValuesAllowed is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.template.spec.initContainers.[0].env.[0].value=test-value"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with env with sensitive key name and non-empty value and not from sensitiveValuesAllowed is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].value=randomValue"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with env with sensitive key name and non-empty value and from sensitiveValuesAllowed is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].name=azure_batch_key",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].value=test-value"
+        ]
     }
 ]
