@@ -163,5 +163,68 @@
             "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
             "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.capabilities.drop=[\"ALL\"]"
         ]
+    },
+    {
+        "name": "Pod with PodSecurityContext having appArmorProfile is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.securityContext.appArmorProfile.type=RuntimeDefault"
+        ]
+    },
+    {
+        "name": "Pod with every container securityContext having appArmorProfile is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.appArmorProfile.type=RuntimeDefault"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext having appArmorProfile is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.appArmorProfile.type=RuntimeDefault"
+        ]
+    },
+    {
+        "name": "Deployment with every container securityContext having appArmorProfile is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.appArmorProfile.type=RuntimeDefault"
+        ]
+    },
+    {
+        "name": "CronJob without any hardening is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "CronJob with PodSecurityContext having appArmorProfile is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile.type=RuntimeDefault"
+        ]
+    },
+    {
+        "name": "CronJob with the apparmor annotation on its pod template is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/test-container\": \"runtime/default\"}"
+        ]
+    },
+    {
+        "name": "CronJob with the apparmor annotation only on the Job template metadata is denied, it never reaches the pods",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/test-container\": \"runtime/default\"}"
+        ]
     }
 ]

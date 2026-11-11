@@ -36,24 +36,27 @@ spec:
     - expression: >
         object.kind != 'Pod' ||
         (has(object.metadata.annotations) && object.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.securityContext) && (has(object.spec.securityContext.seccompProfile) || has(object.spec.securityContext.seLinuxOptions))) ||
+        (has(object.spec.securityContext) && (has(object.spec.securityContext.seccompProfile) || has(object.spec.securityContext.seLinuxOptions) || has(object.spec.securityContext.appArmorProfile))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
+        has(container.securityContext.appArmorProfile) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Pods could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
         (has(object.spec.template.metadata) && has(object.spec.template.metadata.annotations) && object.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.template.spec.securityContext) && (has(object.spec.template.spec.securityContext.seccompProfile) || has(object.spec.template.spec.securityContext.seLinuxOptions))) ||
+        (has(object.spec.template.spec.securityContext) && (has(object.spec.template.spec.securityContext.seccompProfile) || has(object.spec.template.spec.securityContext.seLinuxOptions) || has(object.spec.template.spec.securityContext.appArmorProfile))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
+        has(container.securityContext.appArmorProfile) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Workloads could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         object.kind != 'CronJob' ||
-        (has(object.spec.jobTemplate.metadata) && has(object.spec.jobTemplate.metadata.annotations) && object.spec.jobTemplate.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.jobTemplate.spec.template.spec.securityContext) && (has(object.spec.jobTemplate.spec.template.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.template.spec.securityContext.seLinuxOptions))) ||
+        (has(object.spec.jobTemplate.spec.template.metadata) && has(object.spec.jobTemplate.spec.template.metadata.annotations) && object.spec.jobTemplate.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
+        (has(object.spec.jobTemplate.spec.template.spec.securityContext) && (has(object.spec.jobTemplate.spec.template.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.template.spec.securityContext.seLinuxOptions) || has(object.spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
+        has(container.securityContext.appArmorProfile) ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "CronJob could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
