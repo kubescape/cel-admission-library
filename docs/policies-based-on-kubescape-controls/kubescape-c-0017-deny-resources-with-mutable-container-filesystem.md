@@ -18,8 +18,23 @@ By default, containers are permitted mostly unrestricted execution within their 
 * StatefulSet
 
 ## What does this policy do:
-### This Policy checks for every container in the resource:
+### This Policy checks for every container (regular, init, and ephemeral containers added with `kubectl debug`) in the resource:
 * If `securityContext.readOnlyRootFilesystem` is set to `true`. If not, the resource is denied from being deployed in the cluster.
+
+## A note on `kubectl debug`:
+Neither `--profile=general` nor `--profile=restricted` sets `readOnlyRootFilesystem`, so `kubectl debug` is denied by this policy unless you add it with `--custom`. The restricted profile also sets `runAsNonRoot: true`, so if the debug image runs as root by default (busybox does), set a non-root `runAsUser` too, otherwise the kubelet will not start the container. For example, save this as `custom.json`:
+
+```json
+{"securityContext":{"readOnlyRootFilesystem":true,"runAsUser":65534}}
+```
+
+and run:
+
+```
+kubectl debug <pod> -it --image=busybox:1.36 --profile=restricted --custom=custom.json
+```
+
+This passes both this policy and C-0013. The same command without `--custom` is denied by this policy.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

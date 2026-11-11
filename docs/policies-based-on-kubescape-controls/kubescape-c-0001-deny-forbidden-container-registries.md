@@ -21,7 +21,7 @@ images can also lead to similar results.
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks if the image used by any container is from the configured [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries). If it finds any such instance, the resource is
+This Policy checks if the image used by any container, init container, or ephemeral container (added with `kubectl debug`) is from the configured [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries). If it finds any such instance, the resource is
 denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
