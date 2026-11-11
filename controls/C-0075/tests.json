@@ -124,5 +124,67 @@
             "spec.template.spec.containers.[0].image=test:onlyletters",
             "spec.template.spec.containers.[0].imagePullPolicy=Always"
         ]
+    },
+    {
+        "name": "Pod having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"IfNotPresent\" is denied",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].image=test:latest",
+            "spec.initContainers.[0].imagePullPolicy=IfNotPresent"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.initContainers.[0].image=test:latest",
+            "spec.initContainers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"IfNotPresent\" is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].image=test:latest",
+            "spec.template.spec.initContainers.[0].imagePullPolicy=IfNotPresent"
+        ]
+    },
+    {
+        "name": "Deployment having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].image=test:latest",
+            "spec.template.spec.initContainers.[0].imagePullPolicy=Always"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"IfNotPresent\" is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=test:latest",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].imagePullPolicy=IfNotPresent"
+        ]
+    },
+    {
+        "name": "CronJob having initContainer with image \"test:latest\" and \"ImagePullPolicy\" set to \"Always\" is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=test:latest",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].imagePullPolicy=Always"
+        ]
     }
 ]

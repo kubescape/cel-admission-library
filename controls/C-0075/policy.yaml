@@ -13,7 +13,7 @@ spec:
     - apiGroups:   [""]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
-      resources:   ["pods"]
+      resources:   ["pods", "pods/ephemeralcontainers"]
     - apiGroups:   ["apps"]
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
@@ -22,9 +22,19 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : []) + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : []) + (has(object.spec.template.spec.ephemeralContainers) ? object.spec.template.spec.ephemeralContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
-        object.kind != 'Pod' || object.spec.containers.all(container,
+        variables.containers.all(container,
         !(
           container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
           container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
@@ -32,26 +42,5 @@ spec:
         (
           has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
         ))
-      message: "Pods contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"
-
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
-        !(
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
-        ) ||
-        (
-          has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
-        ))
-      message: "Workloads contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"
-
-    - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
-        !(
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").all(substring, substring.endsWith("/")) ||
-          container.image.findAll(":[\\w][\\w.-]{0,127}(\\/)?").exists(substring, substring == ":latest" || substring.matches("^:[a-zA-Z]{1,127}$"))
-        ) ||
-        (
-          has(container.imagePullPolicy) && container.imagePullPolicy == 'Always'
-        ))
-      message: "CronJob contains container/s image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)"
+      messageExpression: >
+        object.kind + '/' + object.metadata.name + ' has one or more containers with an image with latest tag and imagePullPolicy not set to Always! (see more at https://kubescape.io/docs/controls/c-0075/)'
