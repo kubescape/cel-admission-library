@@ -25,6 +25,8 @@ This Policy checks every container in the resource, including init containers an
 
 Leaving the field out is a denial, not a pass. Kubernetes defaults it to `true` for a container that is not privileged and adds no capabilities, so an unset field is the risk the control is about. A container with no `securityContext`, or with a `securityContext` that does not mention the field, is denied for the same reason.
 
+Windows pods (`spec.os.name: windows`) are skipped. The API server does not allow `allowPrivilegeEscalation` on them at all, so they could never pass, and Pod Security Admission skips the same check for them.
+
 ## How this relates to C-0016:
 C-0016 checks the same field with the same reading, over the same container list. The two policies deny the same resources. They exist separately because they come from different frameworks and the library keys a policy to exactly one control ID, so C-0197 needs its own policy to be reported at all.
 

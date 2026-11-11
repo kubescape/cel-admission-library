@@ -32,8 +32,22 @@ spec:
               ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
               : []
       name: containers
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
   validations:
+    # A Windows pod (spec.os.name: windows) cannot set allowPrivilegeEscalation at all: the
+    # API server rejects it (validateWindows in pkg/apis/core/validation/validation.go), and
+    # Pod Security Admission skips this check for Windows pods for the same reason. Without
+    # this guard every Windows workload is denied and there is nothing it can change to pass.
     - expression: >
+        variables.podSpec.?os.?name.orValue('') == 'windows' ||
         variables.containers.all(container,
           has(container.securityContext) &&
           has(container.securityContext.allowPrivilegeEscalation) &&
