@@ -199,5 +199,29 @@
             "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].name=azure_batch_key",
             "spec.jobTemplate.spec.template.spec.initContainers.[0].env.[0].value=test-value"
         ]
+    },
+    {
+        "name": "ConfigMap with a private key as the value of a non-sensitive key name is denied",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "data.tls_pem=-----BEGIN RSA PRIVATE KEY-----"
+        ]
+    },
+    {
+        "name": "ConfigMap with a bearer token as the value of a non-sensitive key name is denied",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "data.auth_header=Bearer abc123"
+        ]
+    },
+    {
+        "name": "ConfigMap with a non-sensitive key name and a value matching no sensitiveValues entry is allowed",
+        "template": "configmap.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "data.log_level=debug"
+        ]
     }
 ]
