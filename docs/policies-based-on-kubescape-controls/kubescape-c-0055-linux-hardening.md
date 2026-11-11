@@ -19,7 +19,7 @@ In order to reduce the attack surface, it is recommend, when it is possible, to 
 * StatefulSet
 
 ## What does this policy do:
-This Policy checks if there is `AppArmor` or `Seccomp` or `SELinux` or `Capabilities` are defined in the `securityContext` of container and pod. If none of these fields are defined for both the container and pod in workload, the resource is denied from being deployed in the cluster.
+This Policy checks if there is `AppArmor` or `Seccomp` or `SELinux` or `Capabilities` are defined in the `securityContext` of the pod and of every container, init container, and ephemeral container (added with `kubectl debug`). If none of these fields are defined for the pod, and they are also missing for any of these containers, the resource is denied from being deployed in the cluster.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

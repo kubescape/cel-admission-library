@@ -104,5 +104,64 @@
         "expected": "pass",
         "field_change_list": [
         ]
+    },
+    {
+        "name": "Pod without pod-level hardening and initContainer without seccompProfile, seLinuxOptions or capabilities.drop is denied",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "Pod without pod-level hardening and initContainer having capabilities.drop is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.initContainers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "Deployment without pod-level hardening and initContainer without seccompProfile, seLinuxOptions or capabilities.drop is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine"
+        ]
+    },
+    {
+        "name": "Deployment without pod-level hardening and initContainer having capabilities.drop is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=alpine",
+            "spec.template.spec.initContainers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
+    },
+    {
+        "name": "CronJob without pod-level hardening and initContainer without seccompProfile, seLinuxOptions or capabilities.drop is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine"
+        ]
+    },
+    {
+        "name": "CronJob without pod-level hardening and initContainer having capabilities.drop is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=alpine",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].securityContext.capabilities.drop=[\"ALL\"]"
+        ]
     }
 ]
