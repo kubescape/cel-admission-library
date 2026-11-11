@@ -64,12 +64,14 @@ spec:
         )
       reason: Invalid
       messageExpression: 'object.kind + "/" + object.metadata.name + " has one or more containers with sensitive information in environment variables! (see more at https://kubescape.io/docs/controls/c-0012/)"'
+    # sensitiveKeyNames are matched against the key, sensitiveValues against the value,
+    # the same split as the environment variable check above and as the Rego rule.
     - expression: >
         variables.configMapData.all(key,
         (
           (
             !params.settings.sensitiveKeyNames.exists(sensitiveKey, key.lowerAscii().contains(sensitiveKey)) &&
-            !params.settings.sensitiveValues.exists(sensitiveVal, key.lowerAscii().matches(sensitiveVal))
+            !params.settings.sensitiveValues.exists(sensitiveVal, variables.configMapData[key].matches(sensitiveVal))
           ) ||
           variables.configMapData[key] == "" ||
           variables.configMapData[key] in params.settings.sensitiveValuesAllowed ||
