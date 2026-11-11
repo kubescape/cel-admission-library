@@ -29,7 +29,9 @@ Developers store secrets in the Kubernetes configuration files, such as environm
 * If configMap contains sensitive information.
 
 ## A note on `kubectl debug`:
-This policy checks every container in the Pod, not only the new debug container. `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers have sensitive environment variables, for example because the Pod was created before this policy was bound. `--custom` only makes the new debug container compliant. It does nothing for the Pod's existing containers.
+This policy checks every container in the Pod, not only the new debug container. By default, `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers have sensitive environment variables, for example because the Pod was created before this policy was bound. A `--custom` profile can add environment variables to the new debug container, so the request is also denied if the profile adds a sensitive one.
+
+`kubectl debug --copy-to` instead creates a new Pod that copies the original Pod's containers and, by default, its init containers. This policy checks that new Pod when it is created, so it is denied if any copied container has sensitive environment variables.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

@@ -38,7 +38,9 @@ This passes both this policy and C-0013. The same command without `--custom` is 
 
 `--custom` needs kubectl 1.31 or newer. kubectl 1.30 has the flag only when the environment variable `KUBECTL_DEBUG_CUSTOM_PROFILE=true` is set, for example `KUBECTL_DEBUG_CUSTOM_PROFILE=true kubectl debug ...`. kubectl 1.29 and older do not have `--custom`.
 
-This policy checks every container in the Pod, not only the new debug container. `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers do not comply, for example because the Pod was created before this policy was bound. `--custom` only makes the new debug container compliant. It does nothing for the Pod's existing containers.
+This policy checks every container in the Pod, not only the new debug container. By default, `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers do not comply, for example because the Pod was created before this policy was bound. `--custom` can make the new debug container compliant, but it does not change the Pod's existing containers.
+
+`kubectl debug --copy-to` instead creates a new Pod that copies the original Pod's containers and, by default, its init containers. This policy checks that new Pod when it is created, so it is denied if any copied container does not comply.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
