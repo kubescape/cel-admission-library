@@ -25,30 +25,23 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    # Ephemeral containers are not included: the API does not allow resources on them.
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
-        object.kind != 'Pod' || object.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
+        variables.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
         quantity(string(params.settings.cpuRequestMin)).compareTo(quantity(string(container.resources.requests.cpu))) != 1 &&
         quantity(string(params.settings.cpuRequestMax)).compareTo(quantity(string(container.resources.requests.cpu))) != -1) &&
         (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
         quantity(string(params.settings.cpuLimitMin)).compareTo(quantity(string(container.resources.limits.cpu))) != 1 &&
         quantity(string(params.settings.cpuLimitMax)).compareTo(quantity(string(container.resources.limits.cpu))) != -1))
-      message: "Pods contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"
-
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
-        quantity(string(params.settings.cpuRequestMin)).compareTo(quantity(string(container.resources.requests.cpu))) != 1 &&
-        quantity(string(params.settings.cpuRequestMax)).compareTo(quantity(string(container.resources.requests.cpu))) != -1) &&
-        (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
-        quantity(string(params.settings.cpuLimitMin)).compareTo(quantity(string(container.resources.limits.cpu))) != 1 &&
-        quantity(string(params.settings.cpuLimitMax)).compareTo(quantity(string(container.resources.limits.cpu))) != -1))
-      message: "Workloads contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"
-
-    - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container, (!(!(has(container.resources)) || !(has(container.resources.requests)) || !(has(container.resources.requests.cpu))) &&
-        quantity(string(params.settings.cpuRequestMin)).compareTo(quantity(string(container.resources.requests.cpu))) != 1 &&
-        quantity(string(params.settings.cpuRequestMax)).compareTo(quantity(string(container.resources.requests.cpu))) != -1) &&
-        (!(!(has(container.resources.limits)) || !(has(container.resources.limits.cpu))) &&
-        quantity(string(params.settings.cpuLimitMin)).compareTo(quantity(string(container.resources.limits.cpu))) != 1 &&
-        quantity(string(params.settings.cpuLimitMax)).compareTo(quantity(string(container.resources.limits.cpu))) != -1))
-      message: "CronJob contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"
+      messageExpression: 'object.kind + "/" + object.metadata.name + " contains container/s with cpu limit or request not set or they are not in the specified range! (see more at https://kubescape.io/docs/controls/c-0050/)"'
