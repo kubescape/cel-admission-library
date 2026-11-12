@@ -25,7 +25,9 @@ This Policy checks if the image used by any container, init container, or epheme
 denied from being deployed in the cluster.
 
 ## A note on `kubectl debug`:
-This policy checks every container in the Pod, not only the new debug container. `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers use a forbidden registry, for example because the Pod was created before this policy was bound. Choosing an allowed `--image`, or using `--custom`, only makes the new debug container compliant. It does nothing for the Pod's existing containers.
+This policy checks every container in the Pod, not only the new debug container. By default, `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers use a forbidden registry, for example because the Pod was created before this policy was bound. Whether the new debug container complies depends on the image you pass with `--image`. `--custom` cannot change the image, because kubectl rejects a custom profile that sets `image`.
+
+`kubectl debug --copy-to` instead creates a new Pod that copies the original Pod's containers and, by default, its init containers. This policy checks that new Pod when it is created, so it is denied if any copied container uses a forbidden registry.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

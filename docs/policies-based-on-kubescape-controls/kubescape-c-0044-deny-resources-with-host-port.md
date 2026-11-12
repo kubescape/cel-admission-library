@@ -21,7 +21,9 @@ Workloads (like pod, deployment, etc) that contain a container with hostport. Th
 ## What does this policy do:
 This Policy checks for every container and init container in the workload if `port.hostPort` is `not set or 0`. If `port.hostPort` is set to a non-zero value, the resource is denied from being deployed in the cluster.
 
-Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow ports on ephemeral containers and rejects them before this policy runs. This policy also does not match the `pods/ephemeralcontainers` subresource, so it does not evaluate `kubectl debug` requests at all, even when the Pod's existing containers use `hostPort`.
+Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow ports on ephemeral containers and rejects them before this policy runs. This policy also does not match the `pods/ephemeralcontainers` subresource, so it does not evaluate requests that add an ephemeral debug container to a Pod, even when the Pod's existing containers use `hostPort`.
+
+`kubectl debug --copy-to` and node debugging (`kubectl debug node/<node>`) work differently: they create a new Pod with a normal `pods` CREATE request, and this policy does evaluate that request. A `--copy-to` Pod keeps the original containers' ports, so copying a Pod that uses `hostPort` is denied.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
