@@ -121,5 +121,29 @@
             "metadata.namespace=test-namespace",
             "automountServiceAccountToken=false"
         ]
+    },
+    {
+        "name": "RoleBinding granting the default ServiceAccount through its User name is blocked",
+        "template": "role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:serviceaccount:test-namespace:default\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "ClusterRoleBinding granting the default ServiceAccount through its User name is blocked",
+        "template": "cluster-role-binding.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:serviceaccount:kube-system:default\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
+    },
+    {
+        "name": "RoleBinding granting a dedicated ServiceAccount through its User name is allowed",
+        "template": "role-binding.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "subjects=[{\"kind\": \"User\", \"name\": \"system:serviceaccount:test-namespace:my-app\", \"apiGroup\": \"rbac.authorization.k8s.io\"}]"
+        ]
     }
 ]

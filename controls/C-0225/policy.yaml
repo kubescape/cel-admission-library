@@ -54,7 +54,8 @@ spec:
           object.metadata.labels['kubernetes.io/bootstrapping'] == 'rbac-defaults'
         ) ||
         object.subjects.all(subject,
-          subject.kind != 'ServiceAccount' || subject.name != 'default'
+          (subject.kind != 'ServiceAccount' || subject.name != 'default') &&
+          (subject.kind != 'User' || !subject.name.matches('^system:serviceaccount:[^:]+:default$'))
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' grants permissions to the default ServiceAccount, which every pod in the namespace gets by default. Bind a dedicated ServiceAccount instead. (see more at https://kubescape.io/docs/controls/c-0225/)'
