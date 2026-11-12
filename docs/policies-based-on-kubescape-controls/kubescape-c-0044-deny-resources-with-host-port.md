@@ -23,7 +23,7 @@ This Policy checks for every container and init container in the workload if `po
 
 Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow ports on ephemeral containers and rejects them before this policy runs. This policy also does not match the `pods/ephemeralcontainers` subresource, so it does not evaluate requests that add an ephemeral debug container to a Pod, even when the Pod's existing containers use `hostPort`.
 
-`kubectl debug --copy-to` and node debugging (`kubectl debug node/<node>`) work differently: they create a new Pod with a normal `pods` CREATE request, and this policy does evaluate that request. A `--copy-to` Pod keeps the original containers' ports, so copying a Pod that uses `hostPort` is denied.
+`kubectl debug --copy-to` and node debugging (`kubectl debug node/<node>`) work differently: they create a new Pod with a normal `pods` CREATE request, and this policy does evaluate that request. A `--copy-to` Pod includes the ports of the containers and init containers it copies, so it is denied if a copied container or init container still has a nonzero `hostPort`. With `--keep-init-containers=false`, kubectl leaves the init containers out of the copy (except with the deprecated `legacy` profile), so a nonzero `hostPort` that only an init container has is not copied and does not cause a denial.
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
