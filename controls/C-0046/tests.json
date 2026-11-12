@@ -72,5 +72,29 @@
         "field_change_list": [
             "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=NET_RAW"
         ]
+    },
+    {
+        "name": "Pod having container with \"CAP_NET_RAW\" capability is blocked",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_NET_RAW"
+        ]
+    },
+    {
+        "name": "CronJob having container with lowercase \"cap_sys_admin\" capability is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=cap_sys_admin"
+        ]
+    },
+    {
+        "name": "Pod having container with \"CAP_CHOWN\" capability is allowed, it is not in the insecure list",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_CHOWN"
+        ]
     }
 ]
