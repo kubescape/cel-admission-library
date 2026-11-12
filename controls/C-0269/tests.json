@@ -70,6 +70,18 @@
         ]
     },
     {
+        "name": "Deployment with container and init container having memory request set and value in the limit is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.initContainers.[0].resources.requests.memory=256Mi"
+        ]
+    },
+    {
         "name": "CronJob with container having memory request set and init container having memory request not set is blocked",
         "template": "cronjob.yaml",
         "expected": "fail",
@@ -84,6 +96,21 @@
         ]
     },
     {
+        "name": "CronJob with container and init container having memory request set and value in the limit is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.cpu=250m",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.cpu=2",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.memory=512Mi",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].resources.requests.memory=256Mi"
+        ]
+    },
+    {
         "name": "Pod with container having memory request set and native sidecar init container (restartPolicy Always) having memory request not set is blocked",
         "template": "pod-with-init-container.yaml",
         "expected": "fail",
@@ -92,6 +119,18 @@
             "spec.containers.[0].resources.requests.memory=256Mi",
             "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
             "spec.initContainers.[0].restartPolicy=Always"
+        ]
+    },
+    {
+        "name": "Pod with container and native sidecar init container (restartPolicy Always) having memory request set and value in the limit is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.initContainers.[0].restartPolicy=Always",
+            "spec.initContainers.[0].resources.requests.memory=256Mi"
         ]
     },
     {
