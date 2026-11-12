@@ -226,5 +226,54 @@
         "field_change_list": [
             "spec.jobTemplate.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/test-container\": \"runtime/default\"}"
         ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext appArmorProfile Unconfined is denied, AppArmor is off",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.securityContext.appArmorProfile.type=Unconfined"
+        ]
+    },
+    {
+        "name": "Deployment with container appArmorProfile Unconfined is denied, AppArmor is off",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.appArmorProfile.type=Unconfined"
+        ]
+    },
+    {
+        "name": "Deployment with the apparmor annotation set to unconfined on its pod template is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/sleep\": \"unconfined\"}"
+        ]
+    },
+    {
+        "name": "CronJob with PodSecurityContext appArmorProfile Unconfined is denied, AppArmor is off",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile.type=Unconfined"
+        ]
+    },
+    {
+        "name": "CronJob with the apparmor annotation set to unconfined on its pod template is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/test-container\": \"unconfined\"}"
+        ]
+    },
+    {
+        "name": "Deployment with PodSecurityContext appArmorProfile Localhost is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.securityContext.appArmorProfile.type=Localhost",
+            "spec.template.spec.securityContext.appArmorProfile.localhostProfile=k8s-apparmor-example"
+        ]
     }
 ]

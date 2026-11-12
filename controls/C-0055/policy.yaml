@@ -32,31 +32,34 @@ spec:
               ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
               : []
       name: containers
+  # AppArmor counts only when it enforces a profile: the appArmorProfile field with a type other
+  # than Unconfined (RuntimeDefault or Localhost), or the legacy annotation with a value other
+  # than unconfined (runtime/default or localhost/<profile>). Unconfined disables AppArmor.
   validations:
     - expression: >
         object.kind != 'Pod' ||
-        (has(object.metadata.annotations) && object.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.securityContext) && (has(object.spec.securityContext.seccompProfile) || has(object.spec.securityContext.seLinuxOptions) || has(object.spec.securityContext.appArmorProfile))) ||
+        (has(object.metadata.annotations) && object.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io") && object.metadata.annotations[annotation] != "unconfined")) ||
+        (has(object.spec.securityContext) && (has(object.spec.securityContext.seccompProfile) || has(object.spec.securityContext.seLinuxOptions) || (has(object.spec.securityContext.appArmorProfile) && object.spec.securityContext.appArmorProfile.type != 'Unconfined'))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
-        has(container.securityContext.appArmorProfile) ||
+        (has(container.securityContext.appArmorProfile) && container.securityContext.appArmorProfile.type != 'Unconfined') ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Pods could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) ||
-        (has(object.spec.template.metadata) && has(object.spec.template.metadata.annotations) && object.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.template.spec.securityContext) && (has(object.spec.template.spec.securityContext.seccompProfile) || has(object.spec.template.spec.securityContext.seLinuxOptions) || has(object.spec.template.spec.securityContext.appArmorProfile))) ||
+        (has(object.spec.template.metadata) && has(object.spec.template.metadata.annotations) && object.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io") && object.spec.template.metadata.annotations[annotation] != "unconfined")) ||
+        (has(object.spec.template.spec.securityContext) && (has(object.spec.template.spec.securityContext.seccompProfile) || has(object.spec.template.spec.securityContext.seLinuxOptions) || (has(object.spec.template.spec.securityContext.appArmorProfile) && object.spec.template.spec.securityContext.appArmorProfile.type != 'Unconfined'))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
-        has(container.securityContext.appArmorProfile) ||
+        (has(container.securityContext.appArmorProfile) && container.securityContext.appArmorProfile.type != 'Unconfined') ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "Workloads could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
     - expression: >
         object.kind != 'CronJob' ||
-        (has(object.spec.jobTemplate.spec.template.metadata) && has(object.spec.jobTemplate.spec.template.metadata.annotations) && object.spec.jobTemplate.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io"))) ||
-        (has(object.spec.jobTemplate.spec.template.spec.securityContext) && (has(object.spec.jobTemplate.spec.template.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.template.spec.securityContext.seLinuxOptions) || has(object.spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile))) ||
+        (has(object.spec.jobTemplate.spec.template.metadata) && has(object.spec.jobTemplate.spec.template.metadata.annotations) && object.spec.jobTemplate.spec.template.metadata.annotations.exists(annotation, annotation.startsWith("container.apparmor.security.beta.kubernetes.io") && object.spec.jobTemplate.spec.template.metadata.annotations[annotation] != "unconfined")) ||
+        (has(object.spec.jobTemplate.spec.template.spec.securityContext) && (has(object.spec.jobTemplate.spec.template.spec.securityContext.seccompProfile) || has(object.spec.jobTemplate.spec.template.spec.securityContext.seLinuxOptions) || (has(object.spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile) && object.spec.jobTemplate.spec.template.spec.securityContext.appArmorProfile.type != 'Unconfined'))) ||
         variables.containers.all(container, has(container.securityContext) && (has(container.securityContext.seccompProfile) ||
         has(container.securityContext.seLinuxOptions) ||
-        has(container.securityContext.appArmorProfile) ||
+        (has(container.securityContext.appArmorProfile) && container.securityContext.appArmorProfile.type != 'Unconfined') ||
         (has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))))
       message: "CronJob could have more security hardening! (see more at https://kubescape.io/docs/controls/c-0055/)"
