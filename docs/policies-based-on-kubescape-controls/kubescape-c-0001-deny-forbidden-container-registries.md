@@ -23,6 +23,7 @@ images can also lead to similar results.
 ## What does this policy do:
 This Policy checks if the image used by any container, init container, or ephemeral container (added with `kubectl debug`) is from the configured [untrustedRegistries](https://kubescape.io/docs/frameworks-and-controls/configuring-controls/#untrustedregistries). If it finds any such instance, the resource is
 denied from being deployed in the cluster.
+Registry names are compared case-insensitively, so `QUAY.IO/...` matches `quay.io`.
 
 ## A note on `kubectl debug`:
 This policy checks every container in the Pod, not only the new debug container. By default, `kubectl debug` adds the debug container by updating the existing Pod, so the request is denied if any of the Pod's existing containers use a forbidden registry, for example because the Pod was created before this policy was bound. Whether the new debug container complies depends on the image you pass with `--image`. `--custom` cannot change the image, because kubectl rejects a custom profile that sets `image`.

@@ -152,5 +152,31 @@
             "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
             "spec.jobTemplate.spec.template.spec.initContainers.[0].image=ghcr.io/example/init:1"
         ]
+    },
+    {
+        "name": "Pod with an uppercase Docker Hub host is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=DOCKER.IO/library/nginx:latest"
+        ]
+    },
+    {
+        "name": "Pod with an uppercase quay.io host is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=QUAY.IO/openshift/origin-cli:latest"
+        ]
+    },
+    {
+        "name": "Pod having initContainer with a mixed-case quay.io host is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=ghcr.io/example/app:1",
+            "spec.initContainers.[0].name=init",
+            "spec.initContainers.[0].image=Quay.IO/x/y:1"
+        ]
     }
 ]

@@ -39,12 +39,12 @@ spec:
     - expression: >
         variables.containers.all(container, params.settings.untrustedRegistries.all(registry,
         !(
-          ((registry in ['docker.io', 'docker.io/', 'index.docker.io', 'index.docker.io/', 'registry-1.docker.io', 'registry-1.docker.io/']) &&
+          ((registry.lowerAscii() in ['docker.io', 'docker.io/', 'index.docker.io', 'index.docker.io/', 'registry-1.docker.io', 'registry-1.docker.io/']) &&
             (!container.image.contains('/') ||
               (!container.image.split('/')[0].contains('.') &&
                !container.image.split('/')[0].contains(':') &&
-               container.image.split('/')[0] != 'localhost') ||
-              container.image.split('/')[0] in ['docker.io', 'index.docker.io', 'registry-1.docker.io'])) ||
-          container.image.startsWith(registry.endsWith('/') ? registry : registry + '/')
+               container.image.split('/')[0].lowerAscii() != 'localhost') ||
+              container.image.split('/')[0].lowerAscii() in ['docker.io', 'index.docker.io', 'registry-1.docker.io'])) ||
+          container.image.lowerAscii().startsWith(registry.lowerAscii().endsWith('/') ? registry.lowerAscii() : registry.lowerAscii() + '/')
         )))
       messageExpression: 'object.kind + "/" + object.metadata.name + " uses an image from a forbidden registry! (see more at https://kubescape.io/docs/controls/c-0001/)"'
