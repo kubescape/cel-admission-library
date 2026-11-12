@@ -25,27 +25,22 @@ spec:
       apiVersions: ["v1"]
       operations:  ["CREATE", "UPDATE"]
       resources:   ["jobs","cronjobs"]
+  variables:
+    # Ephemeral containers are not included: the API does not allow resources on them.
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec.containers + (has(object.spec.initContainers) ? object.spec.initContainers : [])
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec.containers + (has(object.spec.template.spec.initContainers) ? object.spec.template.spec.initContainers : [])
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : [])
+              : []
+      name: containers
   validations:
     - expression: >
-        object.kind != 'Pod' || object.spec.containers.all(container,
+        variables.containers.all(container,
         has(container.resources) &&
         has(container.resources.limits) &&
         has(container.resources.limits.memory) &&
         has(container.resources.limits.cpu))
-      message: "Pods contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"
-
-    - expression: >
-        ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'].all(kind, object.kind != kind) || object.spec.template.spec.containers.all(container,
-        has(container.resources) &&
-        has(container.resources.limits) &&
-        has(container.resources.limits.memory) &&
-        has(container.resources.limits.cpu))
-      message: "Workloads contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"
-
-    - expression: >
-        object.kind != 'CronJob' || object.spec.jobTemplate.spec.template.spec.containers.all(container,
-        has(container.resources) &&
-        has(container.resources.limits) &&
-        has(container.resources.limits.memory) &&
-        has(container.resources.limits.cpu))
-      message: "CronJob contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"
+      messageExpression: 'object.kind + "/" + object.metadata.name + " contains container/s with memory limit and/or cpu limit not set! (see more at https://kubescape.io/docs/controls/c-0009/)"'

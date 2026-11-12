@@ -18,12 +18,14 @@ CPU and memory resources should have a limit set for every container or a namesp
 * StatefulSet
 
 ## What does this policy do:
-### This Policy checks for every container in the resource:
+### This Policy checks for every container and init container in the resource, including native sidecars (init containers with `restartPolicy: Always`):
 * If `resources.limits.memory` is set.
 * If `resources.limits.cpu` is set.
 
 
 If any of the above two checks fail, the resource is denied from being deployed in the cluster.
+
+Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow `resources` on ephemeral containers.
 
 
 ## Implementing this policy in the Cluster:
