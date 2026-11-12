@@ -39,7 +39,7 @@ spec:
         (
           (!(has(container.securityContext.privileged)) || container.securityContext.privileged != true) &&
           (!(has(container.securityContext.capabilities)) || !(has(container.securityContext.capabilities.add)) ||
-          container.securityContext.capabilities.add.all(cap, cap.upperAscii() != 'SYS_ADMIN' && cap.upperAscii() != 'ALL')))
+          container.securityContext.capabilities.add.all(cap, cap.upperAscii() != 'SYS_ADMIN' && cap.upperAscii() != 'CAP_SYS_ADMIN' && cap.upperAscii() != 'ALL')))
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' has one or more privileged container.(see more at https://kubescape.io/docs/controls/c-0057/)'

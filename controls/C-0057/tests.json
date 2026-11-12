@@ -108,5 +108,29 @@
         "expected": "pass",
         "field_change_list": [
         ]
+    },
+    {
+        "name": "Pod having container with \"CAP_SYS_ADMIN\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Deployment having container with lowercase \"cap_sys_admin\" capability is denied",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=cap_sys_admin"
+        ]
+    },
+    {
+        "name": "Pod having container with \"CAP_NET_ADMIN\" capability is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_NET_ADMIN"
+        ]
     }
 ]

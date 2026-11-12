@@ -41,7 +41,7 @@ spec:
         !has(container.securityContext) || !has(container.securityContext.capabilities) || !has(container.securityContext.capabilities.add) ||
         (container.securityContext.capabilities.add.all(capability, capability.upperAscii() != 'ALL') &&
         params.settings.insecureCapabilities.all(insecureCapability,
-        container.securityContext.capabilities.add.all(capability, capability.upperAscii() != insecureCapability.upperAscii())))
+        container.securityContext.capabilities.add.all(capability, capability.upperAscii() != insecureCapability.upperAscii() && capability.upperAscii() != 'CAP_' + insecureCapability.upperAscii())))
         )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' has a container with an insecure capability. (see more at https://kubescape.io/docs/controls/c-0046/)'

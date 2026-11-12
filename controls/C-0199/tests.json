@@ -63,5 +63,71 @@
         "field_change_list": [
             "spec.containers.[0].securityContext.capabilities.add=[\"ALL\"]"
         ]
+    },
+    {
+        "name": "Pod with drop ALL and add lowercase net_raw is denied",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"net_raw\"]"
+        ]
+    },
+    {
+        "name": "Pod with drop ALL and add CAP_NET_RAW is denied",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"CAP_NET_RAW\"]"
+        ]
+    },
+    {
+        "name": "Deployment with drop ALL and add lowercase cap_net_raw is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.template.spec.containers.[0].securityContext.capabilities.add=[\"cap_net_raw\"]"
+        ]
+    },
+    {
+        "name": "CronJob with drop ALL and add lowercase all is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"ALL\"]",
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add=[\"all\"]"
+        ]
+    },
+    {
+        "name": "Pod with drop ALL and add CAP_NET_BIND_SERVICE is allowed",
+        "template": "pod-drop-all.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add=[\"CAP_NET_BIND_SERVICE\"]"
+        ]
+    },
+    {
+        "name": "Pod with lowercase drop all is allowed",
+        "template": "pod-drop-all.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.drop=[\"all\"]"
+        ]
+    },
+    {
+        "name": "Deployment with lowercase drop net_raw is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.drop=[\"net_raw\"]"
+        ]
+    },
+    {
+        "name": "Pod with drop CAP_NET_RAW is denied, containerd does not drop that spelling",
+        "template": "pod-drop-all.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.drop=[\"CAP_NET_RAW\"]"
+        ]
     }
 ]
