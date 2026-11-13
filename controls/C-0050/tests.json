@@ -83,5 +83,122 @@
             "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.cpu=250m",
             "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.cpu=1000m"
         ]
+    },
+    {
+        "name": "Pod with container having cpu request and limits set and init container having cpu request and limits not set is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1"
+        ]
+    },
+    {
+        "name": "Pod with container and init container having cpu request and limits set and both values in the limit is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.initContainers.[0].resources.limits.cpu=1"
+        ]
+    },
+    {
+        "name": "Deployment with container having cpu request and limits set and init container having cpu limits set and request not set is blocked",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.containers.[0].resources.requests.cpu=250m",
+            "spec.template.spec.containers.[0].resources.limits.cpu=1",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.initContainers.[0].resources.limits.cpu=1"
+        ]
+    },
+    {
+        "name": "Deployment with container and init container having cpu request and limits set and both values in the limit is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.containers.[0].resources.requests.cpu=250m",
+            "spec.template.spec.containers.[0].resources.limits.cpu=1",
+            "spec.template.spec.initContainers.[0].name=init",
+            "spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.template.spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.template.spec.initContainers.[0].resources.limits.cpu=1"
+        ]
+    },
+    {
+        "name": "CronJob with container having cpu request and limits set and init container having cpu request set and limits not set is blocked",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.cpu=250m",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.cpu=1000m",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].resources.requests.cpu=250m"
+        ]
+    },
+    {
+        "name": "CronJob with container and init container having cpu request and limits set and both values in the limit is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.requests.cpu=250m",
+            "spec.jobTemplate.spec.template.spec.containers.[0].resources.limits.cpu=1000m",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].name=init",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.jobTemplate.spec.template.spec.initContainers.[0].resources.limits.cpu=1"
+        ]
+    },
+    {
+        "name": "Pod with container having cpu request and limits set and native sidecar init container (restartPolicy Always) having cpu request and limits not set is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.initContainers.[0].restartPolicy=Always"
+        ]
+    },
+    {
+        "name": "Pod with container and native sidecar init container (restartPolicy Always) having cpu request and limits set and both values in the limit is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.initContainers.[0].restartPolicy=Always",
+            "spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.initContainers.[0].resources.limits.cpu=1"
+        ]
+    },
+    {
+        "name": "Pod with container having cpu request and limits set and init container having cpu limit below the minimum is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
+            "spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.initContainers.[0].resources.limits.cpu=500m"
+        ]
     }
 ]
