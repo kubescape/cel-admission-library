@@ -1,4 +1,4 @@
-# Kubescape C-0004: Deny Resources with cpu limit or request not set
+# Kubescape C-0050: Deny Resources with cpu limit or request not set
 
 ## Severity Level: High
 
