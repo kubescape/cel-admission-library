@@ -268,6 +268,22 @@
         ]
     },
     {
+        "name": "Pod with an empty apparmor annotation and no other hardening is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/sleep\": \"\"}"
+        ]
+    },
+    {
+        "name": "Deployment with an empty apparmor annotation on its pod template and no other hardening is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.metadata.annotations={\"container.apparmor.security.beta.kubernetes.io/sleep\": \"\"}"
+        ]
+    },
+    {
         "name": "Deployment with PodSecurityContext appArmorProfile Localhost is allowed",
         "template": "deployment.yaml",
         "expected": "pass",

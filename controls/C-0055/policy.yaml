@@ -56,7 +56,8 @@ spec:
     # appArmorProfile field, the legacy container.apparmor.security.beta.kubernetes.io/<container name>
     # annotation on the pod (for a workload, on its pod template), then the pod's appArmorProfile field,
     # the same order the kubelet uses. A seccomp or AppArmor profile counts only when it enforces
-    # something: Unconfined (annotation value unconfined) turns it off. seLinuxOptions counts at either
+    # something: Unconfined (annotation value unconfined) turns it off, and an empty annotation names no
+    # profile, so it counts as absent (the kubelet ignores it too). seLinuxOptions counts at either
     # level, and capabilities.drop only at the container level.
     - expression: |
         variables.containers.all(container,
@@ -67,7 +68,7 @@ spec:
           has(variables.podSecurityContext.seLinuxOptions) ||
           (has(container.securityContext) && has(container.securityContext.appArmorProfile)
             ? container.securityContext.appArmorProfile.type != 'Unconfined'
-            : ('container.apparmor.security.beta.kubernetes.io/' + container.name) in variables.podAnnotations
+            : variables.podAnnotations[?('container.apparmor.security.beta.kubernetes.io/' + container.name)].orValue('') != ''
               ? variables.podAnnotations['container.apparmor.security.beta.kubernetes.io/' + container.name] != 'unconfined'
               : has(variables.podSecurityContext.appArmorProfile) && variables.podSecurityContext.appArmorProfile.type != 'Unconfined') ||
           (has(container.securityContext) && has(container.securityContext.capabilities) && has(container.securityContext.capabilities.drop))

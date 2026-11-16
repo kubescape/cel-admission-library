@@ -23,7 +23,7 @@ This Policy checks that every container, init container, and ephemeral container
 
 A setting in the pod's `securityContext` counts only for the containers that don't override it, the same way Kubernetes applies it:
 * Seccomp: the container's `seccompProfile` if it sets one, otherwise the pod's.
-* AppArmor: the container's `appArmorProfile` field, otherwise the older `container.apparmor.security.beta.kubernetes.io/<container name>` annotation on the pod (for a workload, on its pod template), otherwise the pod's `appArmorProfile` field. The annotation only covers the container it names.
+* AppArmor: the container's `appArmorProfile` field, otherwise the older `container.apparmor.security.beta.kubernetes.io/<container name>` annotation on the pod (for a workload, on its pod template), otherwise the pod's `appArmorProfile` field. The annotation only covers the container it names, and an empty annotation value names no profile, so it is skipped.
 * SELinux: `seLinuxOptions` on the container or on the pod.
 * Capabilities: `capabilities.drop` on the container itself.
 
