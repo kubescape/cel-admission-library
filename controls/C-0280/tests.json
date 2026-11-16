@@ -130,5 +130,29 @@
             "rules.[0].apiGroups=[\"example.com\"]",
             "rules.[0].verbs=[\"update\"]"
         ]
+    },
+    {
+        "name": "ClusterRole with CSR approval and the * verb is blocked",
+        "template": "cluster-role-csr-approval.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "rules.[0].verbs=[\"*\"]"
+        ]
+    },
+    {
+        "name": "Role with CSR approval and the * verb is blocked",
+        "template": "role-csr-approval.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "rules.[0].verbs=[\"*\"]"
+        ]
+    },
+    {
+        "name": "Role with CSR approval but read-only verbs is allowed",
+        "template": "role-csr-approval.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "rules.[0].verbs=[\"get\", \"list\", \"watch\"]"
+        ]
     }
 ]
