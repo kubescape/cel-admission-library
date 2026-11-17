@@ -11,6 +11,14 @@ SCRIPTS_DIR = os.path.join('..', '..', 'scripts')
 TEST_RESOURCES_DIR = os.path.join('..', '..', 'test-resources')
 CONFIGURATION_DIR = os.path.join('..', '..', 'configuration')
 
+# Query parameters for tests that send a CONNECT request to a Pod subresource
+# ("connect": "exec" in tests.json) instead of applying the test object.
+CONNECT_QUERIES = {
+    'attach': 'stdout=true',
+    'exec': 'command=true&stdout=true',
+    'portforward': 'ports=8086',
+}
+
 DONT_CLEANUP = False
 if len(sys.argv) > 1:
     if '--dont-cleanup' in sys.argv or '-d' in sys.argv:
@@ -57,6 +65,8 @@ try:
         expected = test['expected']
         binding_template = test['binding_template'] if 'binding_template' in test else 'policy-binding.yaml'
         param_template = test['param_template'] if 'param_template' in test else 'default-control-configuration.yaml'
+        connect = test.get('connect')
+        namespace_args = ['-n', 'test-namespace'] if connect else []
 
         print('-'*120)
         print('Running test: ' + name)
@@ -99,12 +109,37 @@ try:
 
         time.sleep(1)
 
-        # Run kubectl apply on the test object and capture output
-        proc = subprocess.run(
-            ['kubectl', '--dry-run=server', 'apply', '-f', test_object_yaml],
-            capture_output=True, text=True
-        )
-        result = proc.returncode
+        if connect:
+            # CONNECT requests (pods/exec, pods/attach, pods/portforward) can't
+            # be dry-run: create the Pod in the test namespace and send the
+            # request to its subresource. Without a running container the
+            # request still fails after admission, so only the policy decision
+            # counts: the request is denied when the error names the policy.
+            if connect not in CONNECT_QUERIES:
+                raise Exception('unsupported connect subresource "' + str(connect) + '"')
+            with open(test_object_yaml, 'r') as f:
+                pod_name = yaml.load(f, Loader=yaml.FullLoader)['metadata']['name']
+            # A new namespace gets its default ServiceAccount a moment after
+            # creation, and Pod admission rejects the Pod until it exists.
+            for attempt in range(30):
+                if subprocess.call(['kubectl', 'apply'] + namespace_args + ['-f', test_object_yaml]) == 0:
+                    break
+                time.sleep(1)
+            else:
+                raise Exception('could not create ' + pod_name + ' in test-namespace')
+            path = '/api/v1/namespaces/test-namespace/pods/' + pod_name + '/' + connect + '?' + CONNECT_QUERIES[connect]
+            proc = subprocess.run(
+                ['kubectl', 'create', '--raw', path, '-f', os.devnull, '--request-timeout=30s'],
+                capture_output=True, text=True
+            )
+            result = 1 if policy_name in proc.stderr else 0
+        else:
+            # Run kubectl apply on the test object and capture output
+            proc = subprocess.run(
+                ['kubectl', '--dry-run=server', 'apply', '-f', test_object_yaml],
+                capture_output=True, text=True
+            )
+            result = proc.returncode
 
         test_passed = False
         valid_expected = {'pass', 'fail', 'warn'}
@@ -133,7 +168,7 @@ try:
         try:
             subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            subprocess.check_call(['kubectl', 'delete', '-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            subprocess.check_call(['kubectl', 'delete'] + namespace_args + ['-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.check_call(['kubectl', 'delete', '-f', param_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except:
             pass

@@ -1,0 +1,13 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: placeholder
+spec:
+  policyName: placeholder
+  validationActions: [Deny]
+  # CONNECT requests carry no object labels, so an objectSelector never
+  # matches them. Scope the binding to the test namespace instead.
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: test-namespace

@@ -108,6 +108,7 @@ A test case in `tests.json` has five fields:
 - `field_change_list` (optional) patches fields on that input before the harness applies it. The index syntax is `.[0]`, as in `spec.template.spec.containers.[0].securityContext.capabilities.drop=["ALL"]`.
 - `expected` is one of `pass`, `fail`, `warn`. `pass` means the apply succeeds with no policy match. `fail` means the apply is denied by this policy. `warn` means the apply succeeds and this policy emits a Kubernetes warning to the client.
 - `binding_template` (optional, default `policy-binding.yaml`) picks which binding the harness applies the policy under. Use `policy-binding-warn.yaml` for audit-style controls and let `expected` be `warn`.
+- `connect` (optional, one of `exec`, `attach`, `portforward`) tests a policy on a Pod `CONNECT` subresource. These requests can't be dry-run, so the harness creates the Pod from `template` in `test-namespace` and sends the request to that subresource. The request usually fails anyway (the Pod has no running container), so `fail` means the error names this policy and `pass` means it doesn't. Use it with `"binding_template": "policy-binding-connect.yaml"` and `"omit_param_ref": true`: `CONNECT` requests have no object labels, so that binding matches on the test namespace instead of an `objectSelector`. See `runtime-policies/exec/tests.json`.
 
 Run the harness for a single control against any VAP-capable cluster (Kubernetes 1.30 or later) with:
 

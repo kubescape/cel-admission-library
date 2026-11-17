@@ -1,0 +1,105 @@
+[
+    {
+        "name": "Pod with no hostPath Volumes allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "Pod with hostPath volume is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "Deployment with no hostPath Volumes allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "Deployment with hostPath volume is denied",
+        "template": "deployment.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "DaemonSet with no hostPath Volumes allowed",
+        "template": "daemonset.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "DaemonSet with hostPath volume is denied",
+        "template": "daemonset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].name=host",
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "StatefulSet with no hostPath Volumes allowed",
+        "template": "statefulset.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "StatefulSet with hostPath volume is denied",
+        "template": "statefulset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].name=host",
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "ReplicaSet with no hostPath Volumes allowed",
+        "template": "replicaset.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "ReplicaSet with hostPath volume is denied",
+        "template": "replicaset.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].name=host",
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "Job with no hostPath Volumes allowed",
+        "template": "job.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "Job with hostPath volume is denied",
+        "template": "job.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.volumes.[0].name=host",
+            "spec.template.spec.volumes.[0].hostPath.path=/var"
+        ]
+    },
+    {
+        "name": "CronJob with no hostPath Volumes allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": []
+    },
+    {
+        "name": "CronJob with hostPath volume is denied",
+        "template": "cronjob.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.volumes.[1].name=host",
+            "spec.jobTemplate.spec.template.spec.volumes.[1].hostPath.path=/var"
+        ]
+    }
+]

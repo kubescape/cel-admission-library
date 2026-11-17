@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Exec into a Pod is denied",
+        "template": "pod-no-volume.yaml",
+        "expected": "fail",
+        "connect": "exec",
+        "binding_template": "policy-binding-connect.yaml",
+        "omit_param_ref": true,
+        "field_change_list": []
+    },
+    {
+        "name": "Attach to a Pod is not denied by the exec policy",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass",
+        "connect": "attach",
+        "binding_template": "policy-binding-connect.yaml",
+        "omit_param_ref": true,
+        "field_change_list": []
+    },
+    {
+        "name": "Port-forward to a Pod is not denied by the exec policy",
+        "template": "pod-no-volume.yaml",
+        "expected": "pass",
+        "connect": "portforward",
+        "binding_template": "policy-binding-connect.yaml",
+        "omit_param_ref": true,
+        "field_change_list": []
+    }
+]
