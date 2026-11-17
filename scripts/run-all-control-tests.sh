@@ -32,13 +32,13 @@ result=0
 source "$(dirname "${BASH_SOURCE[0]}")/agent-test-crds.sh"
 setup_agent_test_crds test-resources/agent-sandbox-test-crds.yaml || exit 1
 
-# Run all control tests
-for control in $(ls controls); do
-    if [[ -d controls/$control ]]; then
+# Run all control and runtime policy tests
+for control in controls/* runtime-policies/*; do
+    if [[ -f $control/tests.json ]]; then
         echo "=================================================="
         echo "Running test $control"
         echo "--------------------------------------------------"
-        pushd controls/$control
+        pushd $control
         $PYTHON_EXECUTABLE ../../scripts/run-control-tests.py
         TEST_RESULT=$?
         # Check if test failed

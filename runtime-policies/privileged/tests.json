@@ -1,0 +1,136 @@
+[
+    {
+        "name": "Pod having container having securityContext.privileged set to true is denied",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod having container with \"SYS_ADMIN\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Pod having container having securityContext.privileged set to true and with \"SYS_ADMIN\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.privileged=true",
+            "spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Pod having container not having securityContext.privileged set to true and without \"SYS_ADMIN\" capability is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Deployment having container having securityContext.privileged set to true and with \"SYS_ADMIN\" capability is denied",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.privileged=true",
+            "spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Deployment having container not having securityContext.privileged set to true and without \"SYS_ADMIN\" capability is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having container with a non-SYS_ADMIN capability is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=NET_ADMIN"
+        ]
+    },
+    {
+        "name": "Pod having container with lowercase \"sys_admin\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=sys_admin"
+        ]
+    },
+    {
+        "name": "Pod having container with \"ALL\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=ALL"
+        ]
+    },
+    {
+        "name": "CronJob having container having securityContext.privileged set to true is denied",
+        "template": "cronjob-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "CronJob having container with \"SYS_ADMIN\" capability is denied",
+        "template": "cronjob-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "CronJob having container not having securityContext.privileged set to true and without \"SYS_ADMIN\" capability is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having initContainer with securityContext.privileged set to true is denied",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.initContainers.[0].securityContext.privileged=true"
+        ]
+    },
+    {
+        "name": "Pod having initContainer without securityContext.privileged set to true is allowed",
+        "template": "pod-with-init-container.yaml",
+        "expected": "pass",
+        "field_change_list": [
+        ]
+    },
+    {
+        "name": "Pod having container with \"CAP_SYS_ADMIN\" capability is denied",
+        "template": "pod-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_SYS_ADMIN"
+        ]
+    },
+    {
+        "name": "Deployment having container with lowercase \"cap_sys_admin\" capability is denied",
+        "template": "deployment-for-list-items.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.template.spec.containers.[0].securityContext.capabilities.add.[0]=cap_sys_admin"
+        ]
+    },
+    {
+        "name": "Pod having container with \"CAP_NET_ADMIN\" capability is allowed",
+        "template": "pod-for-list-items.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].securityContext.capabilities.add.[0]=CAP_NET_ADMIN"
+        ]
+    }
+]
