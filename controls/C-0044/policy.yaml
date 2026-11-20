@@ -33,6 +33,18 @@ spec:
               : []
       name: containers
   validations:
-    - expression: "!variables.containers.exists(container, has(container.ports) && container.ports.exists(port, has(port.hostPort) && port.hostPort != 0))"
+    - expression: >
+        !variables.containers.exists(container,
+          has(container.ports) &&
+          container.ports.exists(port,
+            (has(port.hostPort) && port.hostPort != 0) ||
+            (object.kind == 'Pod' &&
+             has(object.spec.hostNetwork) &&
+             object.spec.hostNetwork == true &&
+             has(port.containerPort) &&
+             port.containerPort != 0 &&
+             (!has(port.hostPort) || port.hostPort == 0))
+          )
+        )
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' has one or more containers with a host port! (see more at https://kubescape.io/docs/controls/c-0044/)'
