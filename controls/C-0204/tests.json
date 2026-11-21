@@ -91,5 +91,65 @@
         "field_change_list": [
             "spec.jobTemplate.spec.template.spec.containers.[0].ports.[0].hostPort=8080"
         ]
+    },
+    {
+        "name": "Pod with hostNetwork and a container port but no hostPort is blocked, the apiserver defaults hostPort to the container port",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork and an explicit hostPort of 0 is blocked, zero is defaulted to the container port",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostNetwork=true",
+            "spec.containers.[0].ports.[0].hostPort=0"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork and no ports is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostNetwork=true",
+            "spec.containers.[0].ports=[]"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork false and a container port is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.hostNetwork=false"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork and an initContainer port but no hostPort is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostNetwork=true",
+            "spec.initContainers.[0].ports.[0].containerPort=8080"
+        ]
+    },
+    {
+        "name": "Deployment with hostNetwork and a container port but no hostPort is allowed, a pod template is not defaulted",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.hostNetwork=true"
+        ]
+    },
+    {
+        "name": "Pod with hostNetwork and a hostPort equal to the container port is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.hostNetwork=true",
+            "spec.containers.[0].ports.[0].hostPort=8086"
+        ]
     }
 ]
