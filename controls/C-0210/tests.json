@@ -76,5 +76,37 @@
         "field_change_list": [
             "spec.template.spec.securityContext.seccompProfile.type=RuntimeDefault"
         ]
+    },
+    {
+        "name": "Windows Pod without seccompProfile is allowed, the API server forbids the field there",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.os.name=windows"
+        ]
+    },
+    {
+        "name": "Linux Pod without seccompProfile is still blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.os.name=linux"
+        ]
+    },
+    {
+        "name": "Windows Deployment without seccompProfile is allowed",
+        "template": "deployment.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.template.spec.os.name=windows"
+        ]
+    },
+    {
+        "name": "Windows CronJob without seccompProfile is allowed",
+        "template": "cronjob.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.jobTemplate.spec.template.spec.os.name=windows"
+        ]
     }
 ]

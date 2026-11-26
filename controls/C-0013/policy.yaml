@@ -33,15 +33,29 @@ spec:
               : []
       name: containers
     - expression: |
+        object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
+    - expression: |
         object.kind == 'Pod' ? object.spec.?securityContext.orValue({})
         : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job'] ? object.spec.template.spec.?securityContext.orValue({})
         : object.kind == 'CronJob' ? object.spec.jobTemplate.spec.template.spec.?securityContext.orValue({})
         : {}
       name: podSecurityContext
   validations:
+    # A Windows pod (spec.os.name: windows) cannot set allowPrivilegeEscalation or runAsUser:
+    # the API server rejects them (validateWindows in pkg/apis/core/validation/validation.go).
+    # So a Windows pod is not required to set allowPrivilegeEscalation, but it must still
+    # set runAsNonRoot, which Windows allows, as the Rego version of this control requires.
     - expression: >
         variables.containers.all(container,
           (
+            variables.podSpec.?os.?name.orValue('') == 'windows' ||
             has(container.securityContext) &&
             has(container.securityContext.allowPrivilegeEscalation) &&
             container.securityContext.allowPrivilegeEscalation == false

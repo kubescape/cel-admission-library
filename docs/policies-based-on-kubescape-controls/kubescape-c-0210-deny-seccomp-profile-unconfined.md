@@ -20,5 +20,7 @@ Running containers with an unconfined seccomp profile exposes the host kernel to
 ## What does this policy do:
 This Policy checks every container and initContainer for a seccomp profile. It first checks if the container has `securityContext.seccompProfile.type` set; if so, that value must not be `Unconfined`. If the container does not set its own seccomp profile, the pod-level `securityContext.seccompProfile.type` is checked instead. If no seccomp profile is defined at any level, or if the effective profile is `Unconfined`, the resource is denied.
 
+Windows pods (`spec.os.name: windows`) are skipped. The API server does not allow `seccompProfile` on them at all, so they could never pass, and Pod Security Admission skips the same check for them.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

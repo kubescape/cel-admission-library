@@ -32,7 +32,20 @@ spec:
               ? object.spec.jobTemplate.spec.template.spec.containers + (has(object.spec.jobTemplate.spec.template.spec.initContainers) ? object.spec.jobTemplate.spec.template.spec.initContainers : []) + (has(object.spec.jobTemplate.spec.template.spec.ephemeralContainers) ? object.spec.jobTemplate.spec.template.spec.ephemeralContainers : [])
               : []
       name: containers
+    - expression: |
+        object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
   validations:
-    - expression: "variables.containers.all(container, has(container.securityContext) && has(container.securityContext.readOnlyRootFilesystem) &&  container.securityContext.readOnlyRootFilesystem == true)"
+    # A Windows pod (spec.os.name: windows) cannot set readOnlyRootFilesystem at all: the
+    # API server rejects it (validateWindows in pkg/apis/core/validation/validation.go), and
+    # the Rego version of this control skips Windows pods for the same reason. Without
+    # this guard every Windows workload is denied and there is nothing it can change to pass.
+    - expression: "variables.podSpec.?os.?name.orValue('') == 'windows' || variables.containers.all(container, has(container.securityContext) && has(container.securityContext.readOnlyRootFilesystem) &&  container.securityContext.readOnlyRootFilesystem == true)"
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' has one or more containers with a mutable root filesystem! (see more at https://kubescape.io/docs/controls/c-0017/)'
