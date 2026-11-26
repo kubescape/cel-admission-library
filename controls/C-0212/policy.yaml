@@ -62,6 +62,17 @@ spec:
     # the apiserver has already defaulted the field before this runs, so the guard is
     # always true there; it earns its keep when kubescape evaluates the same expression
     # against a manifest on disk, where nothing has defaulted anything yet.
-    - expression: "has(object.metadata.namespace) && object.metadata.namespace != 'default'"
+    #
+    # The kube-apiserver itself creates and updates the kubernetes Service in the default
+    # namespace, and the Endpoints and EndpointSlice of the same name that point at the
+    # apiserver's own addresses (pkg/controlplane/controller/kubernetesservice and
+    # pkg/controlplane/reconcilers in kubernetes/kubernetes). Those writes go through
+    # admission, so without this exemption the policy denies the apiserver's own updates,
+    # and the in-cluster kubernetes endpoints go stale when an apiserver address changes.
+    # The Rego version of this control exempts the kubernetes Service too (CIS 5.7.4).
+    - expression: >
+        (has(object.metadata.namespace) && object.metadata.namespace != 'default') ||
+        (has(object.metadata.namespace) && has(object.metadata.name) &&
+          object.metadata.name == 'kubernetes' && object.kind in ['Service', 'Endpoints', 'EndpointSlice'])
       messageExpression: >
         object.kind + '/' + object.metadata.name + ' is in the default namespace, which has no RBAC, quota or network boundary of its own. (see more at https://kubescape.io/docs/controls/c-0212/)'
