@@ -29,5 +29,7 @@ A setting in the pod's `securityContext` counts only for the containers that don
 
 A Seccomp or AppArmor profile counts only when it enforces something: `Unconfined` (or the annotation value `unconfined`) turns it off. So a pod-level `RuntimeDefault` profile does not cover a container that sets its own profile to `Unconfined`.
 
+Windows pods (`spec.os.name: windows`) are skipped. The API server does not allow seccomp, AppArmor, SELinux or capabilities settings on them at all, so they could never pass, and the Kubescape control skips them too.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

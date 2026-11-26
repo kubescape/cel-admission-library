@@ -20,5 +20,7 @@ Assigning capabilities to containers — whether adding new ones or selectively 
 ## What does this policy do:
 This Policy enforces the strictest capability posture: every container must have `securityContext.capabilities.drop` set to `["ALL"]` AND must not have any capabilities in `securityContext.capabilities.add`. This is stricter than C-0200, which allows adding back specific capabilities. If any container violates either condition, the resource is denied from being deployed in the cluster.
 
+Windows pods (`spec.os.name: windows`) are skipped. The API server does not allow `capabilities` on them at all, so they could never pass, and Pod Security Admission skips the same check for them.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
