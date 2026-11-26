@@ -34,6 +34,15 @@ spec:
       name: containers
     - expression: |
         object.kind == 'Pod'
+          ? object.spec
+          : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
+            ? object.spec.template.spec
+            : object.kind == 'CronJob'
+              ? object.spec.jobTemplate.spec.template.spec
+              : {}
+      name: podSpec
+    - expression: |
+        object.kind == 'Pod'
           ? (has(object.spec.securityContext) ? object.spec.securityContext : {})
           : object.kind in ['Deployment','ReplicaSet','DaemonSet','StatefulSet','Job']
             ? (has(object.spec.template.spec.securityContext) ? object.spec.template.spec.securityContext : {})
@@ -59,7 +68,13 @@ spec:
     # something: Unconfined (annotation value unconfined) turns it off, and an empty annotation names no
     # profile, so it counts as absent (the kubelet ignores it too). seLinuxOptions counts at either
     # level, and capabilities.drop only at the container level.
+    # A Windows pod (spec.os.name: windows) cannot set any of these: the API server rejects
+    # seccompProfile, appArmorProfile, seLinuxOptions and capabilities there (validateWindows in
+    # pkg/apis/core/validation/validation.go). Without this guard every Windows workload is
+    # denied and there is nothing it can change to pass, so Windows pods are skipped, as the
+    # Rego version of this control does.
     - expression: |
+        variables.podSpec.?os.?name.orValue('') == 'windows' ||
         variables.containers.all(container,
           (has(container.securityContext) && has(container.securityContext.seccompProfile)
             ? container.securityContext.seccompProfile.type != 'Unconfined'
