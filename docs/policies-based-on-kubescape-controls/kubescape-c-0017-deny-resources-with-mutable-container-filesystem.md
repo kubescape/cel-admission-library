@@ -42,5 +42,7 @@ This policy checks every container in the Pod, not only the new debug container.
 
 `kubectl debug --copy-to` instead creates a new Pod that copies the original Pod's containers and, by default, its init containers. This policy checks that new Pod when it is created, so it is denied if any copied container does not comply.
 
+Windows pods (`spec.os.name: windows`) are skipped. The API server does not allow `readOnlyRootFilesystem` on them at all, so they could never pass, and the Kubescape control skips them too.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)
