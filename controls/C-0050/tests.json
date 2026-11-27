@@ -200,5 +200,67 @@
             "spec.initContainers.[0].resources.requests.cpu=250m",
             "spec.initContainers.[0].resources.limits.cpu=500m"
         ]
+    },
+    {
+        "name": "Pod resized below the cpu request and limit minimums is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=200m",
+            "spec.containers.[0].resources.limits.cpu=1"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.cpu=50m",
+                "spec.containers.[0].resources.limits.cpu=100m"
+            ]
+        }
+    },
+    {
+        "name": "Pod resized above the cpu limit maximum is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=200m",
+            "spec.containers.[0].resources.limits.cpu=1"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.limits.cpu=6"
+            ]
+        }
+    },
+    {
+        "name": "Pod resized with cpu request and limit in range is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=200m",
+            "spec.containers.[0].resources.limits.cpu=1"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.cpu=300m",
+                "spec.containers.[0].resources.limits.cpu=2"
+            ]
+        }
+    },
+    {
+        "name": "Pod with a native sidecar resized below the cpu minimum is blocked",
+        "template": "pod-with-init-container.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=250m",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.initContainers.[0].restartPolicy=Always",
+            "spec.initContainers.[0].resources.requests.cpu=250m",
+            "spec.initContainers.[0].resources.limits.cpu=1"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.initContainers.[0].resources.requests.cpu=50m",
+                "spec.initContainers.[0].resources.limits.cpu=100m"
+            ]
+        }
     }
 ]

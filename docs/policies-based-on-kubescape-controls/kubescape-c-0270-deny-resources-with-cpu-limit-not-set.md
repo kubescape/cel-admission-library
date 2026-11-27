@@ -27,5 +27,7 @@ The minimum values apply to init containers too, so a small init container that 
 
 Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow `resources` on ephemeral containers.
 
+Container resources can also change in place, through the `pods/resize` subresource. The policy matches that subresource too, so a resize that moves a container outside the configured range is denied like any other update.
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

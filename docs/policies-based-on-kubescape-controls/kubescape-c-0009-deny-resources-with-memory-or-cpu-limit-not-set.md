@@ -27,6 +27,8 @@ If any of the above two checks fail, the resource is denied from being deployed 
 
 Ephemeral containers (added with `kubectl debug`) are not checked, because the Kubernetes API does not allow `resources` on ephemeral containers.
 
+Container resources can also change in place, through the `pods/resize` subresource. The Kubernetes API refuses to remove a limit during a resize, so this control cannot be bypassed that way. The policy matches the subresource anyway, so every resource control carries the same `matchConstraints`.
+
 
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

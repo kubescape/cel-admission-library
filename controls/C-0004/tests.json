@@ -177,5 +177,48 @@
             "spec.initContainers.[0].resources.requests.memory=64Mi",
             "spec.initContainers.[0].resources.limits.memory=512Mi"
         ]
+    },
+    {
+        "name": "Pod resized below the memory request minimum is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.containers.[0].resources.limits.memory=512Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.memory=64Mi"
+            ]
+        }
+    },
+    {
+        "name": "Pod resized above the memory limit maximum is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.containers.[0].resources.limits.memory=512Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.limits.memory=8Gi"
+            ]
+        }
+    },
+    {
+        "name": "Pod resized with memory request and limit in range is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.containers.[0].resources.limits.memory=512Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.memory=512Mi",
+                "spec.containers.[0].resources.limits.memory=1Gi"
+            ]
+        }
     }
 ]
