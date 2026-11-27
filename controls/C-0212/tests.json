@@ -237,7 +237,9 @@
         "expected": "pass",
         "field_change_list": [
             "metadata.name=kubernetes",
-            "metadata.namespace=default"
+            "metadata.namespace=default",
+            "spec.ports.[0].name=https",
+            "spec.ports.[0].port=443"
         ]
     },
     {
