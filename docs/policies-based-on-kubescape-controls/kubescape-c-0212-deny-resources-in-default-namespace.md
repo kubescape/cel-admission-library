@@ -46,5 +46,7 @@ The second case only ever shows up when the manifest is read from a file, for ex
 ## Read this before binding it:
 `default` is where a lot of ordinary cluster bootstrap happens, so binding this one with `validationActions: [Deny]` blocks more than you might expect, including updates to objects that were already living in `default` before you installed the policy. `[Warn]` or `[Audit]` is the safer starting point. The library ships policies only and no bindings, so the enforcement level is yours to pick at install time.
 
+The `kubernetes` Service, Endpoints and EndpointSlice in the default namespace are allowed. The kube-apiserver creates and updates them itself, to publish its own addresses, and those writes go through admission. The Kubescape control exempts the `kubernetes` Service too (CIS 5.7.4).
+
 ## Implementing this policy in the Cluster:
 [Refer here for using the policy in the cluster](https://github.com/kubescape/cel-admission-library#using-the-library)

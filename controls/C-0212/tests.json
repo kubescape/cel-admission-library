@@ -230,5 +230,43 @@
         "field_change_list": [
             "metadata.namespace=test-namespace"
         ]
+    },
+    {
+        "name": "kubernetes Service in the default namespace is allowed, the apiserver manages it",
+        "template": "service.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=kubernetes",
+            "metadata.namespace=default",
+            "spec.ports.[0].name=https",
+            "spec.ports.[0].port=443"
+        ]
+    },
+    {
+        "name": "kubernetes Endpoints in the default namespace is allowed, the apiserver manages it",
+        "template": "endpoints.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=kubernetes",
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "kubernetes EndpointSlice in the default namespace is allowed, the apiserver manages it",
+        "template": "endpointslice.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "metadata.name=kubernetes",
+            "metadata.namespace=default"
+        ]
+    },
+    {
+        "name": "Another kind named kubernetes in the default namespace is still blocked",
+        "template": "configmap.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "metadata.name=kubernetes",
+            "metadata.namespace=default"
+        ]
     }
 ]
