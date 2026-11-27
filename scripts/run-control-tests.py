@@ -109,11 +109,12 @@ try:
 
         time.sleep(1)
 
-        # A test object can name an object the cluster already has, such as the
-        # kubernetes Service in the default namespace. The apply below is a dry run, so
-        # the cleanup must not delete such an object: only delete what didn't exist.
-        object_existed = subprocess.call(['kubectl', 'get'] + namespace_args + ['-f', test_object_yaml],
-                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+        # Only a connect test creates its test object; the others apply it with
+        # --dry-run=server, which creates nothing, so they have nothing to delete. The
+        # object of a connect test can still be one the cluster already had, which the
+        # cleanup must leave in place.
+        object_existed = connect and subprocess.call(['kubectl', 'get'] + namespace_args + ['-f', test_object_yaml],
+                                                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
 
         if connect:
             # CONNECT requests (pods/exec, pods/attach, pods/portforward) can't
@@ -174,7 +175,7 @@ try:
         try:
             subprocess.check_call(['kubectl', 'delete', '-f', 'policy.yaml'],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.check_call(['kubectl', 'delete', '-f', policy_bind_temp_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            if not object_existed:
+            if connect and not object_existed:
                 subprocess.check_call(['kubectl', 'delete'] + namespace_args + ['-f', test_object_yaml],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             subprocess.check_call(['kubectl', 'delete', '-f', param_file_name],stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         except:

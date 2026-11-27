@@ -253,12 +253,8 @@
     },
     {
         "name": "kubernetes EndpointSlice in the default namespace is allowed, the apiserver manages it",
-        "template": "endpointslice.yaml",
-        "expected": "pass",
-        "field_change_list": [
-            "metadata.name=kubernetes",
-            "metadata.namespace=default"
-        ]
+        "template": "kubernetes-endpointslice.yaml",
+        "expected": "pass"
     },
     {
         "name": "Another kind named kubernetes in the default namespace is still blocked",

@@ -1,0 +1,11 @@
+# The kube-apiserver's own EndpointSlice for the kubernetes Service. Tests apply it
+# onto the existing object, and the apply only changes the fields set here, so
+# addressType (immutable) and endpoints are left out: the cluster keeps its own
+# values, on IPv4 and IPv6 clusters alike.
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: kubernetes
+  namespace: default
+  labels:
+    admission-policy-test: abc
