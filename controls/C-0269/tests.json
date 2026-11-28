@@ -143,5 +143,31 @@
             "spec.initContainers.[0].image=registry.k8s.io/e2e-test-images/busybox:1.36.1-1",
             "spec.initContainers.[0].resources.requests.memory=64Mi"
         ]
+    },
+    {
+        "name": "Pod resized below the memory request minimum is blocked",
+        "template": "pod.yaml",
+        "expected": "fail",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=256Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.memory=64Mi"
+            ]
+        }
+    },
+    {
+        "name": "Pod resized with memory request in range is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.memory=256Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.requests.memory=1Gi"
+            ]
+        }
     }
 ]

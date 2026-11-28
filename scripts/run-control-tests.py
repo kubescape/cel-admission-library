@@ -66,7 +66,12 @@ try:
         binding_template = test['binding_template'] if 'binding_template' in test else 'policy-binding.yaml'
         param_template = test['param_template'] if 'param_template' in test else 'default-control-configuration.yaml'
         connect = test.get('connect')
-        namespace_args = ['-n', 'test-namespace'] if connect else []
+        resize = test.get('resize')
+        if resize is not None and not isinstance(resize, dict):
+            raise Exception('resize must be an object with field_change_list and optionally template')
+        if connect and resize:
+            raise Exception('a test cannot use both connect and resize')
+        namespace_args = ['-n', 'test-namespace'] if connect or resize else []
 
         print('-'*120)
         print('Running test: ' + name)
@@ -139,6 +144,46 @@ try:
                 capture_output=True, text=True
             )
             result = 1 if policy_name in proc.stderr else 0
+        elif resize:
+            # In-place resize goes through the pods/resize subresource: the Pod
+            # has to exist first, and only its container resources may change.
+            # Create the Pod from the test object, then PATCH the resources of
+            # the object built from the resize template onto that subresource.
+            with open(test_object_yaml, 'r') as f:
+                pod_name = yaml.load(f, Loader=yaml.FullLoader)['metadata']['name']
+            for attempt in range(30):
+                if subprocess.call(['kubectl', 'apply'] + namespace_args + ['-f', test_object_yaml]) == 0:
+                    break
+                time.sleep(1)
+            else:
+                raise Exception('could not create ' + pod_name + ' in test-namespace')
+
+            resize_template = resize.get('template', template)
+            with tempfile.NamedTemporaryFile() as temp_file:
+                resize_object_yaml = temp_file.name
+            resize_change_list = resize.get('field_change_list', [])
+            if len(resize_change_list) > 0:
+                subprocess.check_call([python_executable, os.path.join(SCRIPTS_DIR, 'change-yaml-field.py'), '-i', os.path.join(TEST_RESOURCES_DIR, resize_template), '-o', resize_object_yaml] + resize_change_list)
+            else:
+                subprocess.check_call(['cp', os.path.join(TEST_RESOURCES_DIR, resize_template), resize_object_yaml])
+            with open(resize_object_yaml, 'r') as f:
+                resize_object = yaml.load(f, Loader=yaml.FullLoader)
+            # A strategic merge patch keeps the untouched fields of every
+            # container, so only the resources built above reach the server.
+            patch = {'spec': {}}
+            for container_field in ('containers', 'initContainers'):
+                containers = [c for c in resize_object['spec'].get(container_field, []) if 'resources' in c]
+                if len(containers) > 0:
+                    patch['spec'][container_field] = [{'name': c['name'], 'resources': c['resources']} for c in containers]
+            patch_file = resize_object_yaml + '.json'
+            with open(patch_file, 'w') as f:
+                json.dump(patch, f)
+            proc = subprocess.run(
+                ['kubectl', 'patch', 'pod', pod_name] + namespace_args + ['--subresource', 'resize', '--type', 'strategic', '--patch-file', patch_file, '--request-timeout=30s'],
+                capture_output=True, text=True
+            )
+            os.remove(patch_file)
+            result = proc.returncode
         else:
             # Run kubectl apply on the test object and capture output
             proc = subprocess.run(

@@ -146,5 +146,22 @@
             "spec.initContainers.[0].resources.limits.cpu=1",
             "spec.initContainers.[0].resources.limits.memory=256Mi"
         ]
+    },
+    {
+        "name": "Pod resized with memory and cpu limits still set is allowed",
+        "template": "pod.yaml",
+        "expected": "pass",
+        "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=500m",
+            "spec.containers.[0].resources.requests.memory=256Mi",
+            "spec.containers.[0].resources.limits.cpu=1",
+            "spec.containers.[0].resources.limits.memory=512Mi"
+        ],
+        "resize": {
+            "field_change_list": [
+                "spec.containers.[0].resources.limits.cpu=2",
+                "spec.containers.[0].resources.limits.memory=1Gi"
+            ]
+        }
     }
 ]
