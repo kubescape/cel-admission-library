@@ -183,7 +183,7 @@ try:
                 capture_output=True, text=True
             )
             os.remove(patch_file)
-            result = 1 if policy_name in proc.stderr else 0
+            result = proc.returncode
         else:
             # Run kubectl apply on the test object and capture output
             proc = subprocess.run(

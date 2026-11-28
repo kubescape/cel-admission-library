@@ -152,6 +152,8 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=500m",
+            "spec.containers.[0].resources.requests.memory=256Mi",
             "spec.containers.[0].resources.limits.cpu=1",
             "spec.containers.[0].resources.limits.memory=512Mi"
         ],

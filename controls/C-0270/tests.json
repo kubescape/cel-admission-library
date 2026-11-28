@@ -149,6 +149,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=250m",
             "spec.containers.[0].resources.limits.cpu=1"
         ],
         "resize": {
@@ -162,6 +163,7 @@
         "template": "pod.yaml",
         "expected": "fail",
         "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=250m",
             "spec.containers.[0].resources.limits.cpu=1"
         ],
         "resize": {
@@ -175,6 +177,7 @@
         "template": "pod.yaml",
         "expected": "pass",
         "field_change_list": [
+            "spec.containers.[0].resources.requests.cpu=250m",
             "spec.containers.[0].resources.limits.cpu=1"
         ],
         "resize": {
